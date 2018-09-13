@@ -68,8 +68,21 @@ export const asyncRouterMap = [{
     component: _import('example/tablePagenation').default,
     name: '表格组件'
   }]
-}, {
+},
+{
   path: '*',
   redirect: '/404',
   hidden: true
+},
+{
+  path: '',
+  component: Layout,
+  redirect: '/houseManage',
+  icon: 'icon_house',
+  noDropdown: true,
+  children: [{
+    name: '房源管理',
+    path: 'houseManage',
+    component: _import('houseManage/houseSync').default
+  }]
 }]
