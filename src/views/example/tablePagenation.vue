@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:19
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 15:32:18
+ * @Last Modified time: 2018-09-14 10:32:45
  */
 
 <template>
@@ -73,6 +73,7 @@
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
+import { exampleApi } from '@/api/example'
 export default {
   name: 'ExampleGrid',
   components: {
@@ -125,8 +126,8 @@ export default {
         {prop: 'title', label: '标题'},
         {prop: 'introduction', label: '简介'}
       ],
-      url: '/market/activity',
-      method: 'queryActivityListByPage'
+      url: exampleApi.requestPath,
+      method: exampleApi.queryMethod
     }
   },
   computed: {
