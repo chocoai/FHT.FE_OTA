@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 14:41:55
+ * @Last Modified time: 2018-09-17 10:49:23
  */
 
 import Vue from 'vue'
@@ -33,7 +33,7 @@ export const constantRouterMap = [{
   path: '',
   component: Layout,
   redirect: '/dashboard',
-  icon: 'dashboard',
+  icon: 'home',
   noDropdown: true,
   children: [{
     name: '首页',

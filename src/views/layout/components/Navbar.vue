@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 17:38:04
+ * @Last Modified time: 2018-09-17 09:56:22
  */
 
 <template>
@@ -159,22 +159,21 @@ export default {
       outline: none;
     }
     .right-menu-item {
+      height: 40px;
       display: inline-block;
       margin: 0 5px;
     }
     .screenfull {
-      height: 40px;
       padding: 4px;
       border: 1px solid #e6e6e6;
       border-radius: 4px;
     }
     .avatar-container {
-      height: 50px;
       margin-right: 30px;
       .avatar-wrapper {
         cursor: pointer;
-        margin-top: 5px;
         position: relative;
+        height: 40px;
       }
       .user-name {
         position: relative;
