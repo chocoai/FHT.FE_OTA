@@ -14,9 +14,11 @@
           <el-form-item>
             <area-select
               v-model="searchParams.cityArea"
+              :filterable="true"
+              :show-all-levels="false"
+              :level="0"
               placeholder="请选择城市"
-              class="item-select"
-            />
+              class="item-select"/>
           </el-form-item>
           <el-form-item>
             <el-select
@@ -27,12 +29,13 @@
             >
               <el-option
                 :value="1"
-                label="已出租"/>
+                label="孔雀蓝"/>
               <el-option
                 :value="0"
-                label="未出租"/>
+                label="等等等"/>
             </el-select>
           </el-form-item>
+
           <el-form-item>
             <el-input
               v-model="searchParams.roomCode"
@@ -72,32 +75,32 @@
           </el-form-item>
           <el-form-item>
             <el-select
-              v-model="searchParams.mlpublishStatus"
+              v-model="searchParams.publishStatus"
               size="small"
-              placeholder="请选择麦邻租房"
+              placeholder="麦邻发布状态"
               class="item-select"
             >
               <el-option
                 :value="1"
-                label="已发布"/>
+                label="麦邻已发布"/>
               <el-option
                 :value="0"
-                label="未发布"/>
+                label="麦邻未发布"/>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select
-              v-model="searchParams.xypublishStatus"
+              v-model="searchParams.idlefishStatus"
               size="small"
-              placeholder="请选择咸鱼租房"
+              placeholder="咸鱼发布状态"
               class="item-select"
             >
               <el-option
                 :value="1"
-                label="已发布"/>
+                label="咸鱼已发布"/>
               <el-option
                 :value="0"
-                label="未发布"/>
+                label="咸鱼未发布"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -116,7 +119,6 @@
         </div>
         <el-dialog
           :visible.sync="dialogVisible"
-          :before-close="handleClose"
           title="选择发布平台"
           class="select-dialog"
           width="450px">
@@ -126,7 +128,8 @@
               <input
                 id="mlRent"
                 v-model="publishSelect.mlzf"
-                type="checkbox" >
+                type="checkbox"
+              >
               <label for="mlRent">
                 <div
                   :class="{changeBackground:publishSelect.mlzf}"
@@ -158,9 +161,6 @@
           <span
             slot="footer"
             class="dialog-footer">
-            <span
-              v-show="dialogTitle === '发布'"
-              class="tips">温馨提示：飞虎队房源需填写照片提供者</span>
             <el-button
               type="primary"
               size="small"
@@ -173,16 +173,39 @@
         :form-options="searchParams"
         :data-method="method"
         :url="url"
-        :columns="colModels">
+        :columns="colModels"
+        :show-selection="true"
+        @select="handleSelectChange"
+        @selection-change="handleSelectionChange"
+      >
+        <template
+          slot="slot_popover"
+          slot-scope="scope">
+          <el-popover
+            v-if="scope.row.idlefishStatus === `发布失败` || scope.row.publishStatus === `发布失败` "
+            trigger="hover"
+            placement="top">
+            <p>发布失败原因: {{ scope.row.failReason }}</p>
+            <div slot="reference">
+              <el-tag :type="(scope.row.idlefishStatus|| scope.row.publishStatus) | renderStatusType">
+                {{ (scope.row.idlefishStatus || scope.row.publishStatus) | renderStatusValue }}
+              </el-tag>
+            </div>
+          </el-popover>
+          <el-tag
+            v-else
+            :type="(scope.row.idlefishStatus || scope.row.publishStatus) | renderStatusType">
+            {{ scope.row.idlefishStatus || scope.row.publishStatus | renderStatusValue }}
+          </el-tag>
+        </template>
         <template
           slot="operateHosting"
           slot-scope="scope">
           <el-row>
             <el-button
-              type="success"
+              type="primary"
               size="mini"
-            >已出租</el-button>
-            <!--<el-button type="info" round>信息按钮</el-button>-->
+              @click="houseStatus(scope.row)">出租状态</el-button>
             <el-button
               type="primary"
               size="mini"
@@ -201,6 +224,9 @@
       :before-close="checkEditStatus"
       width="1000px">
       <!--<hosting-room-detail ref="hostingRoomDetail"/>-->
+      <el-table-column
+        slot="selection"
+        type="selection"/>
       <span
         slot="footer"
         class="dialog-footer">
@@ -223,7 +249,7 @@
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
-import { houseAsyncApi } from '@/api/houseManage'
+import { houseAsyncApi, publishHouseApi} from '@/api/houseManage'
 // import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
@@ -232,26 +258,93 @@ export default {
     areaSelect
     // hostingRoomDetail
   },
+  filters: {
+    // 麦邻 咸鱼发布状态
+    renderStatusType (status) {
+      const statusMap = {
+        '已发布': 'success',
+        '发布中': 'primary',
+        '发布失败': 'danger',
+        '下架中': 'warning',
+        '未发布': 'info'
+      }
+      return statusMap[status] || 'info'
+    },
+    renderStatusValue (status) {
+      return status || '未知'
+    }
+    // 房间出租状态设置
+    // setRoomStatus (val, statusList) {
+    //   let status = statusList.filter(item => item.value === val)
+    //   return status.length ? status[0].label : ''
+    // }
+  },
+
   data () {
     return {
       activeName: '分散式整租',
-      tabMapOptions: ['分散式整租', '分散式合租', '集中式整栋'],
+      houseAreaName: '整套面积',
+      tabMapOptions: ['分散式整租', '分散式合租'],
+      selectedItems: [],
+      filterManagerList: [],
       colModels: [
-        {slot: 'selection'},
-        {prop: 'organizationName', label: '组织名称'},
-        {prop: 'address', label: '房源位置', width: 200},
-        {prop: 'roomName', label: '公寓/小区-房间', width: 200},
-        {prop: 'houseType', label: '房源类型', width: 150},
-        {prop: 'roomCode', label: '房源编码', width: 100},
-        {prop: 'rent', label: '房价(元/月)', width: 100, align: 'right'},
-        {prop: 'name', label: '姓名', width: 100},
-        {prop: 'mobile', label: '手机号', width: 150},
-        {prop: 'userType', label: '用户类型', width: 100},
+        {slot: 'selection', width: 30},
+        {prop: 'roomName', label: '公寓/小区', width: 300},
+        {prop: 'roomCode', label: '房间号', width: 100},
+        {prop: 'houseTypeInfo', label: '户型', width: 200},
+        {prop: 'roomArea', label: '整套面积', width: 150},
+        {prop: 'rent', label: '推广价格', width: 100},
+        // {
+        //   prop: 'roomStatus',
+        //   label: '出租状态',
+        //   width: 80,
+        //   type: 'status',
+        //   slotName: 'roomStatus',
+        //   fixed: 'right',
+        //   unitFilters: {
+        //     renderStatusType (status) {
+        //       const statusMap = {
+        //         '已出租': 'success',
+        //         '未出租': 'info'
+        //       }
+        //       return statusMap[status] || 'info'
+        //     },
+        //     renderStatusValue (status) {
+        //       return status || '未知'
+        //     }
+        //   }
+        // },
+        {
+          prop: 'publishStatus',
+          label: '麦邻租房',
+          width: 100,
+          type: 'status',
+          slotName: 'slot_status',
+          unitFilters: {
+            renderStatusType (status) {
+              const statusMap = {
+                '已发布': 'success',
+                '未发布': 'info',
+                '发布中': 'primary'
+              }
+              return statusMap[status] || 'info'
+            },
+            renderStatusValue (status) {
+              return status || '未知'
+            }
+          }
+        },
+        { prop: 'idlefishStatus',
+          label: '闲鱼租房',
+          width: 100,
+          type: 'status',
+          slotName: 'slot_popover'
+        },
         {
           prop: 'operate',
-          label: '设置',
+          label: ' 操作',
           slotName: 'operateHosting',
-          width: '260',
+          width: 200,
           fixed: 'right'
         }
       ],
@@ -262,14 +355,13 @@ export default {
       dialogVisible: false,
       dialogTitle: '',
       searchParams: {
-        houseRentType: 1,
-        houseStatus: 0,
-        houseType: '',
-        mlpublishStatus: '',
-        xypublishStatus: '',
-        keywords: '',
-        cityArea: [],
-        roomCode: ''
+        houseRentType: 1, // 整租还是合租
+        houseStatus: 0, // 出租状态
+        publishStatus: '', // 麦邻发布
+        idlefishStatus: '', // 咸鱼发布
+        keywords: '', // 公寓小区
+        cityArea: [], // 城市
+        roomCode: '' // 房间号
       },
       url: houseAsyncApi.defaultOptions.requestUrl, // 请求接口
       method: houseAsyncApi.defaultOptions.method,
@@ -277,35 +369,48 @@ export default {
       roomDetailModelVisible: false
     }
   },
+  watch: {
+    // 'searchParams.cityArea': function (val) {
+    //   if (val && val[1]) {
+    //     this.searchParams.cityId = val[1]
+    //   } else {
+    //     this.searchParams.cityId = ''
+    //   }
+    // }
+  },
   methods: {
     // tabs切换
     handleClickTab (tab) {
       this.searchParam('clear')
     },
-    // 表格数据
-    // 查询
+    // 查询数据
     searchParam (type) {
       if (type === 'clear') {
         this.searchParams = {
-          houseStatus: '',
-          houseType: '',
-          publishStatus: '',
-          organizationName: '',
-          keywords: '',
-          mobileOrName: '',
-          cityId: '',
-          cityArea: [],
-          roomCode: ''
+          houseRentType: '', // 整租还是合租
+          houseStatus: '', // 出租状态
+          publishStatus: '', // 麦邻发布
+          idlefishStatus: '', // 咸鱼发布
+          keywords: '', // 公寓小区
+          cityArea: [], // 城市
+          roomCode: '' // 房间号
         }
       }
-      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : (this.activeName === '分散式租合租' ? 2 : 0)
-      console.log(' this.searchParams', this.searchParams)
+
+      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 0
+      this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
+      console.log('this.searchParams',this.searchParams)
       // 解决watch执行顺序
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
       })
     },
+    // 选择列表
+    handleSelectionChange (list) {
+      this.selectedItems = list
+    },
     syncItems (type = 'on') {
+      console.log('type', type)
       const typeConfig = {
         'on': {
           title: '发布'
@@ -330,18 +435,47 @@ export default {
       }
       this.dialogVisible = true
       this.dialogTitle = typeConfig[type].title
-      this.publishSelect.mlzf = false
+      if (type == 'off') {
+        this.publishSelect.mlzf = false
+      } else {
+        this.publishSelect.mlzf = true
+      }
       this.publishSelect.idlefish = false
     },
-    gotoHouseAsync () {
+    handleSelectChange () {},
 
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
+    gotoHouseAsync () {
+      // 发布房源
+      const roomCodes = this.selectedItems.map(item => item.roomCode)
+      const platform = []
+      for (var i in this.publishSelect) {
+        if (this.publishSelect[i]) {
+          platform.push(i)
+        }
+      }
+      let params = {
+        platforms: platform,
+        roomCodeList: roomCodes
+      }
+      if (this.dialogTitle === '发布') {
+        const manage = this.filterManagerList.filter(item => item.id === this.sourceInfo)
+        if (manage.length) {
+          params = Object.assign(params, {
+            picProviderId: this.sourceInfo,
+            picProviderName: manage[0].name
+          })
+        }
+      }
+      // publishHouseApi(params, this.dialogTitle === '发布' ? 1 : 2).then(response => {
+      //   this.$notify({
+      //     title: '成功',
+      //     message: '操作成功',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.dialogVisible = false
+      //   this.searchParam()
+      // })
     },
     // 添加修改房间信息
     openRoomDetail (params) {
