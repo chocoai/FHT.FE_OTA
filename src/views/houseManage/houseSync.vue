@@ -249,7 +249,7 @@
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
-import { houseAsyncApi, publishHouseApi} from '@/api/houseManage'
+import { houseAsyncApi, publishHouseApi } from '@/api/houseManage'
 // import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
@@ -399,7 +399,7 @@ export default {
 
       this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 0
       this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
-      console.log('this.searchParams',this.searchParams)
+      console.log('this.searchParams', this.searchParams)
       // 解决watch执行顺序
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
@@ -435,7 +435,7 @@ export default {
       }
       this.dialogVisible = true
       this.dialogTitle = typeConfig[type].title
-      if (type == 'off') {
+      if (type === 'off') {
         this.publishSelect.mlzf = false
       } else {
         this.publishSelect.mlzf = true
