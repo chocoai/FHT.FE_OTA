@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-17 13:51:55
+ * @Last Modified time: 2018-09-17 14:27:47
  */
 
 import Vue from 'vue'
@@ -69,12 +69,18 @@ export const asyncRouterMap = [
       component: _import('example/tablePagenation').default,
       name: '表格组件'
     }]
-  }, {
-    path: '/hostingHoleRentPage',
-    component: _import('hostingEntryHouse/index').default,
-    name: '示例',
-    icon: 'example',
-    noDropdown: true
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: '/hostingHoleRentPage',
+    icon: 'table',
+    noDropdown: true,
+    children: [{
+      name: '分散整租录入',
+      path: 'hostingHoleRentPage',
+      component: _import('hostingEntryHouse/index').default
+    }]
   },
   {
     path: '*',
