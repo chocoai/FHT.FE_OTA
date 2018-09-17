@@ -2,10 +2,18 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-09-17 14:01:13
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 14:05:02
+ * @Last Modified time: 2018-09-17 17:02:09
  */
 
-const userMap = {
+const mockData_user = {
+  login: {
+    'reqId': null,
+    'code': '0',
+    'message': 'bolin',
+    'data': {
+      'sessionId': 'MTM2MA=='
+    }
+  },
   userInfo: {
     'reqId': null,
     'code': '0',
@@ -54,20 +62,23 @@ const userMap = {
       'unLookCount': null,
       'serverStatus': null
     }
+  },
+  logout: {
+    'reqId': null,
+    'code': '0',
+    'message': 'bolin',
+    'data': {}
   }
 }
 
 export default {
-  loginByUsername: config => {
-    const { username } = JSON.parse(config.body)
-    return userMap[username]
+  login: () => {
+    return mockData_user.login
   },
   getUserInfo: () => {
-    if (userMap.userInfo) {
-      return userMap.userInfo
-    } else {
-      return {}
-    }
+    return mockData_user.userInfo
   },
-  logout: () => 'success'
+  logout: () => {
+    return mockData_user.logout
+  }
 }
