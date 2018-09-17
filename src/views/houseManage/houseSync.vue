@@ -1,6 +1,9 @@
 <template>
   <div class="app-container">
-    <el-tabs>
+    <el-tabs
+      v-model="activeName"
+      type="border-card"
+      @tab-click="handleClickTab">
       <el-tab-pane
         v-for="(item,index) in tabMapOptions"
         :label="item"
@@ -167,23 +170,72 @@
       </el-form>
       <GridUnit
         ref="refGridUnit"
-        :columns="colModels"/>
+        :form-options="searchParams"
+        :data-method="method"
+        :url="url"
+        :columns="colModels">
+        <template
+          slot="operateHosting"
+          slot-scope="scope">
+          <el-row>
+            <el-button
+              type="success"
+              size="mini"
+            >已出租</el-button>
+            <!--<el-button type="info" round>信息按钮</el-button>-->
+            <el-button
+              type="primary"
+              size="mini"
+              @click="openRoomDetail(scope.row)">编辑房间</el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              @click="deleteRoom(scope.row)">删除</el-button>
+          </el-row>
+        </template>
+      </GridUnit>
     </el-tabs>
+    <el-dialog
+      :title="isEditFlag ? '编辑房间' : '添加房源'"
+      :visible.sync="roomDetailModelVisible"
+      :before-close="checkEditStatus"
+      width="1000px">
+      <!--<hosting-room-detail ref="hostingRoomDetail"/>-->
+      <span
+        slot="footer"
+        class="dialog-footer">
+        <el-button
+          v-if="!isEditFlag"
+          size="small"
+          type="primary"
+          @click="saveRoomDetailData('add')">保存并继续添加</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="saveRoomDetailData('close')">{{ isEditFlag ? '保 存' : '保存并关闭' }}</el-button>
+        <el-button
+          size="small"
+          @click="saveRoomDetailData('clear')">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
-import areaSelect from '@/components/AreaSelect/AreaSelect'
-
+import areaSelect from '@/components/AreaSelect'
+import { houseAsyncApi } from '@/api/houseManage'
+// import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
   components: {
     GridUnit,
-    areaSelect
+    areaSelect,
+    // hostingRoomDetail
   },
   data () {
     return {
-      tabMapOptions: ['分散式合租', '分散式整租', '集中式整栋'],
+      activeName: '分散式整租',
+      tabMapOptions: ['分散式整租', '分散式合租', '集中式整栋'],
       colModels: [
         {slot: 'selection'},
         {prop: 'organizationName', label: '组织名称'},
@@ -194,7 +246,15 @@ export default {
         {prop: 'rent', label: '房价(元/月)', width: 100, align: 'right'},
         {prop: 'name', label: '姓名', width: 100},
         {prop: 'mobile', label: '手机号', width: 150},
-        {prop: 'userType', label: '用户类型', width: 100}],
+        {prop: 'userType', label: '用户类型', width: 100},
+        {
+          prop: 'operate',
+          label: '设置',
+          slotName: 'operateHosting',
+          width: '260',
+          fixed: 'right'
+        }
+      ],
       publishSelect: {
         mlzf: true,
         idlefish: true
@@ -207,18 +267,43 @@ export default {
         houseType: '',
         mlpublishStatus: '',
         xypublishStatus: '',
-        // organizationName: '',
         keywords: '',
-        // mobileOrName: '',
-        // cityId: '',
         cityArea: [],
-        roomCode: '' //
-      }
+        roomCode: ''
+      },
+      url: houseAsyncApi.defaultOptions.requestUrl, // 请求接口
+      method: houseAsyncApi.defaultOptions.method,
+      isEditFlag: true,
+      roomDetailModelVisible: false
     }
   },
   methods: {
-    searchParam () {
-
+    // tabs切换
+    handleClickTab (tab) {
+      this.searchParam('clear')
+    },
+    // 表格数据
+    // 查询
+    searchParam (type) {
+      if (type === 'clear') {
+        this.searchParams = {
+          houseStatus: '',
+          houseType: '',
+          publishStatus: '',
+          organizationName: '',
+          keywords: '',
+          mobileOrName: '',
+          cityId: '',
+          cityArea: [],
+          roomCode: ''
+        }
+      }
+      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : (this.activeName === '分散式租合租' ? 2 : 0)
+      console.log(' this.searchParams', this.searchParams)
+      // 解决watch执行顺序
+      this.$nextTick(() => {
+        this.$refs.refGridUnit.searchHandler()
+      })
     },
     syncItems (type = 'on') {
       const typeConfig = {
@@ -257,12 +342,30 @@ export default {
           done()
         })
         .catch(_ => {})
+    },
+    // 添加修改房间信息
+    openRoomDetail (params) {
+
+    },
+    // 检查是否修改房源信息
+    checkEditStatus (done) {
+      const differentFlag = this.$refs.hostingRoomDetail.checkEditFlag()
+      if (differentFlag) {
+        this.$confirm('您还有数据未保存, 确认关闭吗？')
+          .then(_ => {
+            done()
+          })
+          .catch(_ => {})
+      } else {
+        done()
+      }
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" scoped lang="scss">
+  .model-search{margin-bottom:20px;}
   .item-select {
     width: 140px;
     margin-right:10px;
