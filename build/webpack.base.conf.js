@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:30:55
- * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 14:34:33
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-09-17 16:11:06
  */
 
 'use strict'
@@ -64,14 +64,14 @@ module.exports = {
           resolve('node_modules/webpack-dev-server/client')
         ]
       },
-      {
-        test: /\.svg$/,
-        loader: 'svg-sprite-loader',
-        include: [resolve('src/icons')],
-        options: {
-          symbolId: 'icon-[name]'
-        }
-      },
+      // {
+      //   test: /\.svg$/,
+      //   loader: 'svg-sprite-loader',
+      //   include: [resolve('src/icons')],
+      //   options: {
+      //     symbolId: 'icon-[name]'
+      //   }
+      // },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
