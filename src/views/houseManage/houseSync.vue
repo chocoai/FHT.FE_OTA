@@ -229,7 +229,7 @@ export default {
   name: 'HouseSync',
   components: {
     GridUnit,
-    areaSelect,
+    areaSelect
     // hostingRoomDetail
   },
   data () {

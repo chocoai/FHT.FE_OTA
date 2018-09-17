@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:10:13
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 11:10:57
+ * @Last Modified time: 2018-09-17 15:41:36
  */
 
 import axios from 'axios'
@@ -19,8 +19,8 @@ const CancelToken = axios.CancelToken
 const defaultConfig = {
   version: '1.0',
   timestamp: new Date().getTime(),
-  reqId: '0010C2379272774D6EC087B917CE2A71438DEF90',
-  sign: '8F4C4A8E9D850EDD9692DE38723D0543'
+  reqId: 'ota',
+  sign: 'ota'
 }
 
 /* 创建axios实例 */
@@ -33,6 +33,10 @@ const service = axios.create({
 
 /* request拦截器 */
 service.interceptors.request.use(config => {
+  // 处理mock
+  // if (!process.env.MOCK) {
+
+  // }
   /* 发起请求时，取消掉当前正在进行的相同请求 */
   const dataMethod = config.method.toUpperCase() === 'POST' ? config.data.method : config.params.method
   const requestUrlAndMethod = (config.url.endsWith('/') ? config.url : `${config.url}/`) + dataMethod

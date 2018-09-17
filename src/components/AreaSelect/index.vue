@@ -20,7 +20,10 @@ export default {
   name: 'Areaselect',
   props: {
     value: {
-      default: []
+      type: Array,
+      default () {
+        return []
+      }
     },
     placeholder: {
       type: String,
