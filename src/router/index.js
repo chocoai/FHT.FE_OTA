@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-13 17:40:37
+ * @Last Modified time: 2018-09-17 13:51:55
  */
 
 import Vue from 'vue'
@@ -50,32 +50,47 @@ export default new Router({
   routes: constantRouterMap
 })
 
-export const asyncRouterMap = [{
-  path: '/example',
-  component: Layout,
-  redirect: 'noredirect',
-  name: '示例',
-  icon: 'example',
-  meta: {
-    role: ['admin', 'global']
-  },
-  children: [{
-    path: 'image',
-    component: _import('example/image').default,
-    name: '图片组件'
+export const asyncRouterMap = [
+  {
+    path: '/example',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '示例',
+    icon: 'example',
+    meta: {
+      role: ['admin', 'global']
+    },
+    children: [{
+      path: 'image',
+      component: _import('example/image').default,
+      name: '图片组件'
+    }, {
+      path: 'grid',
+      component: _import('example/tablePagenation').default,
+      name: '表格组件'
+    }]
   }, {
-    path: 'grid',
-    component: _import('example/tablePagenation').default,
-    name: '表格组件'
-  }]
-}, {
-  path: '/hostingHoleRentPage',
-  component: _import('hostingEntryHouse/index').default,
-  name: '示例',
-  icon: 'example',
-  noDropdown: true
-}, {
-  path: '*',
-  redirect: '/404',
-  hidden: true
-}]
+    path: '/hostingHoleRentPage',
+    component: _import('hostingEntryHouse/index').default,
+    name: '示例',
+    icon: 'example',
+    noDropdown: true
+  },
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: '/houseManage',
+    icon: 'icon_house',
+    noDropdown: true,
+    children: [{
+      name: '房源管理',
+      path: 'houseManage',
+      component: _import('houseManage/houseSync').default
+    }]
+  }
+]
