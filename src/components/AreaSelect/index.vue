@@ -1,14 +1,23 @@
 <template>
   <div>
-    <el-cascader :placeholder="placeholder" :disabled="disabled" :options="options" :size="size" :clearable="clearable" :filterable="filterable" :show-all-levels="showAllLevels" v-model="selectedOptions" @change="handleChange" style="width:100%">
-    </el-cascader>
+    <el-cascader
+      :placeholder="placeholder"
+      :disabled="disabled"
+      :options="options"
+      :size="size"
+      :clearable="clearable"
+      :filterable="filterable"
+      :show-all-levels="showAllLevels"
+      v-model="selectedOptions"
+      style="width:100%"
+      @change="handleChange" />
   </div>
 </template>
 <script>
 import areaData from './cityData'
 import { deepClone } from '@/utils'
 export default {
-  name: 'areaselect',
+  name: 'AreaSelect',
   props: {
     value: {
       type: Array,
@@ -46,20 +55,20 @@ export default {
       default: true
     }
   },
-  data() {
+  data () {
     return {
       options: areaData,
       selectedOptions: []
     }
   },
-  methods: {
-    handleChange(selected) {
-      this.$emit('input', selected);
+  watch: {
+    value (val) {
+      this.selectedOptions = val
     }
   },
-  created() {
+  created () {
     if (Array.isArray(this.value)) {
-      this.selectedOptions = this.value.map(key => { return parseInt(key) });
+      this.selectedOptions = this.value.map(key => { return parseInt(key) })
     }
 
     if (this.level === 0) {
@@ -72,9 +81,9 @@ export default {
       this.options = data
     }
   },
-  watch: {
-    value(val) {
-      this.selectedOptions = val;
+  methods: {
+    handleChange (selected) {
+      this.$emit('input', selected)
     }
   }
 }

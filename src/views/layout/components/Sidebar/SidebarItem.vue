@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:36
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 11:18:38
+ * @Last Modified time: 2018-09-17 16:23:32
  */
 
 <template>
@@ -83,5 +83,10 @@ export default {
   display: flex;
   align-items: center;
   align-content: center;
+}
+
+.el-submenu__title i,
+.el-menu-item i {
+  color: #fff;
 }
 </style>

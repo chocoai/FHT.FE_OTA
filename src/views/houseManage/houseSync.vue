@@ -342,7 +342,7 @@ export default {
         },
         {
           prop: 'operate',
-          label: ' 操作',
+          label: '操作',
           slotName: 'operateHosting',
           width: 200,
           fixed: 'right'
@@ -499,7 +499,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" scoped lang="scss">
-  .model-search{margin-bottom:20px;}
+  .model-search{
+    margin-bottom: 20px;
+  }
   .item-select {
     width: 140px;
     margin-right:10px;
