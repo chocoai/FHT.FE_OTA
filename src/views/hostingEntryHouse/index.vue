@@ -4,8 +4,8 @@
       <el-tab-pane label="新建分散式整租">
         <div
           ref="entryHouseContainer"
-          class="entry-house-container"
-          :style="{height: mainHeight + 'px'}">
+          :style="{height: mainHeight + 'px'}"
+          class="entry-house-container">
           123132131212
         </div>
         <div class="entry-house-bottom">
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { debounce } from "@/utils"
+import { debounce } from '@/utils'
 export default {
   data () {
     return {
@@ -33,7 +33,7 @@ export default {
       this.mainHeight = Math.max(document.body.clientHeight - 200, 250)
     }, 100)
     changeMainHeight()
-    window.addEventListener("resize", changeMainHeight)
+    window.addEventListener('resize', changeMainHeight)
   }
 }
 </script>
