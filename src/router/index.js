@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
- * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 14:41:55
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-09-17 14:27:47
  */
 
 import Vue from 'vue'
@@ -50,39 +50,53 @@ export default new Router({
   routes: constantRouterMap
 })
 
-export const asyncRouterMap = [{
-  path: '/example',
-  component: Layout,
-  redirect: 'noredirect',
-  name: '示例',
-  icon: 'example',
-  meta: {
-    role: ['admin', 'global']
+export const asyncRouterMap = [
+  {
+    path: '/example',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '示例',
+    icon: 'example',
+    meta: {
+      role: ['admin', 'global']
+    },
+    children: [{
+      path: 'image',
+      component: _import('example/image').default,
+      name: '图片组件'
+    }, {
+      path: 'grid',
+      component: _import('example/tablePagenation').default,
+      name: '表格组件'
+    }]
   },
-  children: [{
-    path: 'image',
-    component: _import('example/image').default,
-    name: '图片组件'
-  }, {
-    path: 'grid',
-    component: _import('example/tablePagenation').default,
-    name: '表格组件'
-  }]
-},
-{
-  path: '*',
-  redirect: '/404',
-  hidden: true
-},
-{
-  path: '',
-  component: Layout,
-  redirect: '/houseManage',
-  icon: 'icon_house',
-  noDropdown: true,
-  children: [{
-    name: '房源管理',
-    path: 'houseManage',
-    component: _import('houseManage/houseSync').default
-  }]
-}]
+  {
+    path: '',
+    component: Layout,
+    redirect: '/hostingHoleRentPage',
+    icon: 'table',
+    noDropdown: true,
+    children: [{
+      name: '分散整租录入',
+      path: 'hostingHoleRentPage',
+      component: _import('hostingEntryHouse/index').default
+    }]
+  },
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: '/houseManage',
+    icon: 'icon_house',
+    noDropdown: true,
+    children: [{
+      name: '房源管理',
+      path: 'houseManage',
+      component: _import('houseManage/houseSync').default
+    }]
+  }
+]
