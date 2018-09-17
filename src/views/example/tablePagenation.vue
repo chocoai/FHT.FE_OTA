@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:19
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-14 10:32:45
+ * @Last Modified time: 2018-09-17 17:27:20
  */
 
 <template>
@@ -39,6 +39,7 @@
       :columns="colModels"
       :url="url"
       :data-method="method"
+      :is-mock="isMock"
       :form-options="formOptions"
       :height="tableHeight"
       :show-expand="true"
@@ -127,7 +128,8 @@ export default {
         {prop: 'introduction', label: '简介'}
       ],
       url: exampleApi.requestPath,
-      method: exampleApi.queryMethod
+      method: exampleApi.queryMethod,
+      isMock: exampleApi.isMock
     }
   },
   computed: {

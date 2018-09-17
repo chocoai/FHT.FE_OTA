@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:10:13
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 15:41:36
+ * @Last Modified time: 2018-09-17 16:51:03
  */
 
 import axios from 'axios'
@@ -33,10 +33,6 @@ const service = axios.create({
 
 /* request拦截器 */
 service.interceptors.request.use(config => {
-  // 处理mock
-  // if (!process.env.MOCK) {
-
-  // }
   /* 发起请求时，取消掉当前正在进行的相同请求 */
   const dataMethod = config.method.toUpperCase() === 'POST' ? config.data.method : config.params.method
   const requestUrlAndMethod = (config.url.endsWith('/') ? config.url : `${config.url}/`) + dataMethod
@@ -61,6 +57,10 @@ service.interceptors.request.use(config => {
     if (!config.noAssign) {
       config.params = Object.assign(config.params, defaultConfig)
     }
+  }
+  // 处理mock
+  if (process.env.MOCK && config.isMock) {
+    config.url = `${config.url}/${config.data.method}`
   }
   return config
 }, error => {
@@ -119,10 +119,14 @@ const responseMehod = (response, resolve, reject) => {
   return reject('error')
 }
 
-const judgeMethod = (url, params, method = 'post') => {
+const judgeMethod = (url, params, options = {
+  method: 'post'
+}) => {
+  let method = options.method || 'post'
   const requestBody = {
     method,
     url,
+    ...options,
     cancelToken: new CancelToken(c => {
       cancelPromise = c
     })
