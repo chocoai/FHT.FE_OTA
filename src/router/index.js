@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
- * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 14:41:55
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-09-13 17:40:37
  */
 
 import Vue from 'vue'
@@ -68,6 +68,12 @@ export const asyncRouterMap = [{
     component: _import('example/tablePagenation').default,
     name: '表格组件'
   }]
+}, {
+  path: '/hostingHoleRentPage',
+  component: _import('hostingEntryHouse/index').default,
+  name: '示例',
+  icon: 'example',
+  noDropdown: true
 }, {
   path: '*',
   redirect: '/404',
