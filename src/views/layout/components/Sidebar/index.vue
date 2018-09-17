@@ -2,16 +2,16 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:31
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 11:20:47
+ * @Last Modified time: 2018-09-17 19:24:01
  */
 
 <template>
   <el-menu
     :default-active="$route.path"
     mode="vertical"
-    background-color="#545c64"
+    background-color="#423C6E"
     text-color="#fff"
-    active-text-color="#ffd04b">
+    active-text-color="#fff">
     <sidebar-item :routes="permission_routers"/>
   </el-menu>
 </template>
@@ -30,8 +30,8 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .el-menu {
   min-height: 100%;
-  -moz-user-select:none;
-  -webkit-user-select:none;
-  user-select:none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 </style>

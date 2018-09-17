@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:19
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 17:27:20
+ * @Last Modified time: 2018-09-17 20:08:09
  */
 
 <template>
@@ -41,7 +41,6 @@
       :data-method="method"
       :is-mock="isMock"
       :form-options="formOptions"
-      :height="tableHeight"
       :show-expand="true"
       :expand-colums="expandColums">
       <template
@@ -67,7 +66,8 @@
           :columns="colModels_view"
           :url="url"
           :data-method="method"
-          max-height="300"/>
+          :is-mock="isMock"
+          height="300px" />
       </el-dialog>
     </div>
   </div>
@@ -138,17 +138,17 @@ export default {
   mounted () {
     /* 表格高度控制 */
     this.$nextTick(() => {
-      const offsetTop = this.$refs.refGridUnit.$el.offsetTop || 140
-      const pagenationH = 55
-      const containerPadding = 20
-      let temp_height = document.body.clientHeight - offsetTop - pagenationH - containerPadding
-      this.tableHeight = temp_height > 300 ? temp_height : 300
-      window.onresize = () => {
-        return (() => {
-          temp_height = document.body.clientHeight - offsetTop - pagenationH - containerPadding
-          this.tableHeight = this.tableHeight = temp_height > 300 ? temp_height : 300
-        })()
-      }
+      // const offsetTop = this.$refs.refGridUnit.$el.offsetTop || 140
+      // const pagenationH = 55
+      // const containerPadding = 20
+      // let temp_height = document.body.clientHeight - offsetTop - pagenationH - containerPadding
+      // this.tableHeight = temp_height > 300 ? temp_height : 300
+      // window.onresize = () => {
+      //   return (() => {
+      //     temp_height = document.body.clientHeight - offsetTop - pagenationH - containerPadding
+      //     this.tableHeight = this.tableHeight = temp_height > 300 ? temp_height : 300
+      //   })()
+      // }
     })
   },
   methods: {
