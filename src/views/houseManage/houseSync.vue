@@ -524,7 +524,6 @@ export default {
         })
       }
       if (this.dialogTitle === '下架') {
-        console.log(1)
         unPublishHouseApi(params).then(response => {
           this.$notify({
             title: '成功',

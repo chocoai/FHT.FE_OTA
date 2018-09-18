@@ -12,11 +12,11 @@ const reg_logout = /\/user\/logout/
 const reg_example = /\/example\/list/
 
 // houseManage
-const reg_houseManage = /\/queryHostingHouseInfo/
-const reg_changeRoomStatus = /\/changeLeaseStatus/
-const reg_estateDeleteEstateApi = /\/deleteHouse/
-const reg_publishHouseApi = /\/published/
-const reg_unpublishHouseApi = /\/offshelf/
+const reg_houseManage = /\/fangyuan\/queryHostingList/
+const reg_changeRoomStatus = /\/fangyuan\/changeLeaseStatus/
+const reg_estateDeleteEstateApi = /\/fangyuan\/deleteHouse/
+const reg_publishHouseApi = /\/rooms\/published/
+const reg_unpublishHouseApi = /\/rooms\/offshelf/
 
 Mock.mock(reg_getUserInfo, 'post', userApi.getUserInfo)
 Mock.mock(reg_login, 'post', userApi.login)
