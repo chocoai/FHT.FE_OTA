@@ -13,6 +13,7 @@ export const houseAsyncApi = {
     })
   }
 }
+
 /* 发布撤销房源 */
 export function publishHouseApi (params, type) {
   return fetch({
@@ -56,6 +57,30 @@ export function estateOrgListApi (params) {
     method: 'post',
     data: {
       method: 'queryOrgListByName',
+      params
+    }
+  })
+}
+
+/* 集中式模糊查询具体位置 */
+export function estateAddressByKeywordsApi (params) {
+  return fetch({
+    url: '/market/fangyuan',
+    method: 'post',
+    data: {
+      method: 'searchAddressByKeyword',
+      params
+    }
+  })
+}
+
+/* 集中式新增小区 */
+export function estateNewSubdistrictApi (params) {
+  return fetch({
+    url: '/market/fangyuan',
+    method: 'post',
+    data: {
+      method: 'addSubdistrict',
       params
     }
   })
