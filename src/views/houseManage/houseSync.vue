@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <el-button
+      size="small"
+      @click="handleSetting()">申请开通</el-button>
     <el-tabs
       v-model="activeName"
       type="border-card"
@@ -175,6 +178,7 @@
         :url="url"
         :columns="colModels"
         :show-selection="true"
+        :is-mock="isMock"
         @select="handleSelectChange"
         @selection-change="handleSelectionChange"
       >
@@ -199,13 +203,18 @@
           </el-tag>
         </template>
         <template
+          slot="roomStatusHosting"
+          slot-scope="scope">
+          <el-row>
+            <el-switch
+              v-model="value3"
+              active-text="已出租"/>
+          </el-row>
+        </template>
+        <template
           slot="operateHosting"
           slot-scope="scope">
           <el-row>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="houseStatus(scope.row)">出租状态</el-button>
             <el-button
               type="primary"
               size="mini"
@@ -244,18 +253,24 @@
           @click="saveRoomDetailData('clear')">取 消</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="authorizeShow"
+      title="闲鱼授权"
+    ><authorize/></el-dialog>
   </div>
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
-import { houseAsyncApi, publishHouseApi } from '@/api/houseManage'
+import authorize from '@/components/Authorize'
+import { houseAsyncApi } from '@/api/houseManage'
 // import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
   components: {
     GridUnit,
-    areaSelect
+    areaSelect,
+    authorize
     // hostingRoomDetail
   },
   filters: {
@@ -273,11 +288,6 @@ export default {
     renderStatusValue (status) {
       return status || '未知'
     }
-    // 房间出租状态设置
-    // setRoomStatus (val, statusList) {
-    //   let status = statusList.filter(item => item.value === val)
-    //   return status.length ? status[0].label : ''
-    // }
   },
 
   data () {
@@ -287,6 +297,9 @@ export default {
       tabMapOptions: ['分散式整租', '分散式合租'],
       selectedItems: [],
       filterManagerList: [],
+      authorizeShow: false,
+      dialogTitle: '闲鱼授权',
+      value3: true,
       colModels: [
         {slot: 'selection', width: 30},
         {prop: 'roomName', label: '公寓/小区', width: 300},
@@ -294,26 +307,6 @@ export default {
         {prop: 'houseTypeInfo', label: '户型', width: 200},
         {prop: 'roomArea', label: '整套面积', width: 150},
         {prop: 'rent', label: '推广价格', width: 100},
-        // {
-        //   prop: 'roomStatus',
-        //   label: '出租状态',
-        //   width: 80,
-        //   type: 'status',
-        //   slotName: 'roomStatus',
-        //   fixed: 'right',
-        //   unitFilters: {
-        //     renderStatusType (status) {
-        //       const statusMap = {
-        //         '已出租': 'success',
-        //         '未出租': 'info'
-        //       }
-        //       return statusMap[status] || 'info'
-        //     },
-        //     renderStatusValue (status) {
-        //       return status || '未知'
-        //     }
-        //   }
-        // },
         {
           prop: 'publishStatus',
           label: '麦邻租房',
@@ -341,6 +334,13 @@ export default {
           slotName: 'slot_popover'
         },
         {
+          prop: 'roomStatus',
+          label: '出租状态',
+          slotName: 'roomStatusHosting',
+          width: 150,
+          fixed: 'right'
+        },
+        {
           prop: 'operate',
           label: '操作',
           slotName: 'operateHosting',
@@ -353,7 +353,6 @@ export default {
         idlefish: true
       },
       dialogVisible: false,
-      dialogTitle: '',
       searchParams: {
         houseRentType: 1, // 整租还是合租
         houseStatus: 0, // 出租状态
@@ -363,8 +362,9 @@ export default {
         cityArea: [], // 城市
         roomCode: '' // 房间号
       },
-      url: houseAsyncApi.defaultOptions.requestUrl, // 请求接口
-      method: houseAsyncApi.defaultOptions.method,
+      url: houseAsyncApi.requestPath,
+      method: houseAsyncApi.queryMethod,
+      isMock: houseAsyncApi.isMock,
       isEditFlag: true,
       roomDetailModelVisible: false
     }
@@ -453,6 +453,7 @@ export default {
           platform.push(i)
         }
       }
+
       let params = {
         platforms: platform,
         roomCodeList: roomCodes
@@ -466,6 +467,7 @@ export default {
           })
         }
       }
+      console.log(params)
       // publishHouseApi(params, this.dialogTitle === '发布' ? 1 : 2).then(response => {
       //   this.$notify({
       //     title: '成功',
@@ -493,6 +495,9 @@ export default {
       } else {
         done()
       }
+    },
+    handleSetting () {
+      this.authorizeShow = true
     }
   }
 }

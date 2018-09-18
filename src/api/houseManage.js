@@ -1,24 +1,22 @@
-/* OTA 房源管理集 */
+import { fetch } from '@/utils/fetch'
+
 export const houseAsyncApi = {
-  defaultOptions: {
-    requestUrl: '/market/rooms',
-    method: 'list'
-  },
-  list (params) {
-    return fetch({
-      url: houseAsyncApi.defaultOptions.requestUrl,
-      method: 'post',
-      data: {
-        method: houseAsyncApi.defaultOptions.method,
-        params
-      }
+  requestPath: 'queryHostingHouseInfo',
+  queryMethod: 'list',
+  isMock: true,
+  queryActivityListByPage (params = {}) {
+    return fetch(this.requestPath, {
+      // method: this.queryMethod,
+      params
+    }, {
+      isMock: this.isMock
     })
   }
 }
 /* 发布撤销房源 */
 export function publishHouseApi (params, type) {
   return fetch({
-    url: '/market/fangyuan',
+    url: '/rooms/published',
     method: 'post',
     data: {
       method: type === 1 ? 'publish' : 'unpublish', // 1.发布 2.撤销
