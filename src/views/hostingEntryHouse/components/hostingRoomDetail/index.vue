@@ -331,7 +331,6 @@
 import areaSelect from '@/components/AreaSelect'
 import mapSelect from '@/components/MapSelect'
 import { estateOrgListApi, estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
-import { fhdAuditApi } from '@/api/auditCenter'
 import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import { deepClone } from '@/utils'

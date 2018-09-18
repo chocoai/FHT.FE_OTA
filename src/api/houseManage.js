@@ -20,3 +20,39 @@ export function changeRoomStatusApi (params = {}) {
     isMock: true
   })
 }
+
+/* 集中式删除房间 */
+export function deleteRoomApi (params) {
+  return fetch({
+    url: '/market/fangyuan',
+    method: 'post',
+    data: {
+      method: 'deleteRoom',
+      params
+    }
+  })
+}
+
+/* 集中式根据区id查询板块列表 */
+export function estateZoneListByAreaIdApi (params) {
+  return fetch({
+    url: '/market/fangyuan',
+    method: 'post',
+    data: {
+      method: 'queryZoneListByAreaId',
+      params
+    }
+  })
+}
+
+/* 集中式查询房源组织列表 */
+export function estateOrgListApi (params) {
+  return fetch({
+    url: '/market/fangyuan',
+    method: 'post',
+    data: {
+      method: 'queryOrgListByName',
+      params
+    }
+  })
+}
