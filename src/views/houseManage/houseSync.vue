@@ -419,11 +419,6 @@ export default {
     // 删除房间
     deleteRoom (row) {
       const h = this.$createElement
-      var params = {
-        'sessionId': 'MTM2MA==',
-        'params': {'fangyuanCode': row.fangyuanCode}
-      }
-      // const message = this.searchParams.houseRentType === 1 ? '' : '若删除单个房间请在【编辑房间】里面删除'
       this.$msgbox({
         title: '确认消息',
         message: h('p', null, [
@@ -434,13 +429,16 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(action => {
-        estateDeleteEstateApi(params).then((res) => {
+        estateDeleteEstateApi({
+          'fangyuanCode': row.fangyuanCode
+        }).then((res) => {
+          console.log(res)
           if (res.code === '0') {
             this.$message({
               message: res.message,
               type: 'success'
             })
-            this.$refs.hostingHouseList.fetchHandler()
+            this.searchParam('clear')
           }
         }).catch(err => { console.log(err) })
       })
