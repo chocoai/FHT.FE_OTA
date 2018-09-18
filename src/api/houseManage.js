@@ -2,11 +2,9 @@ import { fetch } from '@/utils/fetch'
 
 export const houseAsyncApi = {
   requestPath: 'queryHostingHouseInfo',
-  queryMethod: 'list',
   isMock: true,
   queryActivityListByPage (params = {}) {
     return fetch(this.requestPath, {
-      // method: this.queryMethod,
       params
     }, {
       isMock: this.isMock
@@ -26,6 +24,16 @@ export function publishHouseApi (params, type) {
   })
 }
 
+/* 修改出租状态 */
+export function changeRoomStatusApi (params = {}) {
+  return fetch('changeLeaseStatus', {
+    method: '',
+    params
+  }, {
+    isMock: true
+  })
+}
+
 /* 集中式删除房间 */
 export function deleteRoomApi (params) {
   return fetch({
@@ -40,13 +48,9 @@ export function deleteRoomApi (params) {
 
 /* 集中式根据区id查询板块列表 */
 export function estateZoneListByAreaIdApi (params) {
-  return fetch({
-    url: '/market/fangyuan',
-    method: 'post',
-    data: {
-      method: 'queryZoneListByAreaId',
-      params
-    }
+  return fetch('/market/fangyuan', {
+    method: 'queryZoneListByAreaId',
+    params
   })
 }
 

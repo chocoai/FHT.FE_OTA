@@ -1,12 +1,17 @@
 <template>
-  <div class="app-container">
-    <el-button
-      size="small"
-      @click="handleSetting()">申请开通</el-button>
-    <el-tabs
-      v-model="activeName"
-      type="border-card"
-      @tab-click="handleClickTab">
+  <div>
+    <div class="layout_pageHeader">
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClickTab">
+        <el-tab-pane
+          v-for="(item,index) in tabMapOptions"
+          :label="item"
+          :key="index"
+          :name="item"/>
+      </el-tabs>
+    </div>
+    <div class="layout_pageHeader">
       <el-tab-pane
         v-for="(item,index) in tabMapOptions"
         :label="item"
@@ -171,6 +176,9 @@
           </span>
         </el-dialog>
       </el-form>
+
+    </div>
+    <div class="layout-container">
       <GridUnit
         ref="refGridUnit"
         :form-options="searchParams"
@@ -226,12 +234,12 @@
         <template
           slot="roomStatusHosting"
           slot-scope="scope">
-          {{ scope.row.roomStatus }}
-          <el-row>
-            <el-switch
-              v-model="scope.row.roomStatus"
-              active-text="已出租"/>
-          </el-row>
+          <el-switch
+            v-model="scope.row.roomStatus"
+            :active-value="9"
+            :inactive-value="2"
+            :active-text="roomStatusText(scope.row.roomStatus)"
+            @change="changeRoomStatus(scope.row)"/>
         </template>
         <template
           slot="operateHosting"
@@ -252,46 +260,47 @@
           slot-scope="scope">
           {{ scope.row.chamberCount }}室{{ scope.row.boardCount }}厅{{ scope.row.toiletCount }}卫
         </template>
-
       </GridUnit>
-    </el-tabs>
-    <el-dialog
-      :title="isEditFlag ? '编辑房间' : '添加房源'"
-      :visible.sync="roomDetailModelVisible"
-      :before-close="checkEditStatus"
-      width="1000px">
-      <!--<hosting-room-detail ref="hostingRoomDetail"/>-->
-      <el-table-column
-        slot="selection"
-        type="selection"/>
-      <span
-        slot="footer"
-        class="dialog-footer">
-        <el-button
-          v-if="!isEditFlag"
-          size="small"
-          type="primary"
-          @click="saveRoomDetailData('add')">保存并继续添加</el-button>
-        <el-button
-          size="small"
-          type="primary"
-          @click="saveRoomDetailData('close')">{{ isEditFlag ? '保 存' : '保存并关闭' }}</el-button>
-        <el-button
-          size="small"
-          @click="saveRoomDetailData('clear')">取 消</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      :visible.sync="authorizeShow"
-      title="闲鱼授权"
-    ><authorize/></el-dialog>
+      </el-tabs>
+      <el-dialog
+        :title="isEditFlag ? '编辑房间' : '添加房源'"
+        :visible.sync="roomDetailModelVisible"
+        :before-close="checkEditStatus"
+        width="1000px">
+        <!--<hosting-room-detail ref="hostingRoomDetail"/>-->
+        <el-table-column
+          slot="selection"
+          type="selection"/>
+        <span
+          slot="footer"
+          class="dialog-footer">
+          <el-button
+            v-if="!isEditFlag"
+            size="small"
+            type="primary"
+            @click="saveRoomDetailData('add')">保存并继续添加</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            @click="saveRoomDetailData('close')">{{ isEditFlag ? '保 存' : '保存并关闭' }}</el-button>
+          <el-button
+            size="small"
+            @click="saveRoomDetailData('clear')">取 消</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog
+        :visible.sync="authorizeShow"
+        title="闲鱼授权"
+      ><authorize/></el-dialog>
+    </div>
   </div>
+
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/components/Authorize'
-import { houseAsyncApi } from '@/api/houseManage'
+import { houseAsyncApi, changeRoomStatusApi } from '@/api/houseManage'
 // import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
@@ -326,7 +335,7 @@ export default {
       filterManagerList: [],
       authorizeShow: false,
       dialogTitle: '闲鱼授权',
-      value3: true,
+      roomStatusArry: [],
       colModels: [
         {slot: 'selection', width: 30},
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
@@ -350,7 +359,7 @@ export default {
         {
           prop: 'roomStatus',
           label: '出租状态',
-          // slotName: 'roomStatusHosting',
+          slotName: 'roomStatusHosting',
           width: 150,
           type: 'status',
           fixed: 'right'
@@ -369,7 +378,7 @@ export default {
       },
       dialogVisible: false,
       searchParams: {
-        houseRentType: 1, // 整租还是合租
+        houseRentType: 2, // 整租还是合租
         houseStatus: 0, // 出租状态
         publishStatus: '', // 麦邻发布
         idlefishStatus: '', // 咸鱼发布
@@ -394,6 +403,42 @@ export default {
     // }
   },
   methods: {
+    roomStatusText (status) {
+      if (status === 2) {
+        return '未出租'
+      } else if (status === 9) {
+        return '已出租'
+      }
+    },
+    // 改变出租状态
+    changeRoomStatus (scope) {
+      console.log(scope)
+      var params =
+      {
+        'roomCode': scope.roomCode,
+        'roomStatus': scope.roomStatus,
+        'resource': this.searchParams.houseRentType
+      }
+      var code = 0
+      console.log(params)
+      if (code === 0) {
+        if (scope.roomStatus === 2) {
+          scope.roomStatus = 9
+        } else if (scope.roomStatus === 9) {
+          scope.roomStatus = 2
+        }
+        // scope.roomStatus =
+      } else {
+        scope.roomStatus = scope.roomStatus
+      }
+      changeRoomStatusApi(params).then(response => {
+        console.log(1)
+      })
+    },
+    // 删除房间
+    deleteRoom (scope) {
+
+    },
     // tabs切换
     handleClickTab (tab) {
       this.searchParam('clear')
@@ -412,7 +457,7 @@ export default {
         }
       }
 
-      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 0
+      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 2 : 1
       this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
       console.log('this.searchParams', this.searchParams)
       // 解决watch执行顺序
@@ -519,6 +564,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" scoped lang="scss">
+.app-container{margin-top:10px;}
   .model-search{
     margin-bottom: 20px;
   }
