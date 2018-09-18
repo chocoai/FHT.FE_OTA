@@ -1,7 +1,7 @@
 import { fetch } from '@/utils/fetch'
 
 export const houseAsyncApi = {
-  requestPath: '/fangyuan/queryHostingHouseInfo',
+  requestPath: '/fangyuan/queryHostingList',
   isMock: true,
   queryActivityListByPage (params = {}) {
     return fetch(this.requestPath, {
