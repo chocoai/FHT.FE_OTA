@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:53
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 20:51:30
+ * @Last Modified time: 2018-09-18 10:37:19
  */
 
 @import './element-ui.scss';
@@ -85,7 +85,18 @@ a:hover {
 //main-container全局样式
 .app-main {
   min-height: 100%;
-  padding: 20px;
+  margin: 20px;
+}
+
+.layout-header {
+  height: 60px;
+  background: #fff;
+}
+
+.layout_pageHeader {
+  background: #fff;
+  margin: -20px -20px 20px -20px;
+  padding: 20px 20px 0;
 }
 
 .layout-container {

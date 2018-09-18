@@ -2,11 +2,11 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 20:15:47
+ * @Last Modified time: 2018-09-18 10:38:55
  */
 
 <template>
-  <div class="clearfix">
+  <div class="layout-header clearfix">
     <el-menu
       class="navbar"
       mode="horizontal">
@@ -135,12 +135,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .navbar {
-  height: 60px;
+  height: 100%;
   border-radius: 0px !important;
   display: flex;
   align-content: center;
   align-items: center;
   overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
   .hamburger-container {
     padding: 0 10px;
   }

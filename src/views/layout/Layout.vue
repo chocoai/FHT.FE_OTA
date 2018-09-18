@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:41
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 20:39:04
+ * @Last Modified time: 2018-09-18 10:38:38
  */
 
 <template>
@@ -71,6 +71,7 @@ export default {
     z-index: 1001;
     overflow: hidden;
     transition: all .28s ease-out;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, .35);
   }
   .sidebar-container {
     transition: all .28s ease-out;
@@ -87,7 +88,7 @@ export default {
     margin-left: 200px;
   }
   .image_logo {
-    width: 199px;
+    width: 100%;
     height: 60px;
     background: rgb(66, 60, 110);
     display: flex;
