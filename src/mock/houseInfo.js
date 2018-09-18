@@ -6,72 +6,60 @@
  */
 const houseManage_info = {
   list: {
-    'reqId': '1',
+    'reqId': null,
     'code': '0',
     'message': '操作成功',
-
-    'data': [
-      {
-        'roomCode': '200061909',
-        'fangyuanCode': null,
-        'roomName': '房间A',
-        'roomArea': 22,
-        'roomDirection': 1,
-        'roomAttributes': '',
-        'payOfPayment': 1,
-        'depositOfPayment': 1,
-        'rent': 1700.0,
-        'deposit': 1700.0,
-        'facilityItems': '',
-        'pictures': [
-          {
-            'imageName': '1.png',
-            'src': 'src',
-            'isBase64': 0
-          }
-        ]
+    'data': {
+      'record': 1,
+      'houseList': [{
+        'boardCount': 1,
+        'chamberCount': 1,
+        'fangyuanCode': 'fangyuanCode',
+        'idlefishStatus': 2,
+        'idlefishfailMessage': '闲鱼失败原因',
+        'mailinStatus': 2,
+        'mailinfailMessage': '麦邻失败原因',
+        'rentPrice': 1700.0,
+        'roomArea': 30.0,
+        'roomCode': '10003',
+        'roomNo': '302',
+        'roomStatus': 2,
+        'subdistrictName': '花园小区',
+        'toiletCount': 1
       },
       {
-        'roomCode': '200061910',
-        'fangyuanCode': null,
-        'roomName': '房间B',
-        'roomArea': 22,
-        'roomDirection': 1,
-        'roomAttributes': '',
-        'facilityItems': '',
-        'pictures': null
+        'boardCount': 1,
+        'chamberCount': 1,
+        'fangyuanCode': 'fangyuanCode',
+        'idlefishStatus': 0,
+        'idlefishfailMessage': '闲鱼发布失败',
+        'mailinStatus': 1,
+        'mailinfailMessage': '麦邻居发布失败',
+        'rentPrice': 1700.0,
+        'roomArea': 30.0,
+        'roomCode': '10000',
+        'roomNo': '302',
+        'roomStatus': 9,
+        'subdistrictName': '米市巷小区',
+        'toiletCount': 1
       },
       {
-        'roomCode': '200061911',
-        'fangyuanCode': null,
-        'roomName': '房间C',
-        'roomArea': 22,
-        'roomDirection': 1,
-        'roomAttributes': '',
-        'facilityItems': '',
-        'pictures': null
-      },
-      {
-        'roomCode': '200061912',
-        'fangyuanCode': null,
-        'roomName': '房间D',
-        'roomArea': 22,
-        'roomDirection': 1,
-        'roomAttributes': '',
-        'facilityItems': '',
-        'pictures': null
-      },
-      {
-        'roomCode': '200061913',
-        'fangyuanCode': null,
-        'roomName': '房间E',
-        'roomArea': 22,
-        'roomDirection': 1,
-        'roomAttributes': '',
-        'facilityItems': '',
-        'pictures': null
-      }
-    ]
+        'boardCount': 1,
+        'chamberCount': 1,
+        'fangyuanCode': 'fangyuanCode',
+        'idlefishStatus': 1,
+        'idlefishfailMessage': '闲鱼发布失败',
+        'mailinStatus': 0,
+        'mailinfailMessage': '麦邻居发布失败',
+        'rentPrice': 1700.0,
+        'roomArea': 30.0,
+        'roomCode': '10000',
+        'roomNo': '302',
+        'roomStatus': 2,
+        'subdistrictName': '米市巷小区',
+        'toiletCount': 1
+      }]
+    }
   }
 }
 

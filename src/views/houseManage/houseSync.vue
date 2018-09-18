@@ -179,35 +179,57 @@
         :columns="colModels"
         :show-selection="true"
         :is-mock="isMock"
+        list-field="data.houseList"
         @select="handleSelectChange"
         @selection-change="handleSelectionChange"
       >
         <template
-          slot="slot_popover"
+          slot="slot_idlefishStatus"
           slot-scope="scope">
           <el-popover
-            v-if="scope.row.idlefishStatus === `发布失败` || scope.row.publishStatus === `发布失败` "
+            v-if="scope.row.idlefishStatus === 2 "
             trigger="hover"
             placement="top">
-            <p>发布失败原因: {{ scope.row.failReason }}</p>
+            <p>发布失败原因: {{ scope.row.idlefishfailMessage }}</p>
             <div slot="reference">
-              <el-tag :type="(scope.row.idlefishStatus|| scope.row.publishStatus) | renderStatusType">
-                {{ (scope.row.idlefishStatus || scope.row.publishStatus) | renderStatusValue }}
+              <el-tag :type="(scope.row.idlefishStatus) | renderStatusType">
+                {{ (scope.row.idlefishStatus) | renderStatusValue }}
               </el-tag>
             </div>
           </el-popover>
           <el-tag
             v-else
-            :type="(scope.row.idlefishStatus || scope.row.publishStatus) | renderStatusType">
-            {{ scope.row.idlefishStatus || scope.row.publishStatus | renderStatusValue }}
+            :type="(scope.row.idlefishStatus) | renderStatusType">
+            {{ scope.row.idlefishStatus | renderStatusValue }}
+          </el-tag>
+        </template>
+        <template
+          slot="slot_mailinStatus"
+          slot-scope="scope">
+          <el-popover
+            v-if="scope.row.mailinStatus === 2"
+            trigger="hover"
+            placement="top">
+            <p>发布失败原因: {{ scope.row.mailinfailMessage }}</p>
+            <div slot="reference">
+              <el-tag :type="(scope.row.mailinStatus||scope.row.idlefishStatus) | renderStatusType">
+                {{ (scope.row.mailinStatus) | renderStatusValue }}
+              </el-tag>
+            </div>
+          </el-popover>
+          <el-tag
+            v-else
+            :type="( scope.row.mailinStatus) | renderStatusType">
+            {{ scope.row.mailinStatus | renderStatusValue }}
           </el-tag>
         </template>
         <template
           slot="roomStatusHosting"
           slot-scope="scope">
+          {{ scope.row.roomStatus }}
           <el-row>
             <el-switch
-              v-model="value3"
+              v-model="scope.row.roomStatus"
               active-text="已出租"/>
           </el-row>
         </template>
@@ -225,6 +247,12 @@
               @click="deleteRoom(scope.row)">删除</el-button>
           </el-row>
         </template>
+        <template
+          slot="houseHuxing"
+          slot-scope="scope">
+          {{ scope.row.chamberCount }}室{{ scope.row.boardCount }}厅{{ scope.row.toiletCount }}卫
+        </template>
+
       </GridUnit>
     </el-tabs>
     <el-dialog
@@ -277,16 +305,15 @@ export default {
     // 麦邻 咸鱼发布状态
     renderStatusType (status) {
       const statusMap = {
-        '已发布': 'success',
-        '发布中': 'primary',
-        '发布失败': 'danger',
-        '下架中': 'warning',
-        '未发布': 'info'
+        '1': 'success',
+        '2': 'danger',
+        '0': 'info'
       }
       return statusMap[status] || 'info'
     },
     renderStatusValue (status) {
-      return status || '未知'
+      const statusStrData = ['未发布', '已发布', '发布失败']
+      return statusStrData[status] || '未知'
     }
   },
 
@@ -302,42 +329,30 @@ export default {
       value3: true,
       colModels: [
         {slot: 'selection', width: 30},
-        {prop: 'roomName', label: '公寓/小区', width: 300},
-        {prop: 'roomCode', label: '房间号', width: 100},
-        {prop: 'houseTypeInfo', label: '户型', width: 200},
-        {prop: 'roomArea', label: '整套面积', width: 150},
-        {prop: 'rent', label: '推广价格', width: 100},
+        {prop: 'subdistrictName', label: '公寓/小区', width: 300},
+        {prop: 'roomNo', label: '房间号', width: 100},
+        {prop: 'chamberCount', slotName: 'houseHuxing', label: '户型', width: 200},
+        {prop: 'roomArea', label: '整套面积', width: 80},
+        {prop: 'rentPrice', label: '推广价格', width: 80},
         {
-          prop: 'publishStatus',
+          prop: 'mailinStatus',
           label: '麦邻租房',
           width: 100,
           type: 'status',
-          slotName: 'slot_status',
-          unitFilters: {
-            renderStatusType (status) {
-              const statusMap = {
-                '已发布': 'success',
-                '未发布': 'info',
-                '发布中': 'primary'
-              }
-              return statusMap[status] || 'info'
-            },
-            renderStatusValue (status) {
-              return status || '未知'
-            }
-          }
+          slotName: 'slot_mailinStatus'
         },
         { prop: 'idlefishStatus',
           label: '闲鱼租房',
           width: 100,
           type: 'status',
-          slotName: 'slot_popover'
+          slotName: 'slot_idlefishStatus'
         },
         {
           prop: 'roomStatus',
           label: '出租状态',
-          slotName: 'roomStatusHosting',
+          // slotName: 'roomStatusHosting',
           width: 150,
+          type: 'status',
           fixed: 'right'
         },
         {
