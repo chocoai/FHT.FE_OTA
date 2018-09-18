@@ -11,7 +11,22 @@ export const houseAsyncApi = {
     })
   }
 }
-
+/* 修改出租状态 */
+export function changeRoomStatusApi (params = {}) {
+  return fetch('changeLeaseStatus', {
+    params
+  }, {
+    isMock: true
+  })
+}
+/* 删除房源 */
+export function estateDeleteEstateApi (params = {}) {
+  return fetch('deleteHouse', {
+    params
+  }, {
+    isMock: true
+  })
+}
 /* 发布撤销房源 */
 export function publishHouseApi (params, type) {
   return fetch({
@@ -23,17 +38,6 @@ export function publishHouseApi (params, type) {
     }
   })
 }
-
-/* 修改出租状态 */
-export function changeRoomStatusApi (params = {}) {
-  return fetch('changeLeaseStatus', {
-    method: '',
-    params
-  }, {
-    isMock: true
-  })
-}
-
 /* 集中式删除房间 */
 export function deleteRoomApi (params) {
   return fetch({

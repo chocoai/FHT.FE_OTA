@@ -13,6 +13,8 @@ const reg_example = /\/example\/list/
 
 // houseManage
 const reg_houseManage = /\/queryHostingHouseInfo/
+const reg_changeRoomStatus = /\/changeLeaseStatus/
+const reg_deleteHouse = /\/deleteHouse/
 
 Mock.mock(reg_getUserInfo, 'post', userApi.getUserInfo)
 Mock.mock(reg_login, 'post', userApi.login)
@@ -20,5 +22,7 @@ Mock.mock(reg_logout, 'post', userApi.logout)
 Mock.mock(reg_example, 'post', exampleApi.list)
 
 Mock.mock(reg_houseManage, 'post', houseAsyncApi.list)
+Mock.mock(reg_changeRoomStatus, 'post', houseAsyncApi.changeRoomStatus)
+Mock.mock(reg_deleteHouse, 'post', houseAsyncApi.estateDeleteEstateApi)
 
 export default Mock

@@ -10,13 +10,7 @@
           :key="index"
           :name="item"/>
       </el-tabs>
-    </div>
-    <div class="layout_pageHeader">
-      <el-tab-pane
-        v-for="(item,index) in tabMapOptions"
-        :label="item"
-        :key="index"
-        :name="item"/>
+
       <el-form class="model-search clearfix">
         <div class="item-flex">
           <el-form-item>
@@ -261,7 +255,6 @@
           {{ scope.row.chamberCount }}室{{ scope.row.boardCount }}厅{{ scope.row.toiletCount }}卫
         </template>
       </GridUnit>
-      </el-tabs>
       <el-dialog
         :title="isEditFlag ? '编辑房间' : '添加房源'"
         :visible.sync="roomDetailModelVisible"
@@ -300,7 +293,7 @@
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/components/Authorize'
-import { houseAsyncApi, changeRoomStatusApi } from '@/api/houseManage'
+import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi } from '@/api/houseManage'
 // import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
@@ -419,25 +412,38 @@ export default {
         'roomStatus': scope.roomStatus,
         'resource': this.searchParams.houseRentType
       }
-      var code = 0
-      console.log(params)
-      if (code === 0) {
-        if (scope.roomStatus === 2) {
-          scope.roomStatus = 9
-        } else if (scope.roomStatus === 9) {
-          scope.roomStatus = 2
-        }
-        // scope.roomStatus =
-      } else {
-        scope.roomStatus = scope.roomStatus
-      }
       changeRoomStatusApi(params).then(response => {
-        console.log(1)
+        this.searchParam('clear')
       })
     },
     // 删除房间
-    deleteRoom (scope) {
-
+    deleteRoom (row) {
+      const h = this.$createElement
+      var params = {
+        'sessionId': 'MTM2MA==',
+        'params': {'fangyuanCode': row.fangyuanCode}
+      }
+      // const message = this.searchParams.houseRentType === 1 ? '' : '若删除单个房间请在【编辑房间】里面删除'
+      this.$msgbox({
+        title: '确认消息',
+        message: h('p', null, [
+          h('span', null, '确定删除房间吗？ '),
+          h('span', { style: 'color: red' })
+        ]),
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(action => {
+        estateDeleteEstateApi(params).then((res) => {
+          if (res.code === '0') {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            this.$refs.hostingHouseList.fetchHandler()
+          }
+        }).catch(err => { console.log(err) })
+      })
     },
     // tabs切换
     handleClickTab (tab) {

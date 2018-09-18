@@ -60,11 +60,29 @@ const houseManage_info = {
         'toiletCount': 1
       }]
     }
+  },
+  changeRoomStatus: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {}
+  },
+  estateDeleteEstate: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {}
   }
 }
 
 export default {
   list: () => {
     return houseManage_info.list
+  },
+  changeRoomStatus: () => {
+    return houseManage_info.changeRoomStatus
+  },
+  estateDeleteEstate: () => {
+    return houseManage_info.estateDeleteEstate
   }
 }
