@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:41
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-18 10:38:38
+ * @Last Modified time: 2018-09-18 10:54:49
  */
 
 <template>
@@ -69,7 +69,8 @@ export default {
     bottom: 0;
     left: 0;
     z-index: 1001;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     transition: all .28s ease-out;
     box-shadow: 2px 0 6px rgba(0, 0, 0, .35);
   }
@@ -80,7 +81,6 @@ export default {
     bottom: 0;
     left: 0;
     width: 100%;
-    overflow-y: scroll;
   }
   .main-container {
     min-height: 100%;
