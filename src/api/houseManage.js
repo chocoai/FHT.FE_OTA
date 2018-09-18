@@ -1,7 +1,7 @@
 import { fetch } from '@/utils/fetch'
 
 export const houseAsyncApi = {
-  requestPath: 'queryHostingHouseInfo',
+  requestPath: '/fangyuan/queryHostingHouseInfo',
   isMock: true,
   queryActivityListByPage (params = {}) {
     return fetch(this.requestPath, {
@@ -21,7 +21,7 @@ export function changeRoomStatusApi (params = {}) {
 }
 /* 删除房源 */
 export function estateDeleteEstateApi (params = {}) {
-  return fetch('deleteHouse', {
+  return fetch('/fangyuan/deleteHouse', {
     params
   }, {
     isMock: true
@@ -29,7 +29,7 @@ export function estateDeleteEstateApi (params = {}) {
 }
 /* 发布房源 */
 export function publishHouseApi (params) {
-  return fetch('published', {
+  return fetch('/rooms/published', {
     params
   }, {
     isMock: true
@@ -45,7 +45,7 @@ export function publishHouseApi (params) {
 }
 /* 下架房源 */
 export function unPublishHouseApi (params) {
-  return fetch('published', {
+  return fetch('/rooms/offshelf', {
     params
   }, {
     isMock: true
