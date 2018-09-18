@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="layout-container">
     <div
       ref="entryHouseContainer"
       :style="{height: mainHeight + 'px'}"
@@ -21,7 +21,7 @@
 
 <script>
 import { debounce } from '@/utils'
-import hostingRoomDetail from '@/components/hostingRoomDetail'
+import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   components: {
     hostingRoomDetail
@@ -33,7 +33,7 @@ export default {
   },
   mounted () {
     let changeMainHeight = debounce(() => {
-      this.mainHeight = Math.max(document.body.clientHeight - 150, 250)
+      this.mainHeight = Math.max(document.body.clientHeight - 200, 250)
     }, 100)
     changeMainHeight()
     window.addEventListener('resize', changeMainHeight)
@@ -55,7 +55,7 @@ export default {
       toiletCount: null,
       houseArea: null,
       houseDirection: null,
-      decorationDegree: null,
+      decorationDegree: 3,
       floorName: '',
       floorAmount: null,
       contactName: '',
@@ -86,6 +86,9 @@ export default {
   }
 }
 .entry-house-bottom {
+  width: 850px;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
   text-align: right;
 }
 </style>
