@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:19
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 20:08:09
+ * @Last Modified time: 2018-09-18 09:52:14
  */
 
 <template>
@@ -157,7 +157,9 @@ export default {
       this.layer_show = true
     },
     handleSearch () {
-      this.$refs.refGridUnit.searchHandler()
+      this.$nextTick(() => {
+        this.$refs.refGridUnit.searchHandler()
+      })
     }
   }
 }
