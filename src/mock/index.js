@@ -15,6 +15,8 @@ const reg_example = /\/example\/list/
 const reg_houseManage = /\/queryHostingHouseInfo/
 const reg_changeRoomStatus = /\/changeLeaseStatus/
 const reg_estateDeleteEstateApi = /\/deleteHouse/
+const reg_publishHouseApi = /\/published/
+const reg_unpublishHouseApi = /\/offshelf/
 
 Mock.mock(reg_getUserInfo, 'post', userApi.getUserInfo)
 Mock.mock(reg_login, 'post', userApi.login)
@@ -24,5 +26,7 @@ Mock.mock(reg_example, 'post', exampleApi.list)
 Mock.mock(reg_houseManage, 'post', houseAsyncApi.list)
 Mock.mock(reg_changeRoomStatus, 'post', houseAsyncApi.changeRoomStatus)
 Mock.mock(reg_estateDeleteEstateApi, 'post', houseAsyncApi.estateDeleteEstateApi)
+Mock.mock(reg_publishHouseApi, 'post', houseAsyncApi.publishHouse)
+Mock.mock(reg_unpublishHouseApi, 'post', houseAsyncApi.unpublishHouse)
 
 export default Mock

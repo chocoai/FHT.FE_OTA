@@ -121,7 +121,7 @@
         </div>
         <el-dialog
           :visible.sync="dialogVisible"
-          title="选择发布平台"
+          :title="&quot;选择&quot;+dialogTitle+&quot;平台&quot;"
           class="select-dialog"
           width="450px">
 
@@ -166,7 +166,7 @@
             <el-button
               type="primary"
               size="small"
-              @click="gotoHouseAsync">{{ dialogTitle === "撤销"?"确定":"发布" }}</el-button>
+              @click="gotoHouseAsync">{{ dialogTitle === "下架"?"确定":"发布" }}</el-button>
           </span>
         </el-dialog>
       </el-form>
@@ -255,32 +255,16 @@
           {{ scope.row.chamberCount }}室{{ scope.row.boardCount }}厅{{ scope.row.toiletCount }}卫
         </template>
       </GridUnit>
-      <el-dialog
-        :title="isEditFlag ? '编辑房间' : '添加房源'"
-        :visible.sync="roomDetailModelVisible"
-        :before-close="checkEditStatus"
-        width="1000px">
-        <!--<hosting-room-detail ref="hostingRoomDetail"/>-->
-        <el-table-column
-          slot="selection"
-          type="selection"/>
-        <span
-          slot="footer"
-          class="dialog-footer">
-          <el-button
-            v-if="!isEditFlag"
-            size="small"
-            type="primary"
-            @click="saveRoomDetailData('add')">保存并继续添加</el-button>
-          <el-button
-            size="small"
-            type="primary"
-            @click="saveRoomDetailData('close')">{{ isEditFlag ? '保 存' : '保存并关闭' }}</el-button>
-          <el-button
-            size="small"
-            @click="saveRoomDetailData('clear')">取 消</el-button>
-        </span>
-      </el-dialog>
+      <div class="editHouse">
+        <el-dialog
+          :visible.sync="roomDetailModelVisible"
+          :before-close="checkEditStatus"
+          title="编辑房间"
+          width="60%"
+          top="0">
+          <hosting-room-detail ref="hostingRoomDetail"/>
+        </el-dialog>
+      </div>
       <el-dialog
         :visible.sync="authorizeShow"
         title="闲鱼授权"
@@ -293,18 +277,19 @@
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/components/Authorize'
-import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi } from '@/api/houseManage'
+import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
+import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi } from '@/api/houseManage'
 // import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
   components: {
     GridUnit,
     areaSelect,
-    authorize
-    // hostingRoomDetail
+    authorize,
+    hostingRoomDetail
   },
   filters: {
-    // 麦邻 咸鱼发布状态
+    // 麦邻 闲鱼发布状态
     renderStatusType (status) {
       const statusMap = {
         '1': 'success',
@@ -374,7 +359,7 @@ export default {
         houseRentType: 2, // 整租还是合租
         houseStatus: 0, // 出租状态
         publishStatus: '', // 麦邻发布
-        idlefishStatus: '', // 咸鱼发布
+        idlefishStatus: '', // 闲鱼发布
         keywords: '', // 公寓小区
         cityArea: [], // 城市
         roomCode: '' // 房间号
@@ -382,7 +367,6 @@ export default {
       url: houseAsyncApi.requestPath,
       method: houseAsyncApi.queryMethod,
       isMock: houseAsyncApi.isMock,
-      isEditFlag: true,
       roomDetailModelVisible: false
     }
   },
@@ -460,10 +444,9 @@ export default {
           roomCode: '' // 房间号
         }
       }
-
       this.searchParams.houseRentType = this.activeName === '分散式整租' ? 2 : 1
       this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
-      console.log('this.searchParams', this.searchParams)
+      // console.log('this.searchParams', this.searchParams)
       // 解决watch执行顺序
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
@@ -472,7 +455,9 @@ export default {
     // 选择列表
     handleSelectionChange (list) {
       this.selectedItems = list
+      console.log(this.selectedItems)
     },
+    // 发布 或者 下架房源  弹窗显示
     syncItems (type = 'on') {
       console.log('type', type)
       const typeConfig = {
@@ -480,22 +465,27 @@ export default {
           title: '发布'
         },
         'off': {
-          title: '撤销'
+          title: '下架'
         }
       }
+      console.log(type)
       if (this.selectedItems.length === 0) {
         this.$message.error(`请选择需要${typeConfig[type].title}的房源`)
         return false
       }
-      const pendingRomms = this.selectedItems.filter(item => item.idlefishStatus === '发布中')
-      if (pendingRomms.length > 0) {
-        this.$message.error(`发布中的房源不能进行${typeConfig[type].title}`)
-        return false
+      if (type === 'on') {
+        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 1 && item.mailinStatus === 1)
+        if (unfilterItem.length !== 0) {
+          this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
+          return false
+        }
       }
-      const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === type || item.publishStatus === type)
-      if (unfilterItem.length !== 0) {
-        this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
-        return false
+      if (type === 'off') {
+        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 0 && item.mailinStatus === 0)
+        if (unfilterItem.length !== 0) {
+          this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
+          return false
+        }
       }
       this.dialogVisible = true
       this.dialogTitle = typeConfig[type].title
@@ -507,9 +497,8 @@ export default {
       this.publishSelect.idlefish = false
     },
     handleSelectChange () {},
-
+    // 发布 下架
     gotoHouseAsync () {
-      // 发布房源
       const roomCodes = this.selectedItems.map(item => item.roomCode)
       const platform = []
       for (var i in this.publishSelect) {
@@ -517,35 +506,40 @@ export default {
           platform.push(i)
         }
       }
-
       let params = {
         platforms: platform,
         roomCodeList: roomCodes
       }
-      if (this.dialogTitle === '发布') {
-        const manage = this.filterManagerList.filter(item => item.id === this.sourceInfo)
-        if (manage.length) {
-          params = Object.assign(params, {
-            picProviderId: this.sourceInfo,
-            picProviderName: manage[0].name
-          })
-        }
-      }
       console.log(params)
-      // publishHouseApi(params, this.dialogTitle === '发布' ? 1 : 2).then(response => {
-      //   this.$notify({
-      //     title: '成功',
-      //     message: '操作成功',
-      //     type: 'success',
-      //     duration: 2000
-      //   })
-      //   this.dialogVisible = false
-      //   this.searchParam()
-      // })
+      if (this.dialogTitle === '发布') {
+        publishHouseApi(params).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '操作成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.dialogVisible = false
+          this.searchParam()
+        })
+      }
+      if (this.dialogTitle === '下架') {
+        console.log(1)
+        unPublishHouseApi(params).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '操作成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.dialogVisible = false
+          this.searchParam()
+        })
+      }
     },
     // 添加修改房间信息
     openRoomDetail (params) {
-
+      this.roomDetailModelVisible = true
     },
     // 检查是否修改房源信息
     checkEditStatus (done) {
@@ -560,6 +554,7 @@ export default {
         done()
       }
     },
+    // 闲鱼授权
     handleSetting () {
       this.authorizeShow = true
     }
@@ -635,5 +630,16 @@ export default {
   .changeBackground {
     background-color: #ffa500;
     color: #ffffff;
+  }
+
+</style>
+<style>
+.editHouse .el-dialog{
+     margin: 0;
+     position: fixed;
+     top: 0;
+     left: auto;
+     right: 0;
+     height: 100%;
   }
 </style>

@@ -13,7 +13,7 @@ export const houseAsyncApi = {
 }
 /* 修改出租状态 */
 export function changeRoomStatusApi (params = {}) {
-  return fetch('changeLeaseStatus', {
+  return fetch('/fangyuan/changeLeaseStatus', {
     params
   }, {
     isMock: true
@@ -27,15 +27,28 @@ export function estateDeleteEstateApi (params = {}) {
     isMock: true
   })
 }
-/* 发布撤销房源 */
-export function publishHouseApi (params, type) {
-  return fetch({
-    url: '/rooms/published',
-    method: 'post',
-    data: {
-      method: type === 1 ? 'publish' : 'unpublish', // 1.发布 2.撤销
-      params
-    }
+/* 发布房源 */
+export function publishHouseApi (params) {
+  return fetch('published', {
+    params
+  }, {
+    isMock: true
+  })
+  // return fetch({
+  //   url: '/rooms/published',
+  //   method: 'post',
+  //   data: {
+  //     method: type === 1 ? 'publish' : 'offshelf', // 1.发布 2.撤销
+  //     params
+  //   }
+  // })
+}
+/* 下架房源 */
+export function unPublishHouseApi (params) {
+  return fetch('published', {
+    params
+  }, {
+    isMock: true
   })
 }
 /* 集中式删除房间 */
