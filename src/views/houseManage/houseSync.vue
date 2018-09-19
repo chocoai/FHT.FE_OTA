@@ -10,37 +10,37 @@
           :key="index"
           :name="item"/>
       </el-tabs>
-
       <el-form class="model-search clearfix">
         <div class="item-flex">
           <el-form-item>
-            <area-select
-              v-model="searchParams.cityArea"
-              :filterable="true"
-              :show-all-levels="false"
-              :level="0"
-              placeholder="请选择城市"
-              class="item-select"/>
+            <el-cascader
+              :options="options"
+              v-model="selectedOpthons"
+              size="small"
+              level="1"
+              class="item-select"
+              filterable
+              @change="handleChange"
+            />
           </el-form-item>
           <el-form-item>
             <el-select
-              v-model="searchParams.keywords"
+              v-model="searchParams.regionAddressId"
               size="small"
               placeholder="请选择小区"
               class="item-select"
             >
               <el-option
-                :value="1"
-                label="孔雀蓝"/>
-              <el-option
-                :value="0"
-                label="等等等"/>
+                v-for="(areaName,item) in selectedArea"
+                :value="areaName.regionAddressId"
+                :key="item"
+                :label="areaName.name"/>
             </el-select>
           </el-form-item>
 
           <el-form-item>
             <el-input
-              v-model="searchParams.roomCode"
+              v-model="searchParams.roomNo"
               size="small"
               placeholder="请输入房间号"
               class="item-select"
@@ -62,47 +62,53 @@
         <div class="item-flex">
           <el-form-item>
             <el-select
-              v-model="searchParams.houseStatus"
+              v-model="searchParams.roomStatus"
               size="small"
               placeholder="请选择出租状态"
               class="item-select"
             >
               <el-option
-                :value="1"
+                value="9"
                 label="已出租"/>
               <el-option
-                :value="0"
+                value="2"
                 label="未出租"/>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select
-              v-model="searchParams.publishStatus"
+              v-model="searchParams.mailinStatus"
               size="small"
               placeholder="麦邻发布状态"
               class="item-select"
             >
               <el-option
-                :value="1"
+                value="0"
+                label="麦邻未发布"/>
+              <el-option
+                value="1"
                 label="麦邻已发布"/>
               <el-option
-                :value="0"
-                label="麦邻未发布"/>
+                value="2"
+                label="麦邻发布失败"/>
             </el-select>
           </el-form-item>
           <el-form-item>
             <el-select
               v-model="searchParams.idlefishStatus"
               size="small"
-              placeholder="咸鱼发布状态"
+              placeholder="闲鱼发布状态"
               class="item-select"
             >
               <el-option
-                :value="1"
-                label="咸鱼已发布"/>
+                value="0"
+                label="闲鱼未发布"/>
               <el-option
-                :value="0"
-                label="咸鱼未发布"/>
+                value="1"
+                label="闲鱼已发布"/>
+              <el-option
+                value="2"
+                label="闲鱼发布失败"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -265,20 +271,23 @@
           <hosting-room-detail ref="hostingRoomDetail"/>
         </el-dialog>
       </div>
+
       <el-dialog
         :visible.sync="authorizeShow"
-        title="闲鱼授权"
-      ><authorize/></el-dialog>
+        title="闲鱼授权">
+        <authorize/>
+      </el-dialog>
     </div>
   </div>
 
 </template>
 <script>
+import { deepClone } from '@/utils'
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/components/Authorize'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
-import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi } from '@/api/houseManage'
+import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi } from '@/api/houseManage'
 // import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
@@ -306,6 +315,10 @@ export default {
 
   data () {
     return {
+      selectedOpthons: [],
+      options: [],
+      residential: [], // 小区
+      selectedArea: [],
       activeName: '分散式整租',
       houseAreaName: '整套面积',
       tabMapOptions: ['分散式整租', '分散式合租'],
@@ -314,6 +327,7 @@ export default {
       authorizeShow: false,
       dialogTitle: '闲鱼授权',
       roomStatusArry: [],
+      authorizeStatus: '', // 判断是否授权的参数
       colModels: [
         {slot: 'selection', width: 30},
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
@@ -356,13 +370,16 @@ export default {
       },
       dialogVisible: false,
       searchParams: {
-        houseRentType: 2, // 整租还是合租
-        houseStatus: 0, // 出租状态
-        publishStatus: '', // 麦邻发布
-        idlefishStatus: '', // 闲鱼发布
-        keywords: '', // 公寓小区
-        cityArea: [], // 城市
-        roomCode: '' // 房间号
+        pageNo: 1,
+        pageSize: 20,
+        houseRentType: 1, // 1,整租 2,合租
+        cityId: '',
+        regionId: '',
+        roomStatus: '',
+        regionAddressId: '',
+        roomNo: '',
+        mailinStatus: '',
+        idlefishStatus: ''
       },
       url: houseAsyncApi.requestPath,
       method: houseAsyncApi.queryMethod,
@@ -371,15 +388,50 @@ export default {
     }
   },
   watch: {
-    // 'searchParams.cityArea': function (val) {
-    //   if (val && val[1]) {
-    //     this.searchParams.cityId = val[1]
-    //   } else {
-    //     this.searchParams.cityId = ''
-    //   }
-    // }
+
+  },
+  mounted () {
+    this.getCityName()
   },
   methods: {
+    // 城市区域
+    getCityName () {
+      var params = {
+        'resource': this.searchParams.houseRentType
+      }
+      var cityData = []
+      queryCityAreaPlotApi(params).then(res => {
+        this.residential = res.data.subdistrictList
+        cityData = res.data.cityList
+        if (cityData.length > 0) {
+          cityData.forEach((backData, index) => {
+            cityData[index].value = backData.cityId
+            cityData[index].label = backData.cityName
+
+            if (cityData[index].regionList.length > 0) {
+              cityData[index].regionList.forEach((cityArea, item) => {
+                cityArea.value = cityArea.areaId
+                cityArea.label = cityArea.areaName
+              })
+            }
+            // cityData[index].children = cityData[index].regionList
+            // delete cityData[index].regionList
+          })
+          this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
+        }
+      })
+    },
+    handleChange (value) {
+      this.selectedArea = []
+      this.searchParams.cityId = value[0]
+      this.searchParams.regionId = value[1]
+      this.residential.filter((cityName, index) => {
+        if (cityName.cityId === value[0] && cityName.areaId === value[1]) {
+          this.selectedArea.push(cityName)
+        }
+      })
+      console.log('selectedArea', this.selectedArea)
+    },
     roomStatusText (status) {
       if (status === 2) {
         return '未出租'
@@ -433,20 +485,25 @@ export default {
     },
     // 查询数据
     searchParam (type) {
+      console.log('selectedOpthons', this.selectedOpthons)
       if (type === 'clear') {
         this.searchParams = {
-          houseRentType: '', // 整租还是合租
-          houseStatus: '', // 出租状态
-          publishStatus: '', // 麦邻发布
-          idlefishStatus: '', // 咸鱼发布
-          keywords: '', // 公寓小区
-          cityArea: [], // 城市
-          roomCode: '' // 房间号
+          pageNo: 1,
+          pageSize: 20,
+          houseRentType: 1, // 整租还是合租
+          cityId: '',
+          regionId: '',
+          roomStatus: '',
+          regionAddressId: '',
+          roomNo: '',
+          mailinStatus: '',
+          idlefishStatus: ''
         }
+        this.selectedOpthons = []
       }
-      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 2 : 1
+      console.log('查询数据', this.searchParams)
+      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2
       this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
-      // console.log('this.searchParams', this.searchParams)
       // 解决watch执行顺序
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
@@ -481,7 +538,7 @@ export default {
         }
       }
       if (type === 'off') {
-        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 0 && item.mailinStatus === 0)
+        const unfilterItem = this.selectedItems.filter(item => (item.idlefishStatus === 0 && item.mailinStatus === 0) || (item.idlefishStatus === 2 && item.mailinStatus === 2))
         if (unfilterItem.length !== 0) {
           this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
           return false
@@ -510,6 +567,14 @@ export default {
         platforms: platform,
         roomCodeList: roomCodes
       }
+      for (let i = 0; i < params.platforms.length; i++) {
+        if (params.platforms[i] === 'idlefish' && this.authorizeStatus === '') {
+          this.dialogVisible = false
+          this.authorizeShow = true
+          return false
+        }
+      }
+      console.log(params)
       console.log(params)
       if (this.dialogTitle === '发布') {
         publishHouseApi(params).then(response => {

@@ -84,6 +84,60 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': null
+  },
+  queryCityAreaPlot: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'cityList': [{
+        'cityId': 111,
+        'cityName': '杭州市',
+        'regionList': [{
+          'areaId': 222,
+          'areaName': '西湖区'
+        },
+        {
+          'areaId': 333,
+          'areaName': '拱墅区'
+        }]
+      },
+      {
+        'cityId': 444,
+        'cityName': '北京市',
+        'regionList': [{
+          'areaId': 555,
+          'areaName': '东城区'
+        },
+        {
+          'areaId': 666,
+          'areaName': '西城区'
+        }]
+      }],
+      'subdistrictList': [{
+        'regionAddressId': 333,
+        'areaId': 222,
+        'cityId': 111,
+        'name': '花园小区'
+      }, {
+        'regionAddressId': 333,
+        'areaId': 222,
+        'cityId': 111,
+        'name': ' 西湖小区'
+      },
+      {
+        'regionAddressId': 333,
+        'areaId': 555,
+        'cityId': 444,
+        'name': '北京高档小区'
+      }, {
+        'regionAddressId': 333,
+        'areaId': 666,
+        'cityId': 444,
+        'name': '北京抵挡小区'
+      }
+      ]
+    }
   }
 }
 
@@ -102,6 +156,9 @@ export default {
   },
   unpublishHouse: () => {
     return houseManage_info.unpublishHouse
+  },
+  queryCityAreaPlot: () => {
+    return houseManage_info.queryCityAreaPlot
   }
 
 }

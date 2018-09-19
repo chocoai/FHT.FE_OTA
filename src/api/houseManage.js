@@ -34,18 +34,18 @@ export function publishHouseApi (params) {
   }, {
     isMock: true
   })
-  // return fetch({
-  //   url: '/rooms/published',
-  //   method: 'post',
-  //   data: {
-  //     method: type === 1 ? 'publish' : 'offshelf', // 1.发布 2.撤销
-  //     params
-  //   }
-  // })
 }
 /* 下架房源 */
 export function unPublishHouseApi (params) {
   return fetch('/rooms/offshelf', {
+    params
+  }, {
+    isMock: true
+  })
+}
+/**/
+export function queryCityAreaPlotApi (params) {
+  return fetch('/fangyuan/queryCityAreaPlot', {
     params
   }, {
     isMock: true
