@@ -138,6 +138,26 @@ const houseManage_info = {
       }
       ]
     }
+  },
+  authorize: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
+  },
+  authorizePicture: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'picUrl': 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180717103426865909'
+    }
+  },
+  authorizeStatus: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
   }
 }
 
@@ -159,6 +179,15 @@ export default {
   },
   queryCityAreaPlot: () => {
     return houseManage_info.queryCityAreaPlot
+  },
+  authorize: () => {
+    return houseManage_info.authorize
+  },
+  authorizePicture: () => {
+    return houseManage_info.authorizePicture
+  },
+  authorizeStatus: () => {
+    return houseManage_info.authorizeStatus
   }
 
 }

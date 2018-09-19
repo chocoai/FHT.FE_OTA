@@ -264,19 +264,16 @@
       <div class="editHouse">
         <el-dialog
           :visible.sync="roomDetailModelVisible"
-          :before-close="checkEditStatus"
           title="编辑房间"
           width="60%"
           top="0">
           <hosting-room-detail ref="hostingRoomDetail"/>
         </el-dialog>
       </div>
-
       <el-dialog
         :visible.sync="authorizeShow"
         title="闲鱼授权">
-        <authorize/>
-      </el-dialog>
+      <authorize @closeAuthorize ="closeAuthorizeDialog"/></el-dialog>
     </div>
   </div>
 
@@ -285,10 +282,9 @@
 import { deepClone } from '@/utils'
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
-import authorize from '@/components/Authorize'
+import authorize from '@/views/houseManage/components/authorize'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
 import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi } from '@/api/houseManage'
-// import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   name: 'HouseSync',
   components: {
@@ -394,6 +390,9 @@ export default {
     this.getCityName()
   },
   methods: {
+    closeAuthorizeDialog (status) {
+      this.authorizeShow = false
+    },
     // 城市区域
     getCityName () {
       var params = {
@@ -604,19 +603,6 @@ export default {
     // 添加修改房间信息
     openRoomDetail (params) {
       this.roomDetailModelVisible = true
-    },
-    // 检查是否修改房源信息
-    checkEditStatus (done) {
-      const differentFlag = this.$refs.hostingRoomDetail.checkEditFlag()
-      if (differentFlag) {
-        this.$confirm('您还有数据未保存, 确认关闭吗？')
-          .then(_ => {
-            done()
-          })
-          .catch(_ => {})
-      } else {
-        done()
-      }
     },
     // 闲鱼授权
     handleSetting () {
