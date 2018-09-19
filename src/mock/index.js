@@ -6,7 +6,7 @@ import houseAsyncApi from './houseInfo'
 // user
 const reg_getUserInfo = /\/user\/queryUserDetail/
 const reg_login = /\/user\/login/
-const reg_logout = /\/user\/logout/
+const reg_logout = /\/user\/quit/
 
 // example
 const reg_example = /\/example\/list/

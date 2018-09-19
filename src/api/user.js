@@ -3,7 +3,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:33:06
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 16:59:00
+ * @Last Modified time: 2018-09-19 15:19:57
  */
 
 import { fetch } from '@/utils/fetch'
@@ -31,7 +31,7 @@ export const loginApi = {
   /* 退出系统 */
   logout (params = {}) {
     return fetch(this.requestPath, {
-      method: 'logout',
+      method: 'quit',
       params
     }, {
       isMock: true
