@@ -2,12 +2,13 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-14 10:26:21
+ * @Last Modified time: 2018-09-19 15:17:53
  */
 
 import { loginApi } from '@/api/user'
 import { getSessionId, setSessionId, removeSessionId } from '@/utils/auth'
 import defaultAvatar from '@/assets/defaultAvatar.png'
+import { SHA2 } from '@/utils/sha'
 
 const user = {
   state: {
@@ -40,11 +41,11 @@ const user = {
   actions: {
     // 登录
     Login ({ commit }, userInfo) {
-      const mobile = userInfo.mobile.trim()
+      const account = userInfo.mobile.trim()
       return new Promise((resolve, reject) => {
         loginApi.login({
-          mobile,
-          password: userInfo.password
+          account,
+          password: SHA2(userInfo.password)
         }).then(response => {
           const data = response.data
           setSessionId(data.sessionId)
