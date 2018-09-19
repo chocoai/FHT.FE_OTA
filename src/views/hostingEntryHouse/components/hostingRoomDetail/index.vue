@@ -69,9 +69,12 @@
             label=""
             prop="chamberCount"
             class="room-item-count">
-            <el-input
-              v-model="hostingRoomDetail.chamberCount"
-              type="number" />
+            <el-select v-model="hostingRoomDetail.chamberCount">
+              <el-option
+                v-for="(item, index) in 10"
+                :key="item"
+                :value="index" />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col
@@ -84,9 +87,12 @@
             label=""
             prop="boardCount"
             class="room-item-count">
-            <el-input
-              v-model="hostingRoomDetail.boardCount"
-              type="number" />
+            <el-select v-model="hostingRoomDetail.boardCount">
+              <el-option
+                v-for="(item, index) in 10"
+                :key="item"
+                :value="index" />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col
@@ -99,9 +105,12 @@
             label=""
             prop="toiletCount"
             class="room-item-count">
-            <el-input
-              v-model="hostingRoomDetail.toiletCount"
-              type="number" />
+            <el-select v-model="hostingRoomDetail.toiletCount">
+              <el-option
+                v-for="(item, index) in 10"
+                :key="item"
+                :value="index" />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col
@@ -280,7 +289,7 @@
           <el-form-item
             label="租金"
             prop="rent">
-            <el-input v-model="hostingRoomDetail.rent" />
+            <el-input v-model="hostingRoomDetail.rent" @change="handleRentChange" />
           </el-form-item>
         </el-col>
         <el-col
@@ -607,7 +616,7 @@
 <script>
 import areaSelect from '@/components/AreaSelect'
 import mapSelect from '@/components/MapSelect'
-import { estateOrgListApi, estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
+import { estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
 import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import { deepClone } from '@/utils'
@@ -934,9 +943,14 @@ export default {
       this.hostingRoomDetail.accountName = item ? item.accountName : ''
       this.hostingRoomDetail.adminUserId = item ? item.adminUserId : ''
     },
+    handleRentChange () {
+      if (this.hostingRoomDetail.rent && this.hostingRoomDetail.depositOfPayment && this.hostingRoomDetail.depositOfPayment !== 13) {
+        this.hostingRoomDetail.deposit = this.hostingRoomDetail.rent * this.hostingRoomDetail.depositOfPayment
+      }
+    },
     handleDepositChange (val) {
       if (val !== 13) {
-        this.hostingRoomDetail.depositOfPayment = this.hostingRoomDetail.payOfPayment ? val * this.hostingRoomDetail.payOfPayment : ''
+        this.hostingRoomDetail.deposit = this.hostingRoomDetail.rent ? val * this.hostingRoomDetail.rent : ''
       }
     },
     setRoomDetailData (val) {
@@ -1145,9 +1159,9 @@ export default {
           })
         }
         // 转化为base64
-        // reader.readAsDataURL(file)
+        reader.readAsDataURL(file)
         // 转化为blob
-        reader.readAsArrayBuffer(file)
+        // reader.readAsArrayBuffer(file)
       })
 
       const files = e.target.files

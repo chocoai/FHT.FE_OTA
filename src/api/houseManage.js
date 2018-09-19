@@ -48,44 +48,28 @@ export function deleteRoomApi (params) {
 
 /* 集中式根据区id查询板块列表 */
 export function estateZoneListByAreaIdApi (params) {
-  return fetch('/market/fangyuan', {
+  return fetch('queryHostingHouseInfo', {
     method: 'queryZoneListByAreaId',
     params
-  })
-}
-
-/* 集中式查询房源组织列表 */
-export function estateOrgListApi (params) {
-  return fetch({
-    url: '/market/fangyuan',
-    method: 'post',
-    data: {
-      method: 'queryOrgListByName',
-      params
-    }
+  }, {
+    isMock: true
   })
 }
 
 /* 集中式模糊查询具体位置 */
 export function estateAddressByKeywordsApi (params) {
-  return fetch({
-    url: '/market/fangyuan',
-    method: 'post',
-    data: {
-      method: 'searchAddressByKeyword',
-      params
-    }
+  return fetch('searchAddressByKeyword', {
+    params
+  }, {
+    isMock: true
   })
 }
 
 /* 集中式新增小区 */
 export function estateNewSubdistrictApi (params) {
-  return fetch({
-    url: '/market/fangyuan',
-    method: 'post',
-    data: {
-      method: 'addSubdistrict',
-      params
-    }
+  return fetch('addSubdistrict', {
+    params
+  }, {
+    isMock: true
   })
 }
