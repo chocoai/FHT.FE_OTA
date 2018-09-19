@@ -130,7 +130,6 @@
           :title="&quot;选择&quot;+dialogTitle+&quot;平台&quot;"
           class="select-dialog"
           width="450px">
-
           <div class="select-platform-container clearfix">
             <div>
               <input
@@ -176,7 +175,6 @@
           </span>
         </el-dialog>
       </el-form>
-
     </div>
     <div class="layout-container">
       <GridUnit
@@ -188,7 +186,6 @@
         :show-selection="true"
         :is-mock="isMock"
         list-field="data.houseList"
-        @select="handleSelectChange"
         @selection-change="handleSelectionChange"
       >
         <template
@@ -274,6 +271,50 @@
         :visible.sync="authorizeShow"
         title="闲鱼授权">
       <authorize @closeAuthorize ="closeAuthorizeDialog"/></el-dialog>
+      <el-dialog
+        :visible.sync="goAuthorizeShow"
+        title="授权提示"
+        width="350px"
+      >
+        <div class="goAuthorize">
+          <p>您需要完成闲鱼授权才能进行发布操作</p>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="goAuthorize()">现在就去</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog
+        :visible.sync="certificationShow"
+        title="完成实名认证方可发布房源"
+        width="450px"
+      >
+        <div>
+          <el-form
+            ref="form"
+            :model="form"
+            label-width="80px"
+          >
+            <el-form-item label="姓名">
+              <el-input
+                v-model="certificationFrom.userName"
+                class="user-input"
+                size="small"/>
+            </el-form-item>
+            <el-form-item label="身份证">
+              <el-input
+                v-model="certificationFrom.useId"
+                class="user-input"/>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                class="user-button"
+                @click="goCertification()">确认</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-dialog>
     </div>
   </div>
 
@@ -311,6 +352,10 @@ export default {
 
   data () {
     return {
+      certificationFrom: {
+        userName: '',
+        userId: ''
+      },
       selectedOpthons: [],
       options: [],
       residential: [], // 小区
@@ -323,7 +368,10 @@ export default {
       authorizeShow: false,
       dialogTitle: '闲鱼授权',
       roomStatusArry: [],
+      goAuthorizeShow: false,
+      certificationShow: false,
       authorizeStatus: '', // 判断是否授权的参数
+      userAuthentication: '', // 判断实名认证的参数
       colModels: [
         {slot: 'selection', width: 30},
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
@@ -515,6 +563,11 @@ export default {
     },
     // 发布 或者 下架房源  弹窗显示
     syncItems (type = 'on') {
+      // 验证是否认证
+      if (this.userAuthentication === '') {
+        this.certificationShow = true
+        return false
+      }
       console.log('type', type)
       const typeConfig = {
         'on': {
@@ -552,7 +605,10 @@ export default {
       }
       this.publishSelect.idlefish = false
     },
-    handleSelectChange () {},
+    goAuthorize () {
+      this.authorizeShow = true
+      this.goAuthorizeShow = false
+    },
     // 发布 下架
     gotoHouseAsync () {
       const roomCodes = this.selectedItems.map(item => item.roomCode)
@@ -566,16 +622,15 @@ export default {
         platforms: platform,
         roomCodeList: roomCodes
       }
-      for (let i = 0; i < params.platforms.length; i++) {
-        if (params.platforms[i] === 'idlefish' && this.authorizeStatus === '') {
-          this.dialogVisible = false
-          this.authorizeShow = true
-          return false
-        }
-      }
-      console.log(params)
       console.log(params)
       if (this.dialogTitle === '发布') {
+        for (let i = 0; i < params.platforms.length; i++) {
+          if (params.platforms[i] === 'idlefish' && this.authorizeStatus === '') {
+            this.dialogVisible = false
+            this.goAuthorizeShow = true
+            return false
+          }
+        }
         publishHouseApi(params).then(response => {
           this.$notify({
             title: '成功',
@@ -621,6 +676,7 @@ export default {
     width: 140px;
     margin-right:10px;
   }
+  .user-input{width:300px;}
   .item-flex{
     display: flex;
     height:46px;
@@ -681,7 +737,14 @@ export default {
     background-color: #ffa500;
     color: #ffffff;
   }
-
+.goAuthorize{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction:column;
+  padding-bottom:20px;
+}
+.user-button{display: block;margin-left:95px;}
 </style>
 <style>
 .editHouse .el-dialog{
@@ -692,4 +755,5 @@ export default {
      right: 0;
      height: 100%;
   }
+
 </style>
