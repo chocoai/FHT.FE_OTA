@@ -47,6 +47,11 @@
                   style="display:block;"
                   @click="layer_showUserInfo = true">个人信息</span>
               </el-dropdown-item>
+              <el-dropdown-item>
+                <span
+                  style="display:block;"
+                  @click="goAuthorize">闲鱼授权</span>
+              </el-dropdown-item>
               <router-link
                 class="inlineBlock"
                 to="/">
@@ -129,6 +134,9 @@ export default {
     },
     dialogClose () {
       this.$refs.ruleForm.resetFields()
+    },
+    goAuthorize () {
+
     }
   }
 }

@@ -60,7 +60,7 @@ service.interceptors.request.use(config => {
   }
   // 处理mock
   if (process.env.MOCK && config.isMock) {
-    config.url = `${config.url}/${config.data.method}`
+    config.url = `${config.url}/${config.data.method || ''}`
   }
   return config
 }, error => {
