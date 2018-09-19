@@ -110,17 +110,5 @@ export const asyncRouterMap = [
       path: 'houseManage',
       component: _import('houseManage/houseSync').default
     }]
-  },
-  {
-    path: '',
-    component: Layout,
-    redirect: '/authorize',
-    noDropdown: true,
-    icon: 'house_manage',
-    children: [{
-      name: '授权',
-      path: 'authorize',
-      component: _import('houseManage/components/authorize/index').default
-    }]
   }
 ]
