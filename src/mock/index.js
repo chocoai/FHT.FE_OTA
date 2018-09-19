@@ -14,7 +14,7 @@ const reg_example = /\/example\/list/
 // houseManage
 const reg_houseManage = /\/fangyuan\/queryHostingList/
 const reg_changeRoomStatus = /\/fangyuan\/changeLeaseStatus/
-const reg_estateDeleteEstateApi = /\/fangyuan\/deleteHouse/
+const reg_estateDeleteEstate = /\/fangyuan\/deleteHouse/
 const reg_publishHouseApi = /\/rooms\/published/
 const reg_unpublishHouseApi = /\/rooms\/offshelf/
 
@@ -25,7 +25,7 @@ Mock.mock(reg_example, 'post', exampleApi.list)
 
 Mock.mock(reg_houseManage, 'post', houseAsyncApi.list)
 Mock.mock(reg_changeRoomStatus, 'post', houseAsyncApi.changeRoomStatus)
-Mock.mock(reg_estateDeleteEstateApi, 'post', houseAsyncApi.estateDeleteEstateApi)
+Mock.mock(reg_estateDeleteEstate, 'post', houseAsyncApi.estateDeleteEstate)
 Mock.mock(reg_publishHouseApi, 'post', houseAsyncApi.publishHouse)
 Mock.mock(reg_unpublishHouseApi, 'post', houseAsyncApi.unpublishHouse)
 
