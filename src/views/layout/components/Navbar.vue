@@ -89,6 +89,10 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog
+      :visible.sync="authorizeShow"
+      title="闲鱼授权">
+    <authorize @closeAuthorize ="closeAuthorizeDialog"/></el-dialog>
   </div>
 </template>
 <script>
@@ -96,6 +100,7 @@ import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 import ThemePicker from '@/components/ThemePicker'
 import Screenfull from '@/components/Screenfull'
+import authorize from '@/views/houseManage/components/authorize'
 import { default as TagsView } from './TagsView'
 
 export default {
@@ -103,14 +108,16 @@ export default {
     Hamburger,
     ThemePicker,
     Screenfull,
-    TagsView
+    TagsView,
+    authorize
   },
   data () {
     return {
       layer_showUserInfo: false,
       ruleForm: {
         name: this.$store.state.user.name
-      }
+      },
+      authorizeShow: false
     }
   },
   computed: {
@@ -124,6 +131,9 @@ export default {
 
   },
   methods: {
+    closeAuthorizeDialog (status) {
+      this.authorizeShow = false
+    },
     toggleSideBar () {
       this.$store.dispatch('ToggleSideBar')
     },
@@ -136,7 +146,7 @@ export default {
       this.$refs.ruleForm.resetFields()
     },
     goAuthorize () {
-
+      this.authorizeShow = true
     }
   }
 }
