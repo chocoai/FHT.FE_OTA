@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:10:26
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 11:11:01
+ * @Last Modified time: 2018-09-20 13:57:50
  */
 
 export function parseTime (time, cFormat) {
@@ -263,4 +263,20 @@ export function deepClone (source) {
 export function plusXing (str, frontLen, endLen) {
   let len = str.length - frontLen - endLen
   return str.substring(0, frontLen) + '*'.repeat(len) + str.substring(str.length - endLen)
+}
+
+/**
+ * 生成不重复随机数
+ * @argument [num]生成数组元素数量
+ */
+export function createRandom (num) {
+  let ary = []
+  for (let i = 0; i < num; i++) {
+    ary[i] = i + 1
+  }
+  ary.sort(() => {
+    return 0.5 - Math.random()
+  })
+  console.log(ary)
+  return ary
 }
