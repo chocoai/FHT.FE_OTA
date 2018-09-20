@@ -5,7 +5,7 @@ import houseAsyncApi from './houseInfo'
 import roomDetailApi from './hostingRoomDetail'
 
 // user
-const reg_getUserInfo = /\/user\/authInfo/
+const reg_getUserInfo = /\/user\/info/
 const reg_login = /\/user\/login/
 const reg_logout = /\/user\/quit/
 

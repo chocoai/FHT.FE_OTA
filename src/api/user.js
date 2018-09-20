@@ -3,7 +3,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:33:06
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 14:53:34
+ * @Last Modified time: 2018-09-20 16:29:26
  */
 
 import { fetch } from '@/utils/fetch'
@@ -22,7 +22,7 @@ export const loginApi = {
   /* sessionId获取用户信息 */
   getInfo (params = {}) {
     return fetch(this.requestPath, {
-      method: 'authInfo',
+      method: 'info',
       params
     }, {
       isMock: true
