@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:33
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 11:46:24
+ * @Last Modified time: 2018-09-20 16:02:38
  */
 
 <template>
@@ -48,6 +48,7 @@ export default {
       selectedTag: {}
     }
   },
+  inject: ['reloadPage'],
   computed: {
     visitedViews () {
       return this.$store.state.tagsView.visitedViews
@@ -120,8 +121,13 @@ export default {
       if (visitedViews.length === 1 && visitedViews[0].isHomePage) {
         return false
       }
-      this.$store.dispatch('delAllViews')
-      this.$router.push('/')
+      this.$store.dispatch('delAllViews').then(() => {
+        if (this.$route.meta.isHomePage) {
+          this.reloadPage()
+        } else {
+          this.$router.push('/')
+        }
+      })
     },
     openMenu (tag, e) {
       this.visible = true
