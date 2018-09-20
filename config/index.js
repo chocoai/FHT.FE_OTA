@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:31:28
  * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-19 09:48:32
+ * @Last Modified time: 2018-09-20 09:48:27
  */
 
 let path = require('path')
@@ -18,7 +18,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         // target: proxyIPs.WANLI,
-        target: 'http://192.168.5.119:3000',
+        target: 'http://192.168.5.143:3000',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

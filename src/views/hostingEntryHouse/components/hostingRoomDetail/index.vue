@@ -1,248 +1,624 @@
 <template>
-  <el-form
-    v-if="JSON.stringify(hostingRoomDetail) !== '{}'"
-    ref="hostingRoomDetail"
-    :model="hostingRoomDetail"
-    :rules="hostingRoomDetailRules"
-    label-width="90px"
-    size="small"
-    class="room-detail-container hosting-room-detail">
-    <el-form-item
-      label="所在地区"
-      prop="areaCode"
-      style="width: 50%">
-      <area-select
-        ref="areaSelect"
-        v-model="hostingRoomDetail.areaCode"
-        :level="1"
-        @input="searchZoneList(false)" />
-    </el-form-item>
-    <el-form-item
-      :prop="zoneList.length ? 'zoneId' : ''"
-      label="所属板块"
-      style="width: 50%">
-      <el-select
-        v-model="hostingRoomDetail.zoneId"
-        :placeholder="zoneList.length ? '请选择' : '无'"
-        class="room-detail-select">
-        <el-option
-          v-for="item in zoneList"
-          :key="item.zoneId"
-          :label="item.zoneName"
-          :value="item.zoneId" />
-      </el-select>
-    </el-form-item>
-    <el-form-item
-      label="公寓/小区"
-      prop="address"
-      style="width: 50%">
-      <map-select
-        :area-code="hostingRoomDetail.areaCode"
-        :value="hostingRoomDetail.address"
-        @addressChange="addressChange" />
-    </el-form-item>
-    <el-form-item
-      label="楼幢"
-      prop="buildingName"
-      style="width: 50%">
-      <el-input v-model="hostingRoomDetail.buildingName" />
-    </el-form-item>
-    <el-form-item
-      label="单元"
-      style="width: 25%">
-      <el-input v-model="hostingRoomDetail.unitCode" />
-    </el-form-item>
-    <el-form-item
-      label="室"
-      prop="roomNo"
-      style="width: 25%">
-      <el-input v-model="hostingRoomDetail.roomNo" />
-    </el-form-item>
-    <el-form-item
-      :show-message="false"
-      label="户型"
-      class="room-count"
-      prop="chamberCount">
-      <el-row :gutter="10">
-        <el-col :span="2">
+<div>
+  <div class="entry-house-container">
+    <el-form
+      v-if="JSON.stringify(hostingRoomDetail) !== '{}'"
+      ref="hostingRoomDetail"
+      :model="hostingRoomDetail"
+      :rules="hostingRoomDetailRules"
+      label-width="90px"
+      size="small"
+      :style="{height: mainHeight + 'px'}"
+      class="room-detail-container hosting-room-detail">
+      <el-form-item
+        label="所在地区"
+        prop="areaCode"
+        style="width: 50%">
+        <area-select
+          ref="areaSelect"
+          v-model="hostingRoomDetail.areaCode"
+          :level="1"
+          @input="searchZoneList(false)" />
+      </el-form-item>
+      <el-form-item
+        :prop="zoneList.length ? 'zoneId' : ''"
+        label="所属板块"
+        style="width: 50%">
+        <el-select
+          v-model="hostingRoomDetail.zoneId"
+          :placeholder="zoneList.length ? '请选择' : '无'"
+          class="room-detail-select">
+          <el-option
+            v-for="item in zoneList"
+            :key="item.zoneId"
+            :label="item.zoneName"
+            :value="item.zoneId" />
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="公寓/小区"
+        prop="address"
+        style="width: 50%">
+        <map-select
+          :area-code="hostingRoomDetail.areaCode"
+          :value="hostingRoomDetail.address"
+          @addressChange="addressChange" />
+      </el-form-item>
+      <el-form-item
+        label="楼幢"
+        prop="buildingName"
+        style="width: 50%">
+        <el-input v-model="hostingRoomDetail.buildingName" />
+      </el-form-item>
+      <el-form-item
+        label="单元"
+        style="width: 25%">
+        <el-input v-model="hostingRoomDetail.unitCode" />
+      </el-form-item>
+      <el-form-item
+        label="室"
+        prop="roomNo"
+        style="width: 25%">
+        <el-input v-model="hostingRoomDetail.roomNo" />
+      </el-form-item>
+      <el-form-item
+        :show-message="false"
+        label="户型"
+        class="room-count"
+        prop="chamberCount">
+        <el-row :gutter="10">
+          <el-col :span="2">
+            <el-form-item
+              label=""
+              prop="chamberCount"
+              class="room-item-count">
+              <el-select
+                v-model="hostingRoomDetail.chamberCount"
+                placeholder="">
+                <el-option
+                  v-for="(item, index) in 10"
+                  :key="item"
+                  :value="index" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="1"
+            class="inline-item-label">
+            室
+          </el-col>
+          <el-col :span="2">
+            <el-form-item
+              label=""
+              prop="boardCount"
+              class="room-item-count">
+              <el-select
+                v-model="hostingRoomDetail.boardCount"
+                placeholder="">
+                <el-option
+                  v-for="(item, index) in 10"
+                  :key="item"
+                  :value="index" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="1"
+            class="inline-item-label">
+            厅
+          </el-col>
+          <el-col :span="2">
+            <el-form-item
+              label=""
+              prop="toiletCount"
+              class="room-item-count">
+              <el-select
+                v-model="hostingRoomDetail.toiletCount"
+                placeholder="">
+                <el-option
+                  v-for="(item, index) in 10"
+                  :key="item"
+                  :value="index" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="1"
+            class="inline-item-label">
+            卫
+          </el-col>
+          <el-col :span="2">
+            <el-form-item
+              label=""
+              prop="houseArea"
+              class="room-item-count">
+              <el-input
+                v-model="hostingRoomDetail.houseArea"
+                type="number" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="1"
+            class="inline-item-label">
+            m
+            <sup>2</sup>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item
+              label-width="0"
+              prop="houseDirection"
+              class="room-item-count">
+              <el-select
+                v-model="hostingRoomDetail.houseDirection"
+                class="room-detail-select"
+                placeholder="朝向">
+                <el-option
+                  v-for="item in roomDirectionList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item
+              label-width="0"
+              prop="decorationDegree"
+              class="room-item-count">
+              <el-select
+                v-model="hostingRoomDetail.decorationDegree"
+                class="room-detail-select"
+                placeholder="装修程度">
+                <el-option
+                  v-for="item in decorationDegreeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="8">
           <el-form-item
-            label=""
-            prop="chamberCount"
-            class="room-item-count">
-            <el-select
-              v-model="hostingRoomDetail.chamberCount"
-              placeholder="">
-              <el-option
-                v-for="(item, index) in 10"
-                :key="item"
-                :value="index" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col
-          :span="1"
-          class="inline-item-label">
-          室
-        </el-col>
-        <el-col :span="2">
-          <el-form-item
-            label=""
-            prop="boardCount"
-            class="room-item-count">
-            <el-select
-              v-model="hostingRoomDetail.boardCount"
-              placeholder="">
-              <el-option
-                v-for="(item, index) in 10"
-                :key="item"
-                :value="index" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col
-          :span="1"
-          class="inline-item-label">
-          厅
-        </el-col>
-        <el-col :span="2">
-          <el-form-item
-            label=""
-            prop="toiletCount"
-            class="room-item-count">
-            <el-select
-              v-model="hostingRoomDetail.toiletCount"
-              placeholder="">
-              <el-option
-                v-for="(item, index) in 10"
-                :key="item"
-                :value="index" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col
-          :span="1"
-          class="inline-item-label">
-          卫
-        </el-col>
-        <el-col :span="2">
-          <el-form-item
-            label=""
-            prop="houseArea"
-            class="room-item-count">
+            label="看房电话">
             <el-input
-              v-model="hostingRoomDetail.houseArea"
-              type="number" />
+              v-model="hostingRoomDetail.contactName"
+              placeholder="联系人" />
           </el-form-item>
         </el-col>
-        <el-col
-          :span="1"
-          class="inline-item-label">
-          m
-          <sup>2</sup>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item
-            label-width="0"
-            prop="houseDirection"
-            class="room-item-count">
-            <el-select
-              v-model="hostingRoomDetail.houseDirection"
-              class="room-detail-select"
-              placeholder="朝向">
+        <el-col :span="3">
+          <el-form-item label-width="0">
+            <el-select v-model="hostingRoomDetail.contactGender">
               <el-option
-                v-for="item in roomDirectionList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value" />
+                :value="1"
+                label="先生" />
+              <el-option
+                :value="2"
+                label="女士" />
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item
-            label-width="0"
-            prop="decorationDegree"
-            class="room-item-count">
+            label-width="0">
+            <el-input
+              v-model="hostingRoomDetail.contactMobile"
+              placeholder="联系电话" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <div
+        style="width: 50%"
+        class="room-detail-floor-container">
+        <el-form-item
+          label="层高"
+          prop="floorName">
+          <el-input
+            v-model="hostingRoomDetail.floorName"
+            type="number"
+            class="room-detail-floor-input">
+            <template slot="prepend">所在层</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          label-width="0"
+          prop="floorAmount">
+          <el-input
+            v-model="hostingRoomDetail.floorAmount"
+            type="number"
+            class="room-detail-floor-input">
+            <template slot="prepend">总楼层</template>
+          </el-input>
+        </el-form-item>
+      </div>
+      <div v-if="hostingRoomDetail.houseRentType === 1">
+        <el-form-item label="房间照片">
+          <el-badge :value="hostingRoomDetail.pictures.length">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="openPicModel(-1)">上传照片</el-button>
+          </el-badge>
+          <!-- <div class="previewItems">
+            <Preview
+              :pic-list="currentPicList"
+              :delete-icon="true"
+              :disabled="``"
+              @emitDelete="emitDelete" />
+            <label
+              class="el-upload el-upload--picture-card uploadImage"
+              for="uploadImages">
+              <i class="el-icon-plus" />
+              <input
+                id="uploadImages"
+                :accept="accept"
+                type="file"
+                multiple
+                @change="uploadImg($event)">
+            </label>
+          </div> -->
+        </el-form-item>
+        <el-form-item
+          label="付款方式"
+          prop="chamberCount"
+          class="room-count">
+          <el-row :gutter="10">
+            <el-col
+              :span="1"
+              class="inline-item-label">
+              付
+            </el-col>
+            <el-col :span="4">
+              <el-form-item
+                label=""
+                label-width="0"
+                prop="payOfPayment"
+                class="room-item-count">
+                <el-select v-model="hostingRoomDetail.payOfPayment">
+                  <el-option
+                    v-for="item in payList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col
+              :span="1"
+              class="inline-item-label">
+              押
+            </el-col>
+            <el-col :span="4">
+              <el-form-item
+                label=""
+                label-width="0"
+                prop="depositOfPayment"
+                class="room-item-count">
+                <el-select
+                  v-model="hostingRoomDetail.depositOfPayment"
+                  @change="handleDepositChange(hostingRoomDetail)">
+                  <el-option
+                    v-for="item in depositList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <el-form-item
+              label="租金"
+              prop="rent">
+              <el-input
+                v-model="hostingRoomDetail.rent"
+                type="number"
+                @change="handleRentChange(hostingRoomDetail)" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="1"
+            style="text-align: left"
+            class="inline-item-label">
+            元/月
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <el-form-item
+              label="押金"
+              prop="deposit">
+              <el-input
+                v-model="hostingRoomDetail.deposit"
+                :disabled="hostingRoomDetail.depositOfPayment !== 13"
+                type="number" />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="1"
+            style="text-align: left"
+            class="inline-item-label">
+            元
+          </el-col>
+        </el-row>
+      </div>
+
+      <el-row :gutter="20">
+        <el-col :span="13">
+          <el-form-item :label="hostingRoomDetail.houseRentType === 1 ? '公区设施' : '房间设施'">
             <el-select
-              v-model="hostingRoomDetail.decorationDegree"
+              v-model="hostingRoomDetail.facilityItemsList"
               class="room-detail-select"
-              placeholder="装修程度">
-              <el-option
-                v-for="item in decorationDegreeList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value" />
+              multiple
+              placeholder="请选择">
+              <el-option-group
+                v-for="group in facilityGroup"
+                :key="group.label"
+                :label="group.label">
+                <el-option
+                  v-for="item in group.facilitys"
+                  v-if="!(hostingRoomDetail.houseRentType === 2 && item.value === '1')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value" />
+              </el-option-group>
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
-    </el-form-item>
-    <el-row :gutter="20">
-      <el-col :span="8">
-        <el-form-item
-          label="看房电话">
-          <el-input
-            v-model="hostingRoomDetail.contactName"
-            placeholder="联系人" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="3">
-        <el-form-item label-width="0">
-          <el-select v-model="hostingRoomDetail.contactGender">
-            <el-option
-              :value="1"
-              label="先生" />
-            <el-option
-              :value="2"
-              label="女士" />
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="6">
-        <el-form-item
-          label-width="0">
-          <el-input
-            v-model="hostingRoomDetail.contactMobile"
-            placeholder="联系电话" />
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <div
-      style="width: 50%"
-      class="room-detail-floor-container">
-      <el-form-item
-        label="层高"
-        prop="floorName">
-        <el-input
-          v-model="hostingRoomDetail.floorName"
-          type="number"
-          class="room-detail-floor-input">
-          <template slot="prepend">所在层</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item
-        label-width="0"
-        prop="floorAmount">
-        <el-input
-          v-model="hostingRoomDetail.floorAmount"
-          type="number"
-          class="room-detail-floor-input">
-          <template slot="prepend">总楼层</template>
-        </el-input>
-      </el-form-item>
-    </div>
-    <div v-if="hostingRoomDetail.houseRentType === 1">
-      <el-form-item label="房间照片">
-        <el-badge :value="hostingRoomDetail.pictures.length">
-          <el-button
-            type="primary"
-            size="mini"
-            @click="openPicModel(-1)">上传照片</el-button>
-        </el-badge>
-        <!-- <div class="previewItems">
+      <!-- <el-form-item
+        :label="hostingRoomDetail.houseRentType === 1 ? '公区设施' : '房间设施'">
+        <service-list
+          :list="hostingRoomDetail.facilityItemsList"
+          @setFacilityItemsList="setFacilityItemsList" />
+      </el-form-item> -->
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item
+            label="房间描述"
+            prop="houseDesc">
+            <el-input
+              v-model="hostingRoomDetail.houseDesc"
+              :rows="5"
+              type="textarea"
+              placeholder="请描述一下房源的交通、装饰、周边设施场所等等…" />
+            <span class="estate-iontro-length-tips">{{ hostingRoomDetail.houseDesc.length }}/150</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <template v-if="hostingRoomDetail.houseRentType === 2">
+        <el-tabs
+          v-model="activeRoomName"
+          :addable="hostingRoomDetail.hostingRooms.length < 26"
+          class="sub-room-info-list"
+          type="border-card"
+          @edit="handleTabsEdit">
+          <el-tab-pane
+            v-for="(item, index) in hostingRoomDetail.hostingRooms"
+            :key="item.roomName"
+            :name="item.name">
+            <span slot="label">{{ item.roomName }}
+              <i
+                v-show="index === hostingRoomDetail.hostingRooms.length - 1 && index > 0"
+                class="el-icon-delete"
+                @click="deleteCurRoom(item, index)" />
+            </span>
+            <el-row :gutter="20">
+              <el-col :span="7">
+                <el-form-item label="房间名称">
+                  <el-input
+                    v-model="hostingRoomDetail.hostingRooms[index].roomPlaceName"
+                    placeholder="如主卧/侧卧" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item
+                  label-width="0"
+                  class="room-count">
+                  <el-row>
+                    <el-col :span="19">
+                      <el-form-item
+                        :prop="'hostingRooms.' + index + '.roomArea'"
+                        :rules="hostingRoomDetailRules.roomDetail.roomArea"
+                        label="房间面积"
+                        class="room-item-count">
+                        <el-input
+                          v-model="hostingRoomDetail.hostingRooms[index].roomArea"
+                          type="number" />
+                      </el-form-item>
+                    </el-col>
+                    <el-col
+                      :span="5"
+                      class="inline-item-label">
+                      m
+                      <sup>2</sup>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item
+                  :prop="'hostingRooms.' + index + '.roomDirection'"
+                  :rules="hostingRoomDetailRules.roomDetail.roomDirection"
+                  label-width="0">
+                  <el-select
+                    v-model="hostingRoomDetail.hostingRooms[index].roomDirection"
+                    class="room-detail-select"
+                    placeholder="房间朝向">
+                    <el-option
+                      v-for="item in roomDirectionList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="房间照片">
+                  <el-badge :value="hostingRoomDetail.hostingRooms[index].pictures ? hostingRoomDetail.hostingRooms[index].pictures.length : 0">
+                    <el-button
+                      type="primary"
+                      size="mini"
+                      @click="openPicModel(index)">上传照片</el-button>
+                  </el-badge>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label-width="0"
+                  prop="">
+                  <el-checkbox-group v-model="hostingRoomDetail.hostingRooms[index].roomAttributesList">
+                    <el-checkbox
+                      label="1"
+                      class="room-attributes">独立卫生间</el-checkbox>
+                    <el-checkbox
+                      label="2"
+                      class="room-attributes">独立阳台</el-checkbox>
+                    <el-checkbox
+                      label="3"
+                      class="room-attributes">独立厨房</el-checkbox>
+                    <el-checkbox
+                      label="4"
+                      class="room-attributes">飘窗</el-checkbox>
+                  </el-checkbox-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="13">
+                <el-form-item label="房间设施">
+                  <el-select
+                    v-model="hostingRoomDetail.hostingRooms[index].facilityItemsList"
+                    class="room-detail-select"
+                    multiple
+                    placeholder="请选择">
+                    <el-option-group
+                      v-for="group in facilityGroup"
+                      :key="group.label"
+                      :label="group.label">
+                      <el-option
+                        v-for="item in group.facilitys"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-option-group>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item
+              label="付款方式"
+              prop="chamberCount"
+              class="room-count">
+              <el-row :gutter="10">
+                <el-col
+                  :span="1"
+                  class="inline-item-label">
+                  付
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.payOfPayment'"
+                    :rules="hostingRoomDetailRules.roomDetail.payOfPayment"
+                    label=""
+                    label-width="0"
+                    class="room-item-count">
+                    <el-select v-model="hostingRoomDetail.hostingRooms[index].payOfPayment">
+                      <el-option
+                        v-for="(item, index) in payList"
+                        :key="index"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="1"
+                  class="inline-item-label">
+                  押
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.depositOfPayment'"
+                    :rules="hostingRoomDetailRules.roomDetail.depositOfPayment"
+                    label=""
+                    label-width="0"
+                    class="room-item-count">
+                    <el-select
+                      v-model="hostingRoomDetail.hostingRooms[index].depositOfPayment"
+                      style="width: 100%"
+                      @change="handleDepositChange(hostingRoomDetail.hostingRooms[index])">
+                      <el-option
+                        v-for="(item, index) in depositList"
+                        :key="index"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-row :gutter="20">
+              <el-col :span="6">
+                <el-form-item
+                  :prop="'hostingRooms.' + index + '.rent'"
+                  :rules="hostingRoomDetailRules.roomDetail.rent"
+                  label="租金">
+                  <el-input
+                    v-model="hostingRoomDetail.hostingRooms[index].rent"
+                    type="number"
+                    @change="handleRentChange(hostingRoomDetail.hostingRooms[index])" />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="1"
+                style="text-align: left"
+                class="inline-item-label">
+                元/月
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="6">
+                <el-form-item
+                  :prop="'hostingRooms.' + index + '.deposit'"
+                  :rules="hostingRoomDetailRules.roomDetail.deposit"
+                  label="押金">
+                  <el-input
+                    v-model="hostingRoomDetail.hostingRooms[index].deposit"
+                    :disabled="hostingRoomDetail.hostingRooms[index].depositOfPayment !== 13"
+                    type="number" />
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="1"
+                style="text-align: left"
+                class="inline-item-label">
+                元
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+        </el-tabs>
+      </template>
+
+      <!-- 上传图片模态框 -->
+      <el-dialog
+        :visible.sync="uploadPicsModelVisible"
+        title="上传房间照片"
+        custom-class="upload-pics-model"
+        width="600px"
+        @close="uploadModelClose">
+        <div class="previewItems">
           <Preview
             :pic-list="currentPicList"
             :delete-icon="true"
-            :disabled="``"
+            :disabled="false"
             @emitDelete="emitDelete" />
           <label
             class="el-upload el-upload--picture-card uploadImage"
@@ -255,397 +631,40 @@
               multiple
               @change="uploadImg($event)">
           </label>
-        </div> -->
-      </el-form-item>
-      <el-form-item
-        label="付款方式"
-        prop="chamberCount"
-        class="room-count">
-        <el-row :gutter="10">
-          <el-col
-            :span="1"
-            class="inline-item-label">
-            付
-          </el-col>
-          <el-col :span="4">
-            <el-form-item
-              label=""
-              label-width="0"
-              prop="payOfPayment"
-              class="room-item-count">
-              <el-select v-model="hostingRoomDetail.payOfPayment">
-                <el-option
-                  v-for="item in payList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="1"
-            class="inline-item-label">
-            押
-          </el-col>
-          <el-col :span="4">
-            <el-form-item
-              label=""
-              label-width="0"
-              prop="depositOfPayment"
-              class="room-item-count">
-              <el-select
-                v-model="hostingRoomDetail.depositOfPayment"
-                @change="handleDepositChange(hostingRoomDetail)">
-                <el-option
-                  v-for="item in depositList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form-item>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <el-form-item
-            label="租金"
-            prop="rent">
-            <el-input
-              v-model="hostingRoomDetail.rent"
-              type="number"
-              @change="handleRentChange(hostingRoomDetail)" />
-          </el-form-item>
-        </el-col>
-        <el-col
-          :span="1"
-          style="text-align: left"
-          class="inline-item-label">
-          元/月
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <el-form-item
-            label="押金"
-            prop="deposit">
-            <el-input
-              v-model="hostingRoomDetail.deposit"
-              :disabled="hostingRoomDetail.depositOfPayment !== 13"
-              type="number" />
-          </el-form-item>
-        </el-col>
-        <el-col
-          :span="1"
-          style="text-align: left"
-          class="inline-item-label">
-          元
-        </el-col>
-      </el-row>
-    </div>
-
-    <el-row :gutter="20">
-      <el-col :span="13">
-        <el-form-item :label="hostingRoomDetail.houseRentType === 1 ? '公区设施' : '房间设施'">
-          <el-select
-            v-model="hostingRoomDetail.facilityItemsList"
-            class="room-detail-select"
-            multiple
-            placeholder="请选择">
-            <el-option-group
-              v-for="group in facilityGroup"
-              :key="group.label"
-              :label="group.label">
-              <el-option
-                v-for="item in group.facilitys"
-                v-if="!(hostingRoomDetail.houseRentType === 2 && item.value === '1')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value" />
-            </el-option-group>
-          </el-select>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <!-- <el-form-item
-      :label="hostingRoomDetail.houseRentType === 1 ? '公区设施' : '房间设施'">
-      <service-list
-        :list="hostingRoomDetail.facilityItemsList"
-        @setFacilityItemsList="setFacilityItemsList" />
-    </el-form-item> -->
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-form-item
-          label="房间描述"
-          prop="houseDesc">
-          <el-input
-            v-model="hostingRoomDetail.houseDesc"
-            :rows="5"
-            type="textarea"
-            placeholder="请描述一下房源的交通、装饰、周边设施场所等等…" />
-          <span class="estate-iontro-length-tips">{{ hostingRoomDetail.houseDesc.length }}/150</span>
-        </el-form-item>
-      </el-col>
-    </el-row>
-
-    <template v-if="hostingRoomDetail.houseRentType === 2">
-      <el-tabs
-        v-model="activeRoomName"
-        :addable="hostingRoomDetail.hostingRooms.length < 26"
-        class="sub-room-info-list"
-        type="border-card"
-        @edit="handleTabsEdit">
-        <el-tab-pane
-          v-for="(item, index) in hostingRoomDetail.hostingRooms"
-          :key="item.roomName"
-          :name="item.name">
-          <span slot="label">{{ item.roomName }}
-            <i
-              v-show="index === hostingRoomDetail.hostingRooms.length - 1 && index > 0"
-              class="el-icon-delete"
-              @click="deleteCurRoom(item, index)" />
-          </span>
-          <el-row :gutter="20">
-            <el-col :span="7">
-              <el-form-item label="房间名称">
-                <el-input
-                  v-model="hostingRoomDetail.hostingRooms[index].roomPlaceName"
-                  placeholder="如主卧/侧卧" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item
-                label-width="0"
-                class="room-count">
-                <el-row>
-                  <el-col :span="19">
-                    <el-form-item
-                      :prop="'hostingRooms.' + index + '.roomArea'"
-                      :rules="hostingRoomDetailRules.roomDetail.roomArea"
-                      label="房间面积"
-                      class="room-item-count">
-                      <el-input
-                        v-model="hostingRoomDetail.hostingRooms[index].roomArea"
-                        type="number" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col
-                    :span="5"
-                    class="inline-item-label">
-                    m
-                    <sup>2</sup>
-                  </el-col>
-                </el-row>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item
-                :prop="'hostingRooms.' + index + '.roomDirection'"
-                :rules="hostingRoomDetailRules.roomDetail.roomDirection"
-                label-width="0">
-                <el-select
-                  v-model="hostingRoomDetail.hostingRooms[index].roomDirection"
-                  class="room-detail-select"
-                  placeholder="房间朝向">
-                  <el-option
-                    v-for="item in roomDirectionList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="5">
-              <el-form-item label="房间照片">
-                <el-badge :value="hostingRoomDetail.hostingRooms[index].pictures ? hostingRoomDetail.hostingRooms[index].pictures.length : 0">
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    @click="openPicModel(index)">上传照片</el-button>
-                </el-badge>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="20">
-              <el-form-item
-                label-width="0"
-                prop="">
-                <el-checkbox-group v-model="hostingRoomDetail.hostingRooms[index].roomAttributesList">
-                  <el-checkbox
-                    label="1"
-                    class="room-attributes">独立卫生间</el-checkbox>
-                  <el-checkbox
-                    label="2"
-                    class="room-attributes">独立阳台</el-checkbox>
-                  <el-checkbox
-                    label="3"
-                    class="room-attributes">独立厨房</el-checkbox>
-                  <el-checkbox
-                    label="4"
-                    class="room-attributes">飘窗</el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="13">
-              <el-form-item label="房间设施">
-                <el-select
-                  v-model="hostingRoomDetail.hostingRooms[index].facilityItemsList"
-                  class="room-detail-select"
-                  multiple
-                  placeholder="请选择">
-                  <el-option-group
-                    v-for="group in facilityGroup"
-                    :key="group.label"
-                    :label="group.label">
-                    <el-option
-                      v-for="item in group.facilitys"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value" />
-                  </el-option-group>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item
-            label="付款方式"
-            prop="chamberCount"
-            class="room-count">
-            <el-row :gutter="10">
-              <el-col
-                :span="1"
-                class="inline-item-label">
-                付
-              </el-col>
-              <el-col :span="4">
-                <el-form-item
-                  :prop="'hostingRooms.' + index + '.payOfPayment'"
-                  :rules="hostingRoomDetailRules.roomDetail.payOfPayment"
-                  label=""
-                  label-width="0"
-                  class="room-item-count">
-                  <el-select v-model="hostingRoomDetail.hostingRooms[index].payOfPayment">
-                    <el-option
-                      v-for="(item, index) in payList"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col
-                :span="1"
-                class="inline-item-label">
-                押
-              </el-col>
-              <el-col :span="4">
-                <el-form-item
-                  :prop="'hostingRooms.' + index + '.depositOfPayment'"
-                  :rules="hostingRoomDetailRules.roomDetail.depositOfPayment"
-                  label=""
-                  label-width="0"
-                  class="room-item-count">
-                  <el-select
-                    v-model="hostingRoomDetail.hostingRooms[index].depositOfPayment"
-                    style="width: 100%"
-                    @change="handleDepositChange(hostingRoomDetail.hostingRooms[index])">
-                    <el-option
-                      v-for="(item, index) in depositList"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value" />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form-item>
-          <el-row :gutter="20">
-            <el-col :span="6">
-              <el-form-item
-                :prop="'hostingRooms.' + index + '.rent'"
-                :rules="hostingRoomDetailRules.roomDetail.rent"
-                label="租金">
-                <el-input
-                  v-model="hostingRoomDetail.hostingRooms[index].rent"
-                  type="number"
-                  @change="handleRentChange(hostingRoomDetail.hostingRooms[index])" />
-              </el-form-item>
-            </el-col>
-            <el-col
-              :span="1"
-              style="text-align: left"
-              class="inline-item-label">
-              元/月
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="6">
-              <el-form-item
-                :prop="'hostingRooms.' + index + '.deposit'"
-                :rules="hostingRoomDetailRules.roomDetail.deposit"
-                label="押金">
-                <el-input
-                  v-model="hostingRoomDetail.hostingRooms[index].deposit"
-                  :disabled="hostingRoomDetail.hostingRooms[index].depositOfPayment !== 13"
-                  type="number" />
-              </el-form-item>
-            </el-col>
-            <el-col
-              :span="1"
-              style="text-align: left"
-              class="inline-item-label">
-              元
-            </el-col>
-          </el-row>
-        </el-tab-pane>
-      </el-tabs>
+        </div>
+        <p class="upload-pics-info">温馨提示： </p>
+        <p class="upload-pics-info">1.请勿上传虚假、模糊、与房源信息无关、含有其他公司水印的照片； </p>
+        <p class="upload-pics-info">2.房间照片最佳组合：卧室2~6张、公共区域1~4张、厨房1~3张、卫生间1-4张； </p>
+        <p class="upload-pics-info">3.目前最多支持15张，支持JPG/JPEG/PNG，可以拖动图片进行排序，支持批量上传。</p>
+        <!-- 图片裁剪 -->
+        <ImageCropper
+          :cropper-list="cropperList"
+          @emitCropperList="emitCropperList"
+          @emitCropperData="emitCropperData" />
+        <span slot="footer">
+          <el-button
+            size="small"
+            type="primary"
+            @click="uploadPicsModelVisible = false">关 闭</el-button>
+        </span>
+      </el-dialog>
+    </el-form>
+  </div>
+  <div class="entry-house-bottom">
+    <template v-if="editFlag">
+      <el-button
+        type="primary"
+        size="small" @click="saveRoomDetailData(2)">保存</el-button>
     </template>
-
-    <!-- 上传图片模态框 -->
-    <el-dialog
-      :visible.sync="uploadPicsModelVisible"
-      title="上传房间照片"
-      custom-class="upload-pics-model"
-      width="600px"
-      @close="uploadModelClose">
-      <div class="previewItems">
-        <Preview
-          :pic-list="currentPicList"
-          :delete-icon="true"
-          :disabled="``"
-          @emitDelete="emitDelete" />
-        <label
-          class="el-upload el-upload--picture-card uploadImage"
-          for="uploadImages">
-          <i class="el-icon-plus" />
-          <input
-            id="uploadImages"
-            :accept="accept"
-            type="file"
-            multiple
-            @change="uploadImg($event)">
-        </label>
-      </div>
-      <p class="upload-pics-info">温馨提示： </p>
-      <p class="upload-pics-info">1.请勿上传虚假、模糊、与房源信息无关、含有其他公司水印的照片； </p>
-      <p class="upload-pics-info">2.房间照片最佳组合：卧室2~6张、公共区域1~4张、厨房1~3张、卫生间1-4张； </p>
-      <p class="upload-pics-info">3.目前最多支持15张，支持JPG/JPEG/PNG，可以拖动图片进行排序，支持批量上传。</p>
-      <!-- 图片裁剪 -->
-      <ImageCropper
-        :cropper-list="cropperList"
-        @emitCropperList="emitCropperList"
-        @emitCropperData="emitCropperData" />
-      <span slot="footer">
-        <el-button
-          size="small"
-          type="primary"
-          @click="uploadPicsModelVisible = false">关 闭</el-button>
-      </span>
-    </el-dialog>
-  </el-form>
+    <template v-else>
+      <el-button
+        type="primary"
+        size="small" @click="saveRoomDetailData(1)">保存并继续添加</el-button>
+      <el-button size="small" @click="saveRoomDetailData(2)">确定</el-button>
+    </template>
+    <el-button size="small" @click="saveRoomDetailData(3)">取消</el-button>
+  </div>
+</div>
 </template>
 
 <script>
@@ -655,7 +674,7 @@ import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import ServiceList from './serviceList'
 import { estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
-import { deepClone } from '@/utils'
+import { debounce, deepClone } from '@/utils'
 export default {
   components: {
     areaSelect,
@@ -668,10 +687,15 @@ export default {
     houseRentType: {
       type: Number,
       default: 1 // 1.整租 2.合租
+    },
+    editFlag: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
+      mainHeight: 500,
       hostingRoomDetail: {},
       tempFormData: {},
       hostingRoomDetailRules: {
@@ -895,60 +919,11 @@ export default {
     }
   },
   mounted () {
-    let roomDetailData = {
-      areaCode: ['', '', ''],
-      provinceId: null,
-      cityId: null,
-      regionId: null,
-      zoneId: null,
-      zoneName: '',
-      address: '',
-      regionAddressId: '',
-      buildingName: '',
-      unitCode: '',
-      roomNo: '',
-      chamberCount: 1,
-      boardCount: 0,
-      toiletCount: 0,
-      houseArea: null,
-      houseDirection: null,
-      decorationDegree: 3,
-      floorName: '',
-      floorAmount: null,
-      contactName: '',
-      contactGender: 1,
-      contactMobile: null,
-      facilityItemsList: [],
-      houseDesc: ''
-    }
-    if (this.houseRentType === 1) {
-      roomDetailData = Object.assign(roomDetailData, {
-        pictures: [],
-        houseRentType: 1,
-        deposit: '',
-        rent: '',
-        depositOfPayment: '',
-        payOfPayment: ''
-      })
-    } else {
-      roomDetailData.houseRentType = 2
-      roomDetailData.hostingRooms = [
-        {
-          roomPlaceName: '',
-          roomArea: '',
-          roomAttributesList: [],
-          roomName: '房间A',
-          name: '1',
-          pictures: [],
-          facilityItemsList: [],
-          deposit: '',
-          rent: '',
-          depositOfPayment: '',
-          payOfPayment: ''
-        }
-      ]
-    }
-    this.setRoomDetailData(roomDetailData)
+    let changeMainHeight = debounce(() => {
+      this.mainHeight = Math.max(document.body.clientHeight - (this.editFlag ? 150 : 240), 250)
+    }, 100)
+    changeMainHeight()
+    window.addEventListener('resize', changeMainHeight)
   },
   methods: {
     searchZoneList (flag) { // 搜索板块列表
@@ -1041,21 +1016,29 @@ export default {
       this.hostingRoomDetail.facilityItemsList = val
     },
     setRoomDetailData (val) {
-      if (val.houseRentType === 2) {
-        this.tabIndex = val.hostingRooms.length
-        this.activeRoomName = '1'
-      }
-      if (val.isEditFlag) {
+      if (val) {
+        val.areaCode = [val.provinceId, val.cityId, val.regionId]
+        val.address = val.subdistrictName ? (val.subdistrictName + ' - ' + val.subdistrictAddress) : ''
+        val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
+        val.houseDesc = val.houseDesc || ''
         val.zoneId = val.zoneId === 0 ? '' : val.zoneId
-        if (val.houseRentType === 1 && val.pictures) {
-          val.pictures.forEach((item) => {
-            item.title = item.imageName
-            item.key = Math.random().toFixed(5)
-            item.isBase64 = 0
-          })
+        if (this.houseRentType === 1) {
+          val.pictures = val.pictures || []
+          if (val.pictures.length) {
+            val.pictures.forEach((item) => {
+              item.title = item.imageName
+              item.key = Math.random().toFixed(5)
+              item.isBase64 = 0
+            })
+          }
         } else {
-          val.hostingRooms.forEach((item) => {
-            if (item.pictures) {
+          val.hostingRooms.forEach((item, index) => {
+            item.name = ++index + ''
+            item.facilityItemsList = item.facilityItems ? item.facilityItems.split(',') : []
+            item.roomAttributesList = item.roomAttributes ? item.roomAttributes.split(',') : []
+            item.pictures = item.pictures || []
+            item.needCheck = true
+            if (item.pictures.length) {
               item.pictures.forEach((n) => {
                 n.title = n.imageName
                 n.key = Math.random().toFixed(5)
@@ -1065,12 +1048,71 @@ export default {
           })
         }
       } else {
+        val = {
+          areaCode: ['', '', ''],
+          provinceId: null,
+          cityId: null,
+          regionId: null,
+          zoneId: null,
+          zoneName: '',
+          address: '',
+          regionAddressId: '',
+          buildingName: '',
+          unitCode: '',
+          roomNo: '',
+          chamberCount: 1,
+          boardCount: 0,
+          toiletCount: 0,
+          houseArea: null,
+          houseDirection: null,
+          decorationDegree: 3,
+          floorName: '',
+          floorAmount: null,
+          contactName: '',
+          contactGender: 1,
+          contactMobile: null,
+          facilityItemsList: [],
+          houseDesc: '',
+          houseRentType: this.houseRentType
+        }
+        if (this.houseRentType === 1) {
+          val = Object.assign(val, {
+            pictures: [],
+            houseRentType: 1,
+            deposit: '',
+            rent: '',
+            depositOfPayment: '',
+            payOfPayment: ''
+          })
+        } else {
+          val.hostingRooms = [
+            {
+              roomPlaceName: '',
+              roomArea: '',
+              roomAttributesList: [],
+              roomName: '房间A',
+              name: '1',
+              pictures: [],
+              facilityItemsList: [],
+              deposit: '',
+              rent: '',
+              depositOfPayment: '',
+              payOfPayment: ''
+            }
+          ]
+        }
         this.zoneList = []
       }
+
+      if (this.houseRentType === 2) {
+        this.tabIndex = val.hostingRooms.length
+        this.activeRoomName = '1'
+      }
+
       this.$nextTick(() => {
         this.$set(this, 'hostingRoomDetail', val)
         this.$set(this, 'tempFormData', deepClone(val))
-        if (val.isEditFlag && val.zoneId) {
+        if (this.editFlag && val.zoneId) {
           this.searchZoneList(true)
         }
         this.$nextTick(() => {
@@ -1154,6 +1196,17 @@ export default {
       })
       return roomDetailData
     },
+    saveRoomDetailData (type) {
+      // type 1.
+      if (type === 3) {
+        if (this.editFlag) {
+          this.$emit('closeDialog')
+        } else {
+          this.$router.push({name: '房源管理'})
+        }
+        return false
+      }
+    },
     openPicModel (index) { // 打开上传图片列表
       this.curPicListIndex = index
       this.currentPicList = index === -1 ? this.hostingRoomDetail.pictures : this.hostingRoomDetail.hostingRooms[index].pictures
@@ -1188,12 +1241,13 @@ export default {
         v.type = 1
         v.imageName = v.title
         v.image = v.src
-        v.key = v.key || Math.random().toFixed(5)
         if (v.isBase64 === undefined) {
           v.isBase64 = 1
         }
       })
-      this.currentPicList = [...this.currentPicList, ...list]
+      console.log(list)
+      // this.currentPicList = [...this.currentPicList, ...list]
+      this.currentPicList = [...list]
     },
     /* 选择图片 */
     async uploadImg (e) {
@@ -1265,6 +1319,7 @@ export default {
 <style lang="scss" scoped>
 .room-detail-container {
   width: 850px;
+  overflow-y: scroll;
   .estate-iontro-length-tips {
     position: absolute;
     bottom: 0px;
@@ -1285,6 +1340,12 @@ export default {
       }
     }
   }
+}
+.entry-house-bottom {
+  width: 850px;
+  padding-top: 20px;
+  // border-top: 1px solid #ccc;
+  text-align: right;
 }
 .previewItems {
   margin-bottom: 10px;
