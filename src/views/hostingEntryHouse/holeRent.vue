@@ -5,8 +5,8 @@
     </div>
     <hosting-room-detail
       ref="hostingRoomDetail"
-      :editFlag="false"
-      :houseRentType="1" />
+      :edit-flag="false"
+      :house-rent-type="1" />
   </div>
 </template>
 

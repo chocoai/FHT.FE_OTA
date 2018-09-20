@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:50:08
  * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-20 14:57:29
+ * @Last Modified time: 2018-09-20 16:10:32
  */
 
 <template>
@@ -180,18 +180,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.pswp__caption__center {
-  text-align: center
-}
-
-.pswp {
-  z-index: 9999999;
-}
-
-.pswp__img {
-  background: #fff;
-}
-
 .flip-list-move {
   transition: transform 0.5s;
 }
@@ -281,4 +269,18 @@ export default {
   }
 }
 
+</style>
+
+<style>
+.pswp__caption__center {
+  text-align: center
+}
+
+.pswp {
+  z-index: 9999999;
+}
+
+.pswp__img {
+  background: #fff;
+}
 </style>
