@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 11:52:14
+ * @Last Modified time: 2018-09-20 18:29:58
  */
 
 import Vue from 'vue'
@@ -91,7 +91,7 @@ export const asyncRouterMap = [
     path: '',
     component: Layout,
     redirect: '/hostingHoleRentPage',
-    icon: 'house_platform',
+    icon: 'rent_whole',
     noDropdown: true,
     children: [{
       name: '分散整租录入',
@@ -103,7 +103,7 @@ export const asyncRouterMap = [
     path: '',
     component: Layout,
     redirect: '/hostingJointRentPage',
-    icon: 'house_platform',
+    icon: 'rent_join',
     noDropdown: true,
     children: [{
       name: '分散合租录入',

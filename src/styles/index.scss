@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:53
- * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-18 11:40:51
+ * @Last Modified by: FT.FE.Bolin
+ * @Last Modified time: 2018-09-20 18:28:53
  */
 
 @import './element-ui.scss';
@@ -182,7 +182,17 @@ a:hover {
 .iconfont {
   display: inline-block;
   font-style: normal;
-  color: #fff;
+}
+
+.el-button {
+  [class*=iconfont]+span {
+    margin-left: 5px;
+  }
+  &.el-button--small {
+    .iconfont {
+      font-size: 12px;
+    }
+  }
 }
 
 /* 编辑分散式房源 */

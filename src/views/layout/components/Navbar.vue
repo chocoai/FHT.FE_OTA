@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 17:03:33
+ * @Last Modified time: 2018-09-20 18:20:59
  */
 
 <template>
@@ -50,19 +50,26 @@
               <el-dropdown-item v-if="!idlefished">
                 <span
                   style="display:block;"
-                  @click="goAuthorize">闲鱼授权</span>
+                  @click="goAuthorize">
+                  <i class="iconfont icon-access"/>
+                  闲鱼授权
+                </span>
               </el-dropdown-item>
               <router-link
                 class="inlineBlock"
                 to="/">
                 <el-dropdown-item>
+                  <i class="iconfont icon-shouye"/>
                   主页
                 </el-dropdown-item>
               </router-link>
               <el-dropdown-item divided>
                 <span
                   style="display:block;"
-                  @click="logout">退出</span>
+                  @click="logout">
+                  <i class="iconfont icon-quit"/>
+                  退出
+                </span>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

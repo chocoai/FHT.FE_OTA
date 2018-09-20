@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:36
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 20:24:15
+ * @Last Modified time: 2018-09-20 18:11:36
  */
 
 <template>
@@ -75,6 +75,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .iconfont {
+  color: #fff;
   margin-right: 20px;
 }
 

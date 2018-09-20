@@ -116,12 +116,12 @@
             <el-button
               size="small"
               type="success"
-              icon="el-icon-upload"
+              icon="iconfont icon-publish_on"
               @click="syncItems('on')">发布</el-button>
             <el-button
               size="small"
               type="danger"
-              icon="el-icon-remove"
+              icon="iconfont icon-publish_off"
               style="margin-left:10px"
               @click="syncItems('off')">下架</el-button>
           </el-form-item>
