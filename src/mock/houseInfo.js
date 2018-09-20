@@ -120,18 +120,18 @@ const houseManage_info = {
         'cityId': 111,
         'name': '花园小区'
       }, {
-        'regionAddressId': 333,
+        'regionAddressId': 23132,
         'areaId': 222,
         'cityId': 111,
         'name': ' 西湖小区'
       },
       {
-        'regionAddressId': 333,
+        'regionAddressId': 3567,
         'areaId': 555,
         'cityId': 444,
         'name': '北京高档小区'
       }, {
-        'regionAddressId': 333,
+        'regionAddressId': 6789,
         'areaId': 666,
         'cityId': 444,
         'name': '北京抵挡小区'
