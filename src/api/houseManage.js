@@ -75,6 +75,15 @@ export function authorizeStatusApi (params) {
     isMock: true
   })
 }
+/* 实名认证 */
+export function certificationFromApi (params) {
+  return fetch('/user', {
+    method: 'auth',
+    params
+  }, {
+    isMock: true
+  })
+}
 
 /* 集中式删除房间 */
 export function deleteRoomApi (params) {

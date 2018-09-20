@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:49:39
  * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-20 11:34:53
+ * @Last Modified time: 2018-09-20 14:57:15
  */
 
 <template>
@@ -12,6 +12,7 @@
       append-to-body
       title="图片裁剪"
       width="920px"
+      @open="cropperedImgs = []"
       @close="cropperClose">
       <div class="cropper-wrapper">
         <div
@@ -200,7 +201,6 @@ export default {
   methods: {
     cropperClose () {
       this.cropperImgs = []
-      this.$emit('emitCropperList', [])
     },
     // 缩放图片
     changeScale (num, index) {
