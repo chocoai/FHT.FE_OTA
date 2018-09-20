@@ -16,6 +16,7 @@
             <el-cascader
               :options="options"
               v-model="selectedOpthons"
+              placeholder="请选择城市区域"
               size="small"
               level="1"
               class="item-select"
@@ -552,6 +553,7 @@ export default {
           idlefishStatus: ''
         }
         this.selectedOpthons = []
+        this.selectedArea = []
       }
       console.log('查询数据', this.searchParams)
       this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2

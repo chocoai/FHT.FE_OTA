@@ -13,19 +13,19 @@ const reg_logout = /\/user\/quit/
 const reg_example = /\/example\/list/
 
 // houseManage
-const reg_houseManage = /\/fangyuan\/queryHostingList/
-const reg_changeRoomStatus = /\/fangyuan\/changeLeaseStatus/
-const reg_estateDeleteEstate = /\/fangyuan\/deleteHouse/
-const reg_queryCityAreaPlot = /\/fangyuan\/queryCityAreaPlot/
+const reg_houseManage = /\/fangyuan\/queryHostingList\/isMock/
+const reg_changeRoomStatus = /\/fangyuan\/changeLeaseStatus\/isMock/
+const reg_estateDeleteEstate = /\/fangyuan\/deleteHouse\/isMock/
+const reg_queryCityAreaPlot = /\/fangyuan\/queryCityAreaPlot\/isMock/
 // 发布 下架
-const reg_publishHouseApi = /\/rooms\/published/
-const reg_unpublishHouseApi = /\/rooms\/offshelf/
+const reg_publishHouseApi = /\/rooms\/published\/isMock/
+const reg_unpublishHouseApi = /\/rooms\/offshelf\/isMock/
 // 授权
-const reg_authorize = /\/account\/binding/
-const reg_authorizePicture = /\/account\/picture/
-const reg_authorizeStatus = /\/account\/acquired/
+const reg_authorize = /\/account\/binding\/isMock/
+const reg_authorizePicture = /\/account\/picture\/isMock/
+const reg_authorizeStatus = /\/account\/acquired\/isMock/
 // 实名认证
-const reg_certificationFrom = /\/user/
+const reg_certificationFrom = /\/user\/auth\/isMock/
 
 // entryHouse
 const reg_roomDetailManage = /\/queryZoneListByAreaId/
