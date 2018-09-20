@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:33
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-18 14:36:45
+ * @Last Modified time: 2018-09-20 11:46:24
  */
 
 <template>
@@ -95,7 +95,7 @@ export default {
     },
     closeSelectedTag (view) {
       const visitedViews = this.$store.state.tagsView.visitedViews
-      if (view.name === '首页' && visitedViews.length === 1 && view.name === visitedViews[0].name) {
+      if (view.isHomePage && visitedViews.length === 1 && view.name === visitedViews[0].name) {
         return false
       }
       this.$store.dispatch('delVisitedViews', view).then((views) => {
@@ -117,7 +117,7 @@ export default {
     },
     closeAllTags () {
       const visitedViews = this.$store.state.tagsView.visitedViews
-      if (visitedViews.length === 1 && visitedViews[0].name === '首页') {
+      if (visitedViews.length === 1 && visitedViews[0].isHomePage) {
         return false
       }
       this.$store.dispatch('delAllViews')

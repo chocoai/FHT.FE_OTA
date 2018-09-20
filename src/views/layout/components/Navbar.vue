@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-18 14:36:06
+ * @Last Modified time: 2018-09-20 11:42:00
  */
 
 <template>
@@ -56,7 +56,7 @@
                 class="inlineBlock"
                 to="/">
                 <el-dropdown-item>
-                  首页
+                  主页
                 </el-dropdown-item>
               </router-link>
               <el-dropdown-item divided>

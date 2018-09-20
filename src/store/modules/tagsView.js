@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:19
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-19 15:47:01
+ * @Last Modified time: 2018-09-20 11:50:36
  */
 
 import Session from '@/utils/session'
@@ -17,7 +17,8 @@ const tagsView = {
       state.visitedViews.push({
         name: view.name,
         path: view.path,
-        title: view.meta.title || 'no-name'
+        title: view.meta.title || 'no-name',
+        isHomePage: view.meta.isHomePage || false
       })
       Session.set('visitedViews', state.visitedViews)
       // noCache 不缓存

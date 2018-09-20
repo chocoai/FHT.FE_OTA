@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
- * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-18 11:07:48
+ * @Last Modified by: FT.FE.Bolin
+ * @Last Modified time: 2018-09-20 11:52:14
  */
 
 import Vue from 'vue'
@@ -32,15 +32,31 @@ export const constantRouterMap = [{
 }, {
   path: '',
   component: Layout,
-  redirect: '/dashboard',
-  icon: 'home',
+  redirect: '/houseManage',
   noDropdown: true,
+  icon: 'house_manage',
   children: [{
-    name: '首页',
-    path: 'dashboard',
-    component: _import('dashboard/index').default
+    name: '房源管理',
+    path: 'houseManage',
+    component: _import('houseManage/houseSync').default,
+    meta: {
+      isHomePage: true
+    }
   }]
-}]
+}
+//, {
+//   path: '',
+//   component: Layout,
+//   redirect: '/dashboard',
+//   icon: 'home',
+//   noDropdown: true,
+//   children: [{
+//     name: '首页',
+//     path: 'dashboard',
+//     component: _import('dashboard/index').default
+//   }]
+// }
+]
 
 export default new Router({
   /* mode: 'history', //需要服务器配置路由 */
@@ -57,6 +73,7 @@ export const asyncRouterMap = [
     redirect: 'noredirect',
     name: '示例',
     icon: 'example',
+    hidden: true,
     meta: {
       role: ['admin', 'global']
     },
@@ -98,17 +115,5 @@ export const asyncRouterMap = [
     path: '*',
     redirect: '/404',
     hidden: true
-  },
-  {
-    path: '',
-    component: Layout,
-    redirect: '/houseManage',
-    noDropdown: true,
-    icon: 'house_manage',
-    children: [{
-      name: '房源管理',
-      path: 'houseManage',
-      component: _import('houseManage/houseSync').default
-    }]
   }
 ]
