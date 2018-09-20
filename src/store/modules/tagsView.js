@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:19
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-18 15:18:33
+ * @Last Modified time: 2018-09-19 15:47:01
  */
 
 import Session from '@/utils/session'
@@ -47,6 +47,7 @@ const tagsView = {
       for (const [i, v] of state.visitedViews.entries()) {
         if (v.path === view.path) {
           state.visitedViews = state.visitedViews.slice(i, i + 1)
+          Session.set('visitedViews', state.visitedViews)
           break
         }
       }
@@ -54,6 +55,7 @@ const tagsView = {
         if (i === view.name) {
           const index = state.cachedViews.indexOf(i)
           state.cachedViews = state.cachedViews.slice(index, i + 1)
+          Session.set('cachedViews', state.cachedViews)
           break
         }
       }
@@ -61,6 +63,8 @@ const tagsView = {
     DEL_ALL_VIEWS: (state) => {
       state.visitedViews = []
       state.cachedViews = []
+      Session.set('visitedViews', state.visitedViews)
+      Session.set('cachedViews', state.cachedViews)
     }
   },
   actions: {

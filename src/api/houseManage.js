@@ -34,14 +34,6 @@ export function publishHouseApi (params) {
   }, {
     isMock: true
   })
-  // return fetch({
-  //   url: '/rooms/published',
-  //   method: 'post',
-  //   data: {
-  //     method: type === 1 ? 'publish' : 'offshelf', // 1.发布 2.撤销
-  //     params
-  //   }
-  // })
 }
 /* 下架房源 */
 export function unPublishHouseApi (params) {
@@ -51,6 +43,39 @@ export function unPublishHouseApi (params) {
     isMock: true
   })
 }
+/* 获取区域 */
+export function queryCityAreaPlotApi (params) {
+  return fetch('/fangyuan/queryCityAreaPlot', {
+    params
+  }, {
+    isMock: true
+  })
+}
+/* 授权 */
+export function authorizeApi (params) {
+  return fetch('/account/binding', {
+    params
+  }, {
+    isMock: true
+  })
+}
+
+export function authorizePictureApi (params) {
+  return fetch('/account/picture', {
+    params
+  }, {
+    isMock: true
+  })
+}
+
+export function authorizeStatusApi (params) {
+  return fetch('/account/acquired', {
+    params
+  }, {
+    isMock: true
+  })
+}
+
 /* 集中式删除房间 */
 export function deleteRoomApi (params) {
   return fetch({
