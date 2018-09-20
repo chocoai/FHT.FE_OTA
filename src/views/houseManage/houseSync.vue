@@ -297,22 +297,27 @@
       >
         <div>
           <el-form
-            ref="form"
+            ref="certificationFrom"
             :model="certificationFrom"
+            :rules="rules"
             label-width="80px"
+            status-icon
           >
-            <el-form-item label="姓名">
+            <el-form-item
+              label="姓名"
+              prop="userName">
               <el-input
                 v-model="certificationFrom.userName"
                 class="user-input"
                 size="small"/>
             </el-form-item>
-            <el-form-item label="身份证">
+            <el-form-item
+              label="身份证"
+              prop="userId">
               <el-input
                 v-model="certificationFrom.userId"
                 class="user-input"/>
             </el-form-item>
-            <p class="errorTip">{{ rzErrorTips }}</p>
             <el-form-item>
               <el-button
                 type="primary"
@@ -358,6 +363,16 @@ export default {
   },
 
   data () {
+    var validateUserID = (rule, value, callback) => {
+      var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/
+      if (!value) {
+        callback(new Error('请填写身份证号码'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请填写正确的18位身份证号'))
+      } else {
+        callback()
+      }
+    }
     return {
       certificationFrom: {
         userName: '',
@@ -380,6 +395,14 @@ export default {
       certificationShow: false,
       authorizeStatus: false, // 判断是否授权的参数
       userAuthentication: false, // 判断实名认证的参数
+      rules: {
+        userName: [
+          { required: true, message: '请输入姓名', trigger: 'blur' }
+        ],
+        userId: [
+          { required: true, validator: validateUserID, trigger: 'blur' }
+        ]
+      },
       colModels: [
         {slot: 'selection', width: 30},
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
@@ -671,36 +694,26 @@ export default {
       }
     },
     goCertification () {
-      if (this.certificationFrom.userName === '') {
-        this.rzErrorTips = '请填写正确的姓名'
-        return false
-      }
-      if (this.certificationFrom.userId === '') {
-        this.rzErrorTips = '请填写正确的身份证号码'
-        return false
-      }
-      var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/
-      if (!reg.test(this.certificationFrom.userId)) {
-        this.rzErrorTips = '请填写正确的18位身份证号'
-        return false
-      }
-      this.rzErrorTips = ''
-      const params = {
-        name: this.certificationFrom.userName,
-        idcard: this.certificationFrom.userId
-      }
-      certificationFromApi(params).then(response => {
-        console.log('请求认证', response)
-        this.certificationShow = false
-        this.$notify({
-          title: '成功',
-          message: '实名认证成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.$store.dispatch('GetInfo').then(res => {
-          this.dialogVisible = true
-        })
+      this.$refs.certificationFrom.validate(valid => {
+        if (valid) {
+          const params = {
+            name: this.certificationFrom.userName,
+            idcard: this.certificationFrom.userId
+          }
+          certificationFromApi(params).then(response => {
+            console.log('请求认证', response)
+            this.certificationShow = false
+            this.$notify({
+              title: '成功',
+              message: '实名认证成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.$store.dispatch('GetInfo').then(res => {
+              this.dialogVisible = true
+            })
+          })
+        }
       })
     },
     // 添加修改房间信息
