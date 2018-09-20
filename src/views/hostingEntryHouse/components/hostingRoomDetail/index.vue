@@ -61,15 +61,19 @@
           style="width: 25%">
           <el-input v-model="hostingRoomDetail.roomNo" />
         </el-form-item>
-        <el-form-item
-          :show-message="false"
-          label="户型"
-          class="room-count"
-          prop="chamberCount">
-          <el-row :gutter="10">
+        <div style="position: relative">
+          <el-form-item
+            :show-message="false"
+            label="户型"
+            class="room-count room-count-container"
+            prop="chamberCount" />
+          <el-row
+            :gutter="10"
+            class="room-count-row">
             <el-col :span="3">
               <el-form-item
                 label=""
+                label-width="0"
                 prop="chamberCount"
                 class="room-item-count">
                 <el-select
@@ -90,6 +94,7 @@
             <el-col :span="3">
               <el-form-item
                 label=""
+                label-width="0"
                 prop="boardCount"
                 class="room-item-count">
                 <el-select
@@ -110,6 +115,7 @@
             <el-col :span="3">
               <el-form-item
                 label=""
+                label-width="0"
                 prop="toiletCount"
                 class="room-item-count">
                 <el-select
@@ -130,6 +136,7 @@
             <el-col :span="3">
               <el-form-item
                 label=""
+                label-width="0"
                 prop="houseArea"
                 class="room-item-count">
                 <el-input
@@ -178,7 +185,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-        </el-form-item>
+        </div>
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item
@@ -235,12 +242,19 @@
         </div>
         <div v-if="hostingRoomDetail.houseRentType === 1">
           <el-form-item label="房间照片">
-            <el-badge :value="hostingRoomDetail.pictures.length">
+            <el-badge
+              v-if="hostingRoomDetail.pictures.length"
+              :value="hostingRoomDetail.pictures.length">
               <el-button
                 type="primary"
                 size="mini"
                 @click="openPicModel(-1)">上传照片</el-button>
             </el-badge>
+            <el-button
+              v-else
+              type="primary"
+              size="mini"
+              @click="openPicModel(-1)">上传照片</el-button>
           <!-- <div class="previewItems">
             <Preview
               :pic-list="currentPicList"
@@ -260,11 +274,14 @@
             </label>
           </div> -->
           </el-form-item>
-          <el-form-item
-            label="付款方式"
-            prop="chamberCount"
-            class="room-count">
-            <el-row :gutter="10">
+          <div style="position: relative">
+            <el-form-item
+              label="付款方式"
+              prop="chamberCount"
+              class="room-count room-count-container" />
+            <el-row
+              :gutter="10"
+              class="room-count-row">
               <el-col
                 :span="1"
                 class="inline-item-label">
@@ -308,7 +325,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-          </el-form-item>
+          </div>
           <el-row :gutter="20">
             <el-col :span="6">
               <el-form-item
@@ -513,11 +530,14 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-form-item
-                label="付款方式"
-                prop="chamberCount"
-                class="room-count">
-                <el-row :gutter="10">
+              <div style="position: relative">
+                <el-form-item
+                  label="付款方式"
+                  prop="chamberCount"
+                  class="room-count room-count-container" />
+                <el-row
+                  :gutter="10"
+                  class="room-count-row">
                   <el-col
                     :span="1"
                     class="inline-item-label">
@@ -564,7 +584,7 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-              </el-form-item>
+              </div>
               <el-row :gutter="20">
                 <el-col :span="6">
                   <el-form-item
@@ -680,7 +700,7 @@ import mapSelect from '@/components/MapSelect'
 import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import ServiceList from './serviceList'
-import { estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
+import { estateZoneListByAreaIdApi, deleteRoomApi, hostingSaveHouseInfoApi, hostingEditHouseInfoApi } from '@/api/houseManage'
 import { debounce, deepClone } from '@/utils'
 export default {
   components: {
@@ -763,7 +783,7 @@ export default {
         // ],
         houseDesc: [
           { required: true, message: '请输入房源描述', trigger: 'blur' },
-          { required: true, max: 150, message: '长度不能超过150个字符', trigger: 'change' }
+          { max: 150, message: '长度不能超过150个字符', trigger: 'change' }
         ],
         payOfPayment: [
           { required: true, message: '请选择付款方式', trigger: 'change' }
@@ -1170,10 +1190,6 @@ export default {
         if (status) {
           roomDetailData = deepClone(this.hostingRoomDetail)
           roomDetailData.facilityItems = roomDetailData.facilityItemsList.join(',')
-          roomDetailData.tag = roomDetailData.tag ? 1 : 0
-
-          const sourceInfo = roomDetailData.tag ? this.filterManagerList.filter((item) => item.id === roomDetailData.sourceInfo) : ''
-          roomDetailData.sourceInfo = sourceInfo.length ? (sourceInfo[0].id + ',' + sourceInfo[0].name) : ''
           if (roomDetailData.houseRentType === 2) {
             roomDetailData.hostingRooms.forEach((item, index) => {
               item.facilityItems = item.facilityItemsList.join(',')
@@ -1213,6 +1229,33 @@ export default {
         }
         return false
       }
+
+      let roomDetailData = this.returnRoomDetailData()
+      if (!roomDetailData) {
+        return false
+      }
+
+      let api = this.editFlag ? hostingEditHouseInfoApi : hostingSaveHouseInfoApi
+      console.log(roomDetailData)
+      api({
+        hostingHouseInfo: JSON.stringify(roomDetailData)
+      }).then((res) => {
+        if (res.code === '0') {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+          if (type === 1) {
+            this.setRoomDetailData()
+          } else {
+            if (this.editFlag) {
+              this.$emit('closeDialog')
+            } else {
+              this.$router.push({name: '房源管理'})
+            }
+          }
+        }
+      })
     },
     openPicModel (index) { // 打开上传图片列表
       this.curPicListIndex = index
@@ -1345,6 +1388,15 @@ export default {
         color: red;
       }
     }
+  }
+  .room-count-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+  }
+  .room-count-row {
+    padding-left: 90px;
   }
 }
 .entry-house-bottom {
