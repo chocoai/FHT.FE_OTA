@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 11:42:00
+ * @Last Modified time: 2018-09-20 15:33:29
  */
 
 <template>
@@ -42,12 +42,12 @@
             <el-dropdown-menu
               slot="dropdown"
               class="user-dropdown">
-              <el-dropdown-item>
+              <!-- <el-dropdown-item>
                 <span
                   style="display:block;"
                   @click="layer_showUserInfo = true">个人信息</span>
-              </el-dropdown-item>
-              <el-dropdown-item>
+              </el-dropdown-item> -->
+              <el-dropdown-item v-if="!idlefished">
                 <span
                   style="display:block;"
                   @click="goAuthorize">闲鱼授权</span>
@@ -115,7 +115,7 @@ export default {
     return {
       layer_showUserInfo: false,
       ruleForm: {
-        name: this.$store.state.user.name
+        name: this.$store.getters.name
       },
       authorizeShow: false
     }
@@ -124,7 +124,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'name'
+      'name',
+      'idlefished'
     ])
   },
   created () {

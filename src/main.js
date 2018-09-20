@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:24:18
- * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-20 10:18:24
+ * @Last Modified by: FT.FE.Bolin
+ * @Last Modified time: 2018-09-20 15:00:43
  */
 
 import Vue from 'vue'
@@ -46,12 +46,13 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) {
         store.dispatch('GetInfo').then(res => {
-          const rolesMap = {
-            '1': 'admin',
-            '99': 'service',
-            '0': 'global'
-          }
-          const roles = [(rolesMap[res.data.isAdmin.toString()] || 'global')]
+          // const rolesMap = {
+          //   '1': 'admin',
+          //   '99': 'service',
+          //   '0': 'global'
+          // }
+          // const roles = [(rolesMap[res.data.isAdmin.toString()] || 'global')]
+          const roles = ['admin']
           store.dispatch('GenerateRoutes', { roles }).then(() => {
             router.addRoutes(store.getters.addRouters)
             next({ ...to })

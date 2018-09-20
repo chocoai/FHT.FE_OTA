@@ -378,8 +378,8 @@ export default {
       roomStatusArry: [],
       goAuthorizeShow: false,
       certificationShow: false,
-      authorizeStatus: '', // 判断是否授权的参数
-      userAuthentication: '', // 判断实名认证的参数
+      authorizeStatus: false, // 判断是否授权的参数
+      userAuthentication: false, // 判断实名认证的参数
       colModels: [
         {slot: 'selection', width: 30},
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
@@ -443,9 +443,38 @@ export default {
 
   },
   mounted () {
+    this.authorizeStatus = this.$store.getters.idlefished // 判断是否授权的参数
+    this.userAuthentication = this.$store.getters.authed // 判断实名认证的参数
     this.getCityName()
   },
   methods: {
+    // 查询数据
+    searchParam (type) {
+      console.log('selectedOpthons', this.selectedOpthons)
+      if (type === 'clear') {
+        this.searchParams = {
+          pageNo: 1,
+          pageSize: 20,
+          houseRentType: 1, // 1-整租，2-合租
+          cityId: '',
+          regionId: '',
+          roomStatus: '', // 2-未出租，9-已出租
+          regionAddressId: '',
+          roomNo: '',
+          mailinStatus: '', // 0-未发布，1：已发布，2：发布失败
+          idlefishStatus: ''
+        }
+        this.selectedOpthons = []
+        this.selectedArea = []
+      }
+      console.log('查询数据', this.searchParams)
+      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2
+      this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
+      // 解决watch执行顺序
+      this.$nextTick(() => {
+        this.$refs.refGridUnit.searchHandler()
+      })
+    },
     closeAuthorizeDialog (status) {
       this.authorizeShow = false
     },
@@ -481,6 +510,7 @@ export default {
     },
     handleChange (value) {
       this.selectedArea = []
+      this.searchParams.regionAddressId = ''
       this.searchParams.cityId = value[0]
       this.searchParams.regionId = value[1]
       this.residential.filter((cityName, index) => {
@@ -541,33 +571,6 @@ export default {
     handleClickTab (tab) {
       this.searchParam('clear')
     },
-    // 查询数据
-    searchParam (type) {
-      console.log('selectedOpthons', this.selectedOpthons)
-      if (type === 'clear') {
-        this.searchParams = {
-          pageNo: 1,
-          pageSize: 20,
-          houseRentType: 1, // 整租还是合租
-          cityId: '',
-          regionId: '',
-          roomStatus: '',
-          regionAddressId: '',
-          roomNo: '',
-          mailinStatus: '',
-          idlefishStatus: ''
-        }
-        this.selectedOpthons = []
-        this.selectedArea = []
-      }
-      console.log('查询数据', this.searchParams)
-      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2
-      this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
-      // 解决watch执行顺序
-      this.$nextTick(() => {
-        this.$refs.refGridUnit.searchHandler()
-      })
-    },
     // 选择列表
     handleSelectionChange (list) {
       this.selectedItems = list
@@ -576,7 +579,7 @@ export default {
     // 发布 或者 下架房源  弹窗显示
     syncItems (type = 'on') {
       // 验证是否认证
-      if (this.userAuthentication === '') {
+      if (!this.userAuthentication && type === 'on') {
         this.certificationShow = true
         return false
       }
@@ -637,7 +640,7 @@ export default {
       console.log(params)
       if (this.dialogTitle === '发布') {
         for (let i = 0; i < params.platforms.length; i++) {
-          if (params.platforms[i] === 'idlefish' && this.authorizeStatus === '') {
+          if (params.platforms[i] === 'idlefish' && !this.authorizeStatus) {
             this.dialogVisible = false
             this.goAuthorizeShow = true
             return false
@@ -695,7 +698,9 @@ export default {
           type: 'success',
           duration: 2000
         })
-        // 认证成功后应该刷新页面
+        this.$store.dispatch('GetInfo').then(res => {
+          this.dialogVisible = true
+        })
       })
     },
     // 添加修改房间信息
