@@ -7,7 +7,9 @@
       <div class="entry-house-title">
         新建分散式合租
       </div>
-      <hosting-room-detail ref="hostingRoomDetail" :houseRentType="2" />
+      <hosting-room-detail
+        ref="hostingRoomDetail"
+        :house-rent-type="2" />
     </div>
     <div class="entry-house-bottom">
       <el-button

@@ -331,8 +331,8 @@
             prop="deposit">
             <el-input
               v-model="hostingRoomDetail.deposit"
-              type="number"
-              :disabled="hostingRoomDetail.depositOfPayment !== 13" />
+              :disabled="hostingRoomDetail.depositOfPayment !== 13"
+              type="number" />
           </el-form-item>
         </el-col>
         <el-col
@@ -589,8 +589,8 @@
                 label="押金">
                 <el-input
                   v-model="hostingRoomDetail.hostingRooms[index].deposit"
-                  type="number"
-                  :disabled="hostingRoomDetail.hostingRooms[index].depositOfPayment !== 13" />
+                  :disabled="hostingRoomDetail.hostingRooms[index].depositOfPayment !== 13"
+                  type="number" />
               </el-form-item>
             </el-col>
             <el-col
@@ -657,18 +657,18 @@ import ServiceList from './serviceList'
 import { estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
 import { deepClone } from '@/utils'
 export default {
-  props: {
-    houseRentType: {
-      type: Number,
-      default: 1 // 1.整租 2.合租
-    }
-  },
   components: {
     areaSelect,
     Preview,
     ImageCropper,
     mapSelect,
     ServiceList
+  },
+  props: {
+    houseRentType: {
+      type: Number,
+      default: 1 // 1.整租 2.合租
+    }
   },
   data () {
     return {

@@ -236,6 +236,7 @@
             :active-value="9"
             :inactive-value="2"
             :active-text="roomStatusText(scope.row.roomStatus)"
+            class="roomSelectStatus"
             @change="changeRoomStatus(scope.row)"/>
         </template>
         <template
@@ -264,7 +265,9 @@
           title="编辑房间"
           width="60%"
           top="0">
-          <hosting-room-detail ref="hostingRoomDetail" :houseRentType="activeName === '分散式整租' ? 1 : 2" />
+          <hosting-room-detail
+            ref="hostingRoomDetail"
+            :house-rent-type="activeName === '分散式整租' ? 1 : 2" />
         </el-dialog>
       </div>
       <el-dialog
@@ -292,7 +295,7 @@
         <div>
           <el-form
             ref="form"
-            :model="form"
+            :model="certificationFrom"
             label-width="80px"
           >
             <el-form-item label="姓名">
@@ -303,9 +306,10 @@
             </el-form-item>
             <el-form-item label="身份证">
               <el-input
-                v-model="certificationFrom.useId"
+                v-model="certificationFrom.userId"
                 class="user-input"/>
             </el-form-item>
+            <p class="errorTip">{{ rzErrorTips }}</p>
             <el-form-item>
               <el-button
                 type="primary"
@@ -325,7 +329,7 @@ import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/views/houseManage/components/authorize'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
-import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi } from '@/api/houseManage'
+import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, certificationFromApi } from '@/api/houseManage'
 export default {
   name: 'HouseSync',
   components: {
@@ -356,6 +360,7 @@ export default {
         userName: '',
         userId: ''
       },
+      rzErrorTips: '',
       selectedOpthons: [],
       options: [],
       residential: [], // 小区
@@ -655,6 +660,37 @@ export default {
         })
       }
     },
+    goCertification () {
+      if (this.certificationFrom.userName === '') {
+        this.rzErrorTips = '请填写正确的姓名'
+        return false
+      }
+      if (this.certificationFrom.userId === '') {
+        this.rzErrorTips = '请填写正确的身份证号码'
+        return false
+      }
+      var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/
+      if (!reg.test(this.certificationFrom.userId)) {
+        this.rzErrorTips = '请填写正确的18位身份证号'
+        return false
+      }
+      this.rzErrorTips = ''
+      const params = {
+        name: this.certificationFrom.userName,
+        idcard: this.certificationFrom.userId
+      }
+      certificationFromApi(params).then(response => {
+        console.log('请求认证', response)
+        this.certificationShow = false
+        this.$notify({
+          title: '成功',
+          message: '实名认证成功',
+          type: 'success',
+          duration: 2000
+        })
+        // 认证成功后应该刷新页面
+      })
+    },
     // 添加修改房间信息
     openRoomDetail (params) {
       this.roomDetailModelVisible = true
@@ -744,7 +780,16 @@ export default {
   flex-direction:column;
   padding-bottom:20px;
 }
-.user-button{display: block;margin-left:95px;}
+.user-button{
+  display: block;
+  margin-left: 95px;
+  }
+.errorTip{
+  margin: 10px;
+  color: red;
+  font-style: 12px;
+  padding-left: 80px;
+}
 </style>
 <style>
 .editHouse .el-dialog{
@@ -755,5 +800,6 @@ export default {
      right: 0;
      height: 100%;
   }
-
+.roomSelectStatus .el-switch__label *{font-size:12px;color:#909399}
+.roomSelectStatus  .el-switch__label.is-active span{color:#409DFF}
 </style>

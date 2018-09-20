@@ -24,6 +24,8 @@ const reg_unpublishHouseApi = /\/rooms\/offshelf/
 const reg_authorize = /\/account\/binding/
 const reg_authorizePicture = /\/account\/picture/
 const reg_authorizeStatus = /\/account\/acquired/
+// 实名认证
+const reg_certificationFrom = /\/user/
 
 // entryHouse
 const reg_roomDetailManage = /\/queryZoneListByAreaId/
@@ -45,4 +47,5 @@ Mock.mock(reg_queryCityAreaPlot, 'post', houseAsyncApi.queryCityAreaPlot)
 Mock.mock(reg_authorize, 'post', houseAsyncApi.authorize)
 Mock.mock(reg_authorizePicture, 'post', houseAsyncApi.authorizePicture)
 Mock.mock(reg_authorizeStatus, 'post', houseAsyncApi.authorizeStatus)
+Mock.mock(reg_certificationFrom, 'post', houseAsyncApi.certificationFrom)
 export default Mock

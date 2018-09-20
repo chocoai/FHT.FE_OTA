@@ -158,6 +158,12 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': null
+  },
+  certificationFrom: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
   }
 }
 
@@ -188,6 +194,9 @@ export default {
   },
   authorizeStatus: () => {
     return houseManage_info.authorizeStatus
+  },
+  certificationFrom: () => {
+    return houseManage_info.certificationFrom
   }
 
 }
