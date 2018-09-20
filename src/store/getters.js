@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:08:35
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 15:19:02
+ * @Last Modified time: 2018-09-20 15:32:19
  */
 
 const getters = {
@@ -13,7 +13,7 @@ const getters = {
   roles: state => state.user.roles,
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
-  authed: state => state.user.userInfo.authed,
-  idlefished: state => state.user.userInfo.idlefished
+  authed: state => state.user.userInfo.authed || false,
+  idlefished: state => state.user.userInfo.idlefished || false
 }
 export default getters
