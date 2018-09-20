@@ -254,11 +254,7 @@
               @click="deleteRoom(scope.row)">删除</el-button>
           </el-row>
         </template>
-        <template
-          slot="houseHuxing"
-          slot-scope="scope">
-          {{ scope.row.chamberCount }}室{{ scope.row.boardCount }}厅{{ scope.row.toiletCount }}卫
-        </template>
+
       </GridUnit>
       <div class="editHouse">
         <el-dialog
@@ -411,7 +407,13 @@ export default {
         {slot: 'selection', width: 30},
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
         {prop: 'roomNo', label: '房间号', width: 100},
-        {prop: 'chamberCount', slotName: 'houseHuxing', label: '户型', width: 200},
+        {prop: 'chamberCount',
+          label: '户型',
+          width: 200,
+          render (row) {
+            return (row.chamberCount || 0) + '室' + (row.boardCount || 0) + '厅' + (row.toiletCount || 0) + '卫'
+          }
+        },
         {prop: 'roomArea', label: '整套面积', width: 80},
         {prop: 'rentPrice', label: '推广价格', width: 80},
         {
@@ -528,8 +530,6 @@ export default {
                 cityArea.label = cityArea.areaName
               })
             }
-            // cityData[index].children = cityData[index].regionList
-            // delete cityData[index].regionList
           })
           this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
         }
@@ -601,7 +601,7 @@ export default {
     // 选择列表
     handleSelectionChange (list) {
       this.selectedItems = list
-      console.log(this.selectedItems)
+      console.log('selectedItems', this.selectedItems)
     },
     // 发布 或者 下架房源  弹窗显示
     syncItems (type = 'on') {
@@ -631,7 +631,7 @@ export default {
         }
       }
       if (type === 'off') {
-        const unfilterItem = this.selectedItems.filter(item => (item.idlefishStatus === 1 && item.mailinStatus === 1) || (item.idlefishStatus === 5 && item.mailinStatus === 5))
+        const unfilterItem = this.selectedItems.filter(item => ((item.idlefishStatus === 1 || item.idlefishStatus === 5) && (item.mailinStatus === 1 || item.mailinStatus === 5)))
         if (unfilterItem.length !== 0) {
           this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
           return false
@@ -663,7 +663,7 @@ export default {
         platforms: platform,
         roomCodeList: roomCodes
       }
-      console.log(params)
+      console.log('发布的数据', params)
       if (this.dialogTitle === '发布') {
         for (let i = 0; i < params.platforms.length; i++) {
           if (params.platforms[i] === 'idlefish' && !this.authorizeStatus) {
@@ -704,7 +704,6 @@ export default {
             idcard: this.certificationFrom.userId
           }
           certificationFromApi(params).then(response => {
-            console.log('请求认证', response)
             this.certificationShow = false
             this.$notify({
               title: '成功',
@@ -712,6 +711,7 @@ export default {
               type: 'success',
               duration: 2000
             })
+            // this.userAuthentication = true
             this.$store.dispatch('GetInfo').then(res => {
               // 认证成功之后 的回调函数
             })
