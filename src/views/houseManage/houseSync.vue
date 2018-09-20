@@ -193,7 +193,7 @@
           slot="slot_idlefishStatus"
           slot-scope="scope">
           <el-popover
-            v-if="scope.row.idlefishStatus === 2 "
+            v-if="scope.row.idlefishStatus === 5"
             trigger="hover"
             placement="top">
             <p>发布失败原因: {{ scope.row.idlefishfailMessage }}</p>
@@ -213,7 +213,7 @@
           slot="slot_mailinStatus"
           slot-scope="scope">
           <el-popover
-            v-if="scope.row.mailinStatus === 2"
+            v-if="scope.row.mailinStatus === 5"
             trigger="hover"
             placement="top">
             <p>发布失败原因: {{ scope.row.mailinfailMessage }}</p>
@@ -297,22 +297,27 @@
       >
         <div>
           <el-form
-            ref="form"
+            ref="certificationFrom"
             :model="certificationFrom"
+            :rules="rules"
             label-width="80px"
+            status-icon
           >
-            <el-form-item label="姓名">
+            <el-form-item
+              label="姓名"
+              prop="userName">
               <el-input
                 v-model="certificationFrom.userName"
                 class="user-input"
                 size="small"/>
             </el-form-item>
-            <el-form-item label="身份证">
+            <el-form-item
+              label="身份证"
+              prop="userId">
               <el-input
                 v-model="certificationFrom.userId"
                 class="user-input"/>
             </el-form-item>
-            <p class="errorTip">{{ rzErrorTips }}</p>
             <el-form-item>
               <el-button
                 type="primary"
@@ -345,19 +350,33 @@ export default {
     // 麦邻 闲鱼发布状态
     renderStatusType (status) {
       const statusMap = {
-        '1': 'success',
-        '2': 'danger',
-        '0': 'info'
+        '1': 'info',
+        '2': 'success',
+        '5': 'danger',
+        '9': 'primary'
+
       }
       return statusMap[status] || 'info'
     },
     renderStatusValue (status) {
-      const statusStrData = ['未发布', '已发布', '发布失败']
+      const statusStrData = ['', '未发布', '已发布']
+      statusStrData[5] = '发布失败'
+      statusStrData[9] = '发布中'
       return statusStrData[status] || '未知'
     }
   },
 
   data () {
+    var validateUserID = (rule, value, callback) => {
+      var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/
+      if (!value) {
+        callback(new Error('请填写身份证号码'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请填写正确的18位身份证号'))
+      } else {
+        callback()
+      }
+    }
     return {
       certificationFrom: {
         userName: '',
@@ -380,6 +399,14 @@ export default {
       certificationShow: false,
       authorizeStatus: false, // 判断是否授权的参数
       userAuthentication: false, // 判断实名认证的参数
+      rules: {
+        userName: [
+          { required: true, message: '请输入姓名', trigger: 'blur' }
+        ],
+        userId: [
+          { required: true, validator: validateUserID, trigger: 'blur' }
+        ]
+      },
       colModels: [
         {slot: 'selection', width: 30},
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
@@ -461,7 +488,7 @@ export default {
           roomStatus: '', // 2-未出租，9-已出租
           regionAddressId: '',
           roomNo: '',
-          mailinStatus: '', // 0-未发布，1：已发布，2：发布失败
+          mailinStatus: '', // 1-未发布，2-已发布，5：发布失败 ，9：处理中
           idlefishStatus: ''
         }
         this.selectedOpthons = []
@@ -592,20 +619,19 @@ export default {
           title: '下架'
         }
       }
-      console.log(type)
       if (this.selectedItems.length === 0) {
         this.$message.error(`请选择需要${typeConfig[type].title}的房源`)
         return false
       }
       if (type === 'on') {
-        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 1 && item.mailinStatus === 1)
+        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 2 && item.mailinStatus === 2)
         if (unfilterItem.length !== 0) {
           this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
           return false
         }
       }
       if (type === 'off') {
-        const unfilterItem = this.selectedItems.filter(item => (item.idlefishStatus === 0 && item.mailinStatus === 0) || (item.idlefishStatus === 2 && item.mailinStatus === 2))
+        const unfilterItem = this.selectedItems.filter(item => (item.idlefishStatus === 1 && item.mailinStatus === 1) || (item.idlefishStatus === 5 && item.mailinStatus === 5))
         if (unfilterItem.length !== 0) {
           this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
           return false
@@ -671,36 +697,26 @@ export default {
       }
     },
     goCertification () {
-      if (this.certificationFrom.userName === '') {
-        this.rzErrorTips = '请填写正确的姓名'
-        return false
-      }
-      if (this.certificationFrom.userId === '') {
-        this.rzErrorTips = '请填写正确的身份证号码'
-        return false
-      }
-      var reg = /^[1-9]{1}[0-9]{14}$|^[1-9]{1}[0-9]{16}([0-9]|[xX])$/
-      if (!reg.test(this.certificationFrom.userId)) {
-        this.rzErrorTips = '请填写正确的18位身份证号'
-        return false
-      }
-      this.rzErrorTips = ''
-      const params = {
-        name: this.certificationFrom.userName,
-        idcard: this.certificationFrom.userId
-      }
-      certificationFromApi(params).then(response => {
-        console.log('请求认证', response)
-        this.certificationShow = false
-        this.$notify({
-          title: '成功',
-          message: '实名认证成功',
-          type: 'success',
-          duration: 2000
-        })
-        this.$store.dispatch('GetInfo').then(res => {
-          this.dialogVisible = true
-        })
+      this.$refs.certificationFrom.validate(valid => {
+        if (valid) {
+          const params = {
+            name: this.certificationFrom.userName,
+            idcard: this.certificationFrom.userId
+          }
+          certificationFromApi(params).then(response => {
+            console.log('请求认证', response)
+            this.certificationShow = false
+            this.$notify({
+              title: '成功',
+              message: '实名认证成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.$store.dispatch('GetInfo').then(res => {
+              // 认证成功之后 的回调函数
+            })
+          })
+        }
       })
     },
     // 添加修改房间信息

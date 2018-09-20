@@ -29,7 +29,9 @@
               v-model="temp.account"
               placeholder="请输入闲鱼昵称"
               clearable
-              size="small">
+              size="small"
+              @keyup.enter="nextStep"
+            >
               <template slot="prepend">闲鱼昵称</template>
             </el-input>
           </el-form-item>

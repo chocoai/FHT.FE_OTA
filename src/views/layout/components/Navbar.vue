@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 15:33:29
+ * @Last Modified time: 2018-09-20 17:03:33
  */
 
 <template>
@@ -139,8 +139,18 @@ export default {
       this.$store.dispatch('ToggleSideBar')
     },
     logout () {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload() // 为了重新实例化vue-router对象 避免bug
+      this.$msgbox({
+        message: `确定退出系统么？`,
+        title: '提示',
+        showCancelButton: true,
+        confirmButtonText: '退出',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('LogOut').then(() => {
+          location.reload() // 为了重新实例化vue-router对象 避免bug
+        })
+      }).catch(() => {
+        console.log('cancle')
       })
     },
     dialogClose () {

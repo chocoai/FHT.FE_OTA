@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:10:13
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 14:50:43
+ * @Last Modified time: 2018-09-20 16:23:55
  */
 
 import axios from 'axios'
@@ -116,6 +116,14 @@ const responseMehod = (response, resolve, reject) => {
     MessageBox.confirm(`${res.message}，请重新登录`, '提示', {
       confirmButtonText: '重新登录',
       cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      logOutMethod()
+    })
+  } else if (res.code * 1 === 1013) {
+    MessageBox.alert(`该账号已在其他地方登录，请重新登录`, res.message, {
+      confirmButtonText: '重新登录',
+      showClose: false,
       type: 'warning'
     }).then(() => {
       logOutMethod()
