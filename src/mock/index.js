@@ -25,7 +25,7 @@ const reg_authorize = /\/account\/binding\/isMock/
 const reg_authorizePicture = /\/account\/picture\/isMock/
 const reg_authorizeStatus = /\/account\/acquired\/isMock/
 // 实名认证
-const reg_certificationFrom = /\/user\/auth\/isMock/
+const reg_certificationFrom = /\/user\/auth/
 
 // entryHouse
 const reg_roomDetailManage = /\/queryZoneListByAreaId/
