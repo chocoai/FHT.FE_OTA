@@ -2,13 +2,14 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 15:11:06
+ * @Last Modified time: 2018-09-20 16:07:42
  */
 
 import { loginApi } from '@/api/user'
 import { getSessionId, setSessionId, removeSessionId } from '@/utils/auth'
 import defaultAvatar from '@/assets/defaultAvatar.png'
 import { SHA2 } from '@/utils/sha'
+import Session from '@/utils/session'
 
 const user = {
   state: {
@@ -88,6 +89,8 @@ const user = {
           removeSessionId()
           commit('SET_SESSIONID', '')
           commit('SET_ROLES', '')
+          Session.set('visitedViews', [])
+          Session.set('cachedViews', [])
           resolve()
         }).catch(error => {
           reject(error)
@@ -100,6 +103,8 @@ const user = {
       return new Promise(resolve => {
         removeSessionId()
         commit('SET_SESSIONID', '')
+        Session.set('visitedViews', [])
+        Session.set('cachedViews', [])
         resolve()
       })
     }
