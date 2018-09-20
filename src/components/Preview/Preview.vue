@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:50:08
- * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-13 15:15:03
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-09-20 10:47:19
  */
 
 <template>
@@ -19,7 +19,7 @@
       type="transition">
       <li
         v-for="(item, index) in list"
-        :key="item.src"
+        :key="item.sortNum"
         :style="itemStyle"
         class="preview-item clearfix">
         <img
@@ -114,7 +114,7 @@ export default {
       handler: function (val) {
         this.list = (val || []).slice()
         this.list.map((item, index) => {
-          item.sortNum = item.sortNum ? item.sortNum : Math.random()
+          item.sortNum = item.sortNum ? item.sortNum : Math.random().toFixed(5)
           item.type = item.type || 1
           item.title = item.picTag || ''
         })

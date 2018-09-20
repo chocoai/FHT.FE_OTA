@@ -1,26 +1,16 @@
 <template>
   <div class="layout-container">
-    <div
-      ref="entryHouseContainer"
-      :style="{height: mainHeight + 'px'}"
-      class="entry-house-container">
-      <div class="entry-house-title">
-        新建分散式整租
-      </div>
-      <hosting-room-detail ref="hostingRoomDetail" :houseRentType="1" />
+    <div class="entry-house-title">
+      新建分散式整租
     </div>
-    <div class="entry-house-bottom">
-      <el-button
-        type="primary"
-        size="small">保存并继续添加</el-button>
-      <el-button size="small">确定</el-button>
-      <el-button size="small">取消</el-button>
-    </div>
+    <hosting-room-detail
+      ref="hostingRoomDetail"
+      :editFlag="false"
+      :houseRentType="1" />
   </div>
 </template>
 
 <script>
-import { debounce } from '@/utils'
 import hostingRoomDetail from './components/hostingRoomDetail'
 export default {
   components: {
@@ -28,61 +18,17 @@ export default {
   },
   data () {
     return {
-      mainHeight: 500
     }
   },
   mounted () {
-    let changeMainHeight = debounce(() => {
-      this.mainHeight = Math.max(document.body.clientHeight - 200, 250)
-    }, 100)
-    changeMainHeight()
-    window.addEventListener('resize', changeMainHeight)
-
-    // let roomDetailData = {
-    //   areaCode: ['', '', ''],
-    //   provinceId: null,
-    //   cityId: null,
-    //   regionId: null,
-    //   zoneId: null,
-    //   zoneName: '',
-    //   address: '',
-    //   regionAddressId: '',
-    //   buildingName: '',
-    //   unitCode: '',
-    //   roomNo: '',
-    //   chamberCount: 1,
-    //   boardCount: 0,
-    //   toiletCount: 0,
-    //   houseArea: null,
-    //   houseDirection: null,
-    //   decorationDegree: 3,
-    //   floorName: '',
-    //   floorAmount: null,
-    //   contactName: '',
-    //   contactGender: 1,
-    //   contactMobile: null,
-    //   facilityItemsList: [],
-    //   houseDesc: '',
-    //   houseRentType: 1,
-    //   pictures: []
-    // }
-    // this.$refs.hostingRoomDetail.setRoomDetailData(roomDetailData)
+    this.$refs.hostingRoomDetail.setRoomDetailData()
   }
 }
 </script>
 <style lang="scss" scoped>
-.entry-house-container {
-  overflow-y: scroll;
-  .entry-house-title {
-    font-size: 18px;
-    line-height: 25px;
-    margin-bottom: 20px;
-  }
-}
-.entry-house-bottom {
-  width: 850px;
-  padding-top: 20px;
-  border-top: 1px solid #ccc;
-  text-align: right;
+.entry-house-title {
+  font-size: 18px;
+  line-height: 25px;
+  margin-bottom: 20px;
 }
 </style>

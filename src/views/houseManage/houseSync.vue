@@ -264,7 +264,7 @@
           title="编辑房间"
           width="60%"
           top="0">
-          <hosting-room-detail ref="hostingRoomDetail" :houseRentType="activeName === '分散式整租' ? 1 : 2" />
+          <hosting-room-detail ref="hostingRoomDetail" :houseRentType="activeName === '分散式整租' ? 1 : 2" :editFlag="true" @closeDialog="closeRoomDetailDialog" />
         </el-dialog>
       </div>
       <el-dialog
@@ -325,7 +325,7 @@ import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/views/houseManage/components/authorize'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
-import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi } from '@/api/houseManage'
+import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi } from '@/api/houseManage'
 export default {
   name: 'HouseSync',
   components: {
@@ -440,6 +440,9 @@ export default {
   methods: {
     closeAuthorizeDialog (status) {
       this.authorizeShow = false
+    },
+    closeRoomDetailDialog () {
+      this.roomDetailModelVisible = false
     },
     // 城市区域
     getCityName () {
@@ -657,7 +660,14 @@ export default {
     },
     // 添加修改房间信息
     openRoomDetail (params) {
-      this.roomDetailModelVisible = true
+      hostingHouseInfoApi({
+        fangyuanCode: params.fangyuanCode
+      }).then((res) => {
+        this.roomDetailModelVisible = true
+        this.$nextTick(() => {
+          this.$refs.hostingRoomDetail.setRoomDetailData(res.data)
+        })
+      })
     },
     // 闲鱼授权
     handleSetting () {
