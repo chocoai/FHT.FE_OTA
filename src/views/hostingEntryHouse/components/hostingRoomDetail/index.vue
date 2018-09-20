@@ -69,7 +69,9 @@
             label=""
             prop="chamberCount"
             class="room-item-count">
-            <el-select v-model="hostingRoomDetail.chamberCount">
+            <el-select
+              v-model="hostingRoomDetail.chamberCount"
+              placeholder="">
               <el-option
                 v-for="(item, index) in 10"
                 :key="item"
@@ -87,7 +89,9 @@
             label=""
             prop="boardCount"
             class="room-item-count">
-            <el-select v-model="hostingRoomDetail.boardCount">
+            <el-select
+              v-model="hostingRoomDetail.boardCount"
+              placeholder="">
               <el-option
                 v-for="(item, index) in 10"
                 :key="item"
@@ -105,7 +109,9 @@
             label=""
             prop="toiletCount"
             class="room-item-count">
-            <el-select v-model="hostingRoomDetail.toiletCount">
+            <el-select
+              v-model="hostingRoomDetail.toiletCount"
+              placeholder="">
               <el-option
                 v-for="(item, index) in 10"
                 :key="item"
@@ -173,8 +179,7 @@
     <el-row :gutter="20">
       <el-col :span="8">
         <el-form-item
-          label="看房电话"
-          prop="contactName">
+          label="看房电话">
           <el-input
             v-model="hostingRoomDetail.contactName"
             placeholder="联系人" />
@@ -194,8 +199,7 @@
       </el-col>
       <el-col :span="6">
         <el-form-item
-          label-width="0"
-          prop="contactMobile">
+          label-width="0">
           <el-input
             v-model="hostingRoomDetail.contactMobile"
             placeholder="联系电话" />
@@ -234,6 +238,24 @@
             size="mini"
             @click="openPicModel(-1)">上传照片</el-button>
         </el-badge>
+        <!-- <div class="previewItems">
+          <Preview
+            :pic-list="currentPicList"
+            :delete-icon="true"
+            :disabled="``"
+            @emitDelete="emitDelete" />
+          <label
+            class="el-upload el-upload--picture-card uploadImage"
+            for="uploadImages">
+            <i class="el-icon-plus" />
+            <input
+              id="uploadImages"
+              :accept="accept"
+              type="file"
+              multiple
+              @change="uploadImg($event)">
+          </label>
+        </div> -->
       </el-form-item>
       <el-form-item
         label="付款方式"
@@ -273,7 +295,7 @@
               class="room-item-count">
               <el-select
                 v-model="hostingRoomDetail.depositOfPayment"
-                @change="handleDepositChange">
+                @change="handleDepositChange(hostingRoomDetail)">
                 <el-option
                   v-for="item in depositList"
                   :key="item.value"
@@ -289,7 +311,10 @@
           <el-form-item
             label="租金"
             prop="rent">
-            <el-input v-model="hostingRoomDetail.rent" @change="handleRentChange" />
+            <el-input
+              v-model="hostingRoomDetail.rent"
+              type="number"
+              @change="handleRentChange(hostingRoomDetail)" />
           </el-form-item>
         </el-col>
         <el-col
@@ -306,6 +331,7 @@
             prop="deposit">
             <el-input
               v-model="hostingRoomDetail.deposit"
+              type="number"
               :disabled="hostingRoomDetail.depositOfPayment !== 13" />
           </el-form-item>
         </el-col>
@@ -332,6 +358,7 @@
               :label="group.label">
               <el-option
                 v-for="item in group.facilitys"
+                v-if="!(hostingRoomDetail.houseRentType === 2 && item.value === '1')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value" />
@@ -341,13 +368,10 @@
       </el-col>
     </el-row>
     <!-- <el-form-item
-      label="房间配置">
-      <el-checkbox-group v-model="hostingRoomDetail.facilityItems">
-        <el-checkbox
-          v-for="item in facilityItemsList"
-          :key="item.value"
-          :label="item.label" />
-      </el-checkbox-group>
+      :label="hostingRoomDetail.houseRentType === 1 ? '公区设施' : '房间设施'">
+      <service-list
+        :list="hostingRoomDetail.facilityItemsList"
+        @setFacilityItemsList="setFacilityItemsList" />
     </el-form-item> -->
     <el-row :gutter="20">
       <el-col :span="24">
@@ -385,7 +409,7 @@
             <el-col :span="7">
               <el-form-item label="房间名称">
                 <el-input
-                  v-model="hostingRoomDetail.hostingRooms[index].roomArea"
+                  v-model="hostingRoomDetail.hostingRooms[index].roomPlaceName"
                   placeholder="如主卧/侧卧" />
               </el-form-item>
             </el-col>
@@ -473,7 +497,7 @@
                   multiple
                   placeholder="请选择">
                   <el-option-group
-                    v-for="group in roomFacilityGroup"
+                    v-for="group in facilityGroup"
                     :key="group.label"
                     :label="group.label">
                     <el-option
@@ -505,9 +529,10 @@
                   class="room-item-count">
                   <el-select v-model="hostingRoomDetail.hostingRooms[index].payOfPayment">
                     <el-option
-                      v-for="(item, index) in 13"
-                      :key="item"
-                      :value="index" />
+                      v-for="(item, index) in payList"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value" />
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -525,8 +550,13 @@
                   class="room-item-count">
                   <el-select
                     v-model="hostingRoomDetail.hostingRooms[index].depositOfPayment"
-                    style="width: 100%">
-                    <el-option :value="1231231" />
+                    style="width: 100%"
+                    @change="handleDepositChange(hostingRoomDetail.hostingRooms[index])">
+                    <el-option
+                      v-for="(item, index) in depositList"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value" />
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -538,7 +568,10 @@
                 :prop="'hostingRooms.' + index + '.rent'"
                 :rules="hostingRoomDetailRules.roomDetail.rent"
                 label="租金">
-                <el-input v-model="hostingRoomDetail.hostingRooms[index].rent" />
+                <el-input
+                  v-model="hostingRoomDetail.hostingRooms[index].rent"
+                  type="number"
+                  @change="handleRentChange(hostingRoomDetail.hostingRooms[index])" />
               </el-form-item>
             </el-col>
             <el-col
@@ -554,7 +587,10 @@
                 :prop="'hostingRooms.' + index + '.deposit'"
                 :rules="hostingRoomDetailRules.roomDetail.deposit"
                 label="押金">
-                <el-input v-model="hostingRoomDetail.hostingRooms[index].deposit" />
+                <el-input
+                  v-model="hostingRoomDetail.hostingRooms[index].deposit"
+                  type="number"
+                  :disabled="hostingRoomDetail.hostingRooms[index].depositOfPayment !== 13" />
               </el-form-item>
             </el-col>
             <el-col
@@ -571,7 +607,6 @@
     <!-- 上传图片模态框 -->
     <el-dialog
       :visible.sync="uploadPicsModelVisible"
-      :append-to-body="true"
       title="上传房间照片"
       custom-class="upload-pics-model"
       width="600px"
@@ -579,7 +614,7 @@
       <div class="previewItems">
         <Preview
           :pic-list="currentPicList"
-          :delete-icon="`delete`"
+          :delete-icon="true"
           :disabled="``"
           @emitDelete="emitDelete" />
         <label
@@ -616,16 +651,24 @@
 <script>
 import areaSelect from '@/components/AreaSelect'
 import mapSelect from '@/components/MapSelect'
-import { estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
 import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
+import ServiceList from './serviceList'
+import { estateZoneListByAreaIdApi, deleteRoomApi } from '@/api/houseManage'
 import { deepClone } from '@/utils'
 export default {
+  props: {
+    houseRentType: {
+      type: Number,
+      default: 1 // 1.整租 2.合租
+    }
+  },
   components: {
     areaSelect,
     Preview,
     ImageCropper,
-    mapSelect
+    mapSelect,
+    ServiceList
   },
   data () {
     return {
@@ -681,14 +724,15 @@ export default {
         floorAmount: [
           { required: true, message: '请输入总楼层数', trigger: 'blur' }
         ],
-        contactName: [
-          { required: true, message: '请输入联系人姓名', trigger: 'blur' }
-        ],
-        contactMobile: [
-          { required: true, message: '请输入联系人电话', trigger: 'blur' }
-        ],
+        // contactName: [
+        //   { required: true, message: '请输入联系人姓名', trigger: 'blur' }
+        // ],
+        // contactMobile: [
+        //   { required: true, message: '请输入联系人电话', trigger: 'blur' }
+        // ],
         houseDesc: [
-          { max: 150, message: '长度不能超过150个字符', trigger: 'change' }
+          { required: true, message: '请输入房源描述', trigger: 'blur' },
+          { required: true, max: 150, message: '长度不能超过150个字符', trigger: 'change' }
         ],
         payOfPayment: [
           { required: true, message: '请选择付款方式', trigger: 'change' }
@@ -799,6 +843,9 @@ export default {
         {
           label: '家具',
           facilitys: [{
+            value: '1',
+            label: '床'
+          }, {
             value: '7',
             label: '沙发'
           }, {
@@ -828,23 +875,6 @@ export default {
     }
   },
   computed: {
-    roomFacilityGroup () {
-      let facilityList = this.facilityGroup.slice(0)
-      facilityList.splice(1, 1, {
-        label: '家具',
-        facilitys: [{
-          value: '1',
-          label: '床'
-        }, {
-          value: '9',
-          label: '书桌'
-        }, {
-          value: '12',
-          label: '衣柜'
-        }]
-      })
-      return facilityList
-    },
     payList () {
       let list = []
       for (let i = 0; i < 13; i++) {
@@ -863,6 +893,62 @@ export default {
       })
       return list
     }
+  },
+  mounted () {
+    let roomDetailData = {
+      areaCode: ['', '', ''],
+      provinceId: null,
+      cityId: null,
+      regionId: null,
+      zoneId: null,
+      zoneName: '',
+      address: '',
+      regionAddressId: '',
+      buildingName: '',
+      unitCode: '',
+      roomNo: '',
+      chamberCount: 1,
+      boardCount: 0,
+      toiletCount: 0,
+      houseArea: null,
+      houseDirection: null,
+      decorationDegree: 3,
+      floorName: '',
+      floorAmount: null,
+      contactName: '',
+      contactGender: 1,
+      contactMobile: null,
+      facilityItemsList: [],
+      houseDesc: ''
+    }
+    if (this.houseRentType === 1) {
+      roomDetailData = Object.assign(roomDetailData, {
+        pictures: [],
+        houseRentType: 1,
+        deposit: '',
+        rent: '',
+        depositOfPayment: '',
+        payOfPayment: ''
+      })
+    } else {
+      roomDetailData.houseRentType = 2
+      roomDetailData.hostingRooms = [
+        {
+          roomPlaceName: '',
+          roomArea: '',
+          roomAttributesList: [],
+          roomName: '房间A',
+          name: '1',
+          pictures: [],
+          facilityItemsList: [],
+          deposit: '',
+          rent: '',
+          depositOfPayment: '',
+          payOfPayment: ''
+        }
+      ]
+    }
+    this.setRoomDetailData(roomDetailData)
   },
   methods: {
     searchZoneList (flag) { // 搜索板块列表
@@ -894,11 +980,16 @@ export default {
         let curIndex = this.hostingRoomDetail.hostingRooms.length
         let newTabName = ++this.tabIndex + ''
         this.hostingRoomDetail.hostingRooms.push({
+          roomPlaceName: '',
           roomName: '房间' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[curIndex],
           name: newTabName,
           roomArea: '',
           roomAttributesList: [],
-          pictures: []
+          pictures: [],
+          deposit: '',
+          rent: '',
+          depositOfPayment: '',
+          payOfPayment: ''
         })
         this.activeRoomName = newTabName
       }
@@ -924,34 +1015,30 @@ export default {
         })
       }
     },
-    searchOrgListByKeywords (query) { // 搜索组织列表
-      if (query !== '') {
-        this.loading = true
-        estateOrgListApi({
-          orgName: query
-        }).then((res) => {
-          this.loading = false
-          if (res.code === '0') {
-            this.orgList = res.data.list
-          }
-        })
+    handleRentChange (target) {
+      if (target.rent !== '' && target.depositOfPayment !== '' && target.depositOfPayment !== 13) {
+        target.deposit = target.rent * target.depositOfPayment
       } else {
-        this.orgList = []
+        target.deposit = ''
       }
     },
-    setOrg (item) {
-      this.hostingRoomDetail.accountName = item ? item.accountName : ''
-      this.hostingRoomDetail.adminUserId = item ? item.adminUserId : ''
-    },
-    handleRentChange () {
-      if (this.hostingRoomDetail.rent && this.hostingRoomDetail.depositOfPayment && this.hostingRoomDetail.depositOfPayment !== 13) {
-        this.hostingRoomDetail.deposit = this.hostingRoomDetail.rent * this.hostingRoomDetail.depositOfPayment
+    handleDepositChange (target) {
+      if (target.depositOfPayment !== 13) {
+        if (target.rent === '') {
+          target.deposit = ''
+          return
+        }
+        target.deposit = target.depositOfPayment * target.rent
+        if (target.roomName) {
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.roomName.replace('房间', ''))
+          this.$refs.hostingRoomDetail.validateField('hostingRooms.' + index + '.deposit')
+        } else {
+          this.$refs.hostingRoomDetail.validateField('deposit')
+        }
       }
     },
-    handleDepositChange (val) {
-      if (val !== 13) {
-        this.hostingRoomDetail.deposit = this.hostingRoomDetail.rent ? val * this.hostingRoomDetail.rent : ''
-      }
+    setFacilityItemsList (val) {
+      this.hostingRoomDetail.facilityItemsList = val
     },
     setRoomDetailData (val) {
       if (val.houseRentType === 2) {
@@ -960,12 +1047,6 @@ export default {
       }
       if (val.isEditFlag) {
         val.zoneId = val.zoneId === 0 ? '' : val.zoneId
-        this.orgList = [
-          {
-            orgId: val.orgId,
-            orgName: val.orgName
-          }
-        ]
         if (val.houseRentType === 1 && val.pictures) {
           val.pictures.forEach((item) => {
             item.title = item.imageName
@@ -984,20 +1065,8 @@ export default {
           })
         }
       } else {
-        this.orgList = []
         this.zoneList = []
       }
-      val.tag = !!val.tag
-      if (val.sourceInfo) {
-        this.filterManagerList = [
-          {
-            id: val.sourceInfo.split(',')[0],
-            name: val.sourceInfo.split(',')[1]
-          }
-        ]
-        val.sourceInfo = val.sourceInfo.split(',')[0]
-      }
-
       this.$nextTick(() => {
         this.$set(this, 'hostingRoomDetail', val)
         this.$set(this, 'tempFormData', deepClone(val))
@@ -1217,17 +1286,15 @@ export default {
     }
   }
 }
-.upload-pics-model {
-  .previewItems {
-    margin-bottom: 10px;
-    .el-upload--picture-card.uploadImage {
-      width: 122px;
-      height: 92px;
-      line-height: 98px;
-    }
+.previewItems {
+  margin-bottom: 10px;
+  .el-upload--picture-card.uploadImage {
+    width: 122px;
+    height: 92px;
+    line-height: 98px;
   }
-  .upload-pics-info {
-    margin: 0 0 5px;
-  }
+}
+.upload-pics-info {
+  margin: 0 0 5px;
 }
 </style>

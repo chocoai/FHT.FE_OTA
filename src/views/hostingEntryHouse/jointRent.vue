@@ -7,7 +7,7 @@
       <div class="entry-house-title">
         新建分散式合租
       </div>
-      <hosting-room-detail ref="hostingRoomDetail" />
+      <hosting-room-detail ref="hostingRoomDetail" :houseRentType="2" />
     </div>
     <div class="entry-house-bottom">
       <el-button
@@ -39,7 +39,7 @@ export default {
     }, 100)
     changeMainHeight()
     window.addEventListener('resize', changeMainHeight)
-    this.initRoomDetail()
+    // this.initRoomDetail()
   },
   methods: {
     initRoomDetail () {
@@ -100,7 +100,7 @@ export default {
 .entry-house-bottom {
   width: 850px;
   padding-top: 20px;
-  border-top: 1px solid #ccc;
+  // border-top: 1px solid #ccc;
   text-align: right;
 }
 </style>

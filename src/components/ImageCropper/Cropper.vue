@@ -1,14 +1,15 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:49:39
- * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-18 18:58:47
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-09-19 17:58:54
  */
 
 <template>
   <div class="dialog-cropper">
     <el-dialog
       :visible.sync="layer_cropper"
+      :append-to-body="true"
       title="图片裁剪"
       width="920px"
       @close="cropperClose">

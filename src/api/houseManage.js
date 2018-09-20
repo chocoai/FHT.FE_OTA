@@ -65,28 +65,21 @@ export function deleteRoomApi (params) {
 
 /* 集中式根据区id查询板块列表 */
 export function estateZoneListByAreaIdApi (params) {
-  return fetch('queryHostingHouseInfo', {
-    method: 'queryZoneListByAreaId',
+  return fetch('http://localhost:1314/api/fangyuan/queryHostingHouseInfo', {
     params
-  }, {
-    isMock: true
   })
 }
 
 /* 集中式模糊查询具体位置 */
 export function estateAddressByKeywordsApi (params) {
-  return fetch('searchAddressByKeyword', {
+  return fetch('http://localhost:1314/api/fangyuan/searchAddressByKeyword', {
     params
-  }, {
-    isMock: true
   })
 }
 
 /* 集中式新增小区 */
 export function estateNewSubdistrictApi (params) {
-  return fetch('addSubdistrict', {
+  return fetch('http://localhost:1314/api/fangyuan/addSubdistrict', {
     params
-  }, {
-    isMock: true
   })
 }

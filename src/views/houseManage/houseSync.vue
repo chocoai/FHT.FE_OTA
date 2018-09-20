@@ -262,7 +262,7 @@
           title="编辑房间"
           width="60%"
           top="0">
-          <hosting-room-detail ref="hostingRoomDetail"/>
+          <hosting-room-detail ref="hostingRoomDetail" :houseRentType="activeName === '分散式整租' ? 1 : 2" />
         </el-dialog>
       </div>
       <el-dialog

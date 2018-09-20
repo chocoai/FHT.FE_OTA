@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:31:28
- * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 15:43:51
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-09-19 09:48:32
  */
 
 let path = require('path')
@@ -17,14 +17,16 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: proxyIPs.WANLI,
+        // target: proxyIPs.WANLI,
+        target: 'http://192.168.5.119:3000',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         }
       }
     },
-    host: '0.0.0.0',
+    // host: '0.0.0.0',
+    host: 'localhost',
     port: 1314,
     autoOpenBrowser: false,
     errorOverlay: true,

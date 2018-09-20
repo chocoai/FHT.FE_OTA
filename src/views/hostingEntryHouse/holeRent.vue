@@ -7,7 +7,7 @@
       <div class="entry-house-title">
         新建分散式整租
       </div>
-      <hosting-room-detail ref="hostingRoomDetail"/>
+      <hosting-room-detail ref="hostingRoomDetail" :houseRentType="1" />
     </div>
     <div class="entry-house-bottom">
       <el-button
@@ -38,46 +38,40 @@ export default {
     changeMainHeight()
     window.addEventListener('resize', changeMainHeight)
 
-    let roomDetailData = {
-      areaCode: ['', '', ''],
-      provinceId: null,
-      cityId: null,
-      regionId: null,
-      zoneId: null,
-      zoneName: '',
-      address: '',
-      regionAddressId: '',
-      buildingName: '',
-      unitCode: '',
-      roomNo: '',
-      chamberCount: null,
-      boardCount: null,
-      toiletCount: null,
-      houseArea: null,
-      houseDirection: null,
-      decorationDegree: 3,
-      floorName: '',
-      floorAmount: null,
-      contactName: '',
-      contactGender: 1,
-      contactMobile: null,
-      facilityItemsList: [],
-      houseDesc: '',
-      orgId: '',
-      adminUserId: null,
-      accountName: '',
-      tag: false,
-      sourceInfo: '',
-      houseRentType: 1,
-      pictures: []
-    }
-    this.$refs.hostingRoomDetail.setRoomDetailData(roomDetailData)
+    // let roomDetailData = {
+    //   areaCode: ['', '', ''],
+    //   provinceId: null,
+    //   cityId: null,
+    //   regionId: null,
+    //   zoneId: null,
+    //   zoneName: '',
+    //   address: '',
+    //   regionAddressId: '',
+    //   buildingName: '',
+    //   unitCode: '',
+    //   roomNo: '',
+    //   chamberCount: 1,
+    //   boardCount: 0,
+    //   toiletCount: 0,
+    //   houseArea: null,
+    //   houseDirection: null,
+    //   decorationDegree: 3,
+    //   floorName: '',
+    //   floorAmount: null,
+    //   contactName: '',
+    //   contactGender: 1,
+    //   contactMobile: null,
+    //   facilityItemsList: [],
+    //   houseDesc: '',
+    //   houseRentType: 1,
+    //   pictures: []
+    // }
+    // this.$refs.hostingRoomDetail.setRoomDetailData(roomDetailData)
   }
 }
 </script>
 <style lang="scss" scoped>
 .entry-house-container {
-
   overflow-y: scroll;
   .entry-house-title {
     font-size: 18px;
