@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:10:13
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 14:37:35
+ * @Last Modified time: 2018-09-20 14:50:43
  */
 
 import axios from 'axios'
@@ -102,7 +102,8 @@ const responseMehod = (response, resolve, reject) => {
   if (!response.config.interceptors || res.code * 1 === 0) {
     return resolve(res)
   }
-  if (res.code * 1 === 1011 && res.message === '数据不存在') {
+  // 数据不存在 || 未登录
+  if (res.code * 1 === 1011 || res.code * 1 === 2084) {
     logOutMethod()
   }
   Message({

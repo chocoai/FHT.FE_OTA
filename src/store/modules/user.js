@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-19 15:17:53
+ * @Last Modified time: 2018-09-20 15:11:06
  */
 
 import { loginApi } from '@/api/user'
@@ -13,28 +13,33 @@ import { SHA2 } from '@/utils/sha'
 const user = {
   state: {
     sessionId: getSessionId(),
-    name: '',
+    roles: '',
     avatar: '',
-    roles: []
+    userInfo: {
+      authed: false,
+      idlefished: false,
+      authInfo: {}
+    }
   },
 
   mutations: {
     SET_SESSIONID: (state, sessionId) => {
       state.sessionId = sessionId
     },
-    SET_NAME: (state, name) => {
-      state.name = name
+    SET_USERINFO: (state, userInfo) => {
+      state.userInfo = userInfo
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
     SET_ROLES: (state, roles) => {
-      const rolesMap = {
-        '1': 'admin',
-        '99': 'service',
-        '0': 'global'
-      }
-      state.roles = rolesMap[roles.toString()] || 'global'
+      // const rolesMap = {
+      //   '1': 'admin',
+      //   '99': 'service',
+      //   '0': 'global'
+      // }
+      // state.roles = rolesMap[roles.toString()] || 'global'
+      state.roles = 'admin'
     }
   },
 
@@ -63,10 +68,10 @@ const user = {
         loginApi.getInfo({
           sessionId: state.sessionId
         }).then(response => {
-          const data = response.data
-          commit('SET_ROLES', data.isAdmin)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.picUrl || defaultAvatar)
+          const data = response.data || {}
+          commit('SET_ROLES', 'admin')
+          commit('SET_AVATAR', defaultAvatar)
+          commit('SET_USERINFO', data)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -82,7 +87,7 @@ const user = {
         }).then(() => {
           removeSessionId()
           commit('SET_SESSIONID', '')
-          commit('SET_ROLES', [])
+          commit('SET_ROLES', '')
           resolve()
         }).catch(error => {
           reject(error)

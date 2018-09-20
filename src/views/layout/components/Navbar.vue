@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 11:42:00
+ * @Last Modified time: 2018-09-20 15:14:51
  */
 
 <template>
@@ -115,7 +115,7 @@ export default {
     return {
       layer_showUserInfo: false,
       ruleForm: {
-        name: this.$store.state.user.name
+        name: this.$store.getters.name
       },
       authorizeShow: false
     }
