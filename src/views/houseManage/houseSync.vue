@@ -193,7 +193,7 @@
           slot="slot_idlefishStatus"
           slot-scope="scope">
           <el-popover
-            v-if="scope.row.idlefishStatus === 2 "
+            v-if="scope.row.idlefishStatus === 5"
             trigger="hover"
             placement="top">
             <p>发布失败原因: {{ scope.row.idlefishfailMessage }}</p>
@@ -213,7 +213,7 @@
           slot="slot_mailinStatus"
           slot-scope="scope">
           <el-popover
-            v-if="scope.row.mailinStatus === 2"
+            v-if="scope.row.mailinStatus === 5"
             trigger="hover"
             placement="top">
             <p>发布失败原因: {{ scope.row.mailinfailMessage }}</p>
@@ -350,14 +350,18 @@ export default {
     // 麦邻 闲鱼发布状态
     renderStatusType (status) {
       const statusMap = {
-        '1': 'success',
-        '2': 'danger',
-        '0': 'info'
+        '1': 'info',
+        '2': 'success',
+        '5': 'danger',
+        '9': 'primary'
+
       }
       return statusMap[status] || 'info'
     },
     renderStatusValue (status) {
-      const statusStrData = ['未发布', '已发布', '发布失败']
+      const statusStrData = ['', '未发布', '已发布']
+      statusStrData[5] = '发布失败'
+      statusStrData[9] = '发布中'
       return statusStrData[status] || '未知'
     }
   },
@@ -484,7 +488,7 @@ export default {
           roomStatus: '', // 2-未出租，9-已出租
           regionAddressId: '',
           roomNo: '',
-          mailinStatus: '', // 0-未发布，1：已发布，2：发布失败
+          mailinStatus: '', // 1-未发布，2-已发布，5：发布失败 ，9：处理中
           idlefishStatus: ''
         }
         this.selectedOpthons = []
@@ -615,20 +619,19 @@ export default {
           title: '下架'
         }
       }
-      console.log(type)
       if (this.selectedItems.length === 0) {
         this.$message.error(`请选择需要${typeConfig[type].title}的房源`)
         return false
       }
       if (type === 'on') {
-        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 1 && item.mailinStatus === 1)
+        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 2 && item.mailinStatus === 2)
         if (unfilterItem.length !== 0) {
           this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
           return false
         }
       }
       if (type === 'off') {
-        const unfilterItem = this.selectedItems.filter(item => (item.idlefishStatus === 0 && item.mailinStatus === 0) || (item.idlefishStatus === 2 && item.mailinStatus === 2))
+        const unfilterItem = this.selectedItems.filter(item => (item.idlefishStatus === 1 && item.mailinStatus === 1) || (item.idlefishStatus === 5 && item.mailinStatus === 5))
         if (unfilterItem.length !== 0) {
           this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
           return false
@@ -710,7 +713,7 @@ export default {
               duration: 2000
             })
             this.$store.dispatch('GetInfo').then(res => {
-              this.dialogVisible = true
+              // 认证成功之后 的回调函数
             })
           })
         }
