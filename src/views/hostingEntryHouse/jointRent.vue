@@ -5,9 +5,9 @@
     </div>
     <hosting-room-detail
       ref="hostingRoomDetail"
-      :editFlag="false"
-      :houseRentType="2" />
-    <!-- <div class="entry-house-bottom">
+      :edit-flag="false"
+      :house-rent-type="2" />
+      <!-- <div class="entry-house-bottom">
       <el-button
         type="primary"
         size="small">
