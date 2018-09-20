@@ -266,13 +266,7 @@
           title="编辑房间"
           width="60%"
           top="0">
-<<<<<<< HEAD
           <hosting-room-detail ref="hostingRoomDetail" :houseRentType="activeName === '分散式整租' ? 1 : 2" :editFlag="true" @closeDialog="closeRoomDetailDialog" />
-=======
-          <hosting-room-detail
-            ref="hostingRoomDetail"
-            :house-rent-type="activeName === '分散式整租' ? 1 : 2" />
->>>>>>> f4d1a409e117cf25b555348f2209450eff3fd3a6
         </el-dialog>
       </div>
       <el-dialog
@@ -334,11 +328,7 @@ import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/views/houseManage/components/authorize'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
-<<<<<<< HEAD
-import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi } from '@/api/houseManage'
-=======
-import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, certificationFromApi } from '@/api/houseManage'
->>>>>>> f4d1a409e117cf25b555348f2209450eff3fd3a6
+import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi, certificationFromApi } from '@/api/houseManage'
 export default {
   name: 'HouseSync',
   components: {

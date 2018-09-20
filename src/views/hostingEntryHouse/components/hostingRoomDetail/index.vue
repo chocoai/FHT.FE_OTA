@@ -204,14 +204,8 @@
           <el-form-item
             label-width="0">
             <el-input
-<<<<<<< HEAD
               v-model="hostingRoomDetail.contactMobile"
               placeholder="联系电话" />
-=======
-              v-model="hostingRoomDetail.deposit"
-              :disabled="hostingRoomDetail.depositOfPayment !== 13"
-              type="number" />
->>>>>>> f4d1a409e117cf25b555348f2209450eff3fd3a6
           </el-form-item>
         </el-col>
       </el-row>
@@ -519,7 +513,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-<<<<<<< HEAD
             <el-form-item
               label="付款方式"
               prop="chamberCount"
@@ -613,50 +606,6 @@
           </el-tab-pane>
         </el-tabs>
       </template>
-=======
-          </el-form-item>
-          <el-row :gutter="20">
-            <el-col :span="6">
-              <el-form-item
-                :prop="'hostingRooms.' + index + '.rent'"
-                :rules="hostingRoomDetailRules.roomDetail.rent"
-                label="租金">
-                <el-input
-                  v-model="hostingRoomDetail.hostingRooms[index].rent"
-                  type="number"
-                  @change="handleRentChange(hostingRoomDetail.hostingRooms[index])" />
-              </el-form-item>
-            </el-col>
-            <el-col
-              :span="1"
-              style="text-align: left"
-              class="inline-item-label">
-              元/月
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="6">
-              <el-form-item
-                :prop="'hostingRooms.' + index + '.deposit'"
-                :rules="hostingRoomDetailRules.roomDetail.deposit"
-                label="押金">
-                <el-input
-                  v-model="hostingRoomDetail.hostingRooms[index].deposit"
-                  :disabled="hostingRoomDetail.hostingRooms[index].depositOfPayment !== 13"
-                  type="number" />
-              </el-form-item>
-            </el-col>
-            <el-col
-              :span="1"
-              style="text-align: left"
-              class="inline-item-label">
-              元
-            </el-col>
-          </el-row>
-        </el-tab-pane>
-      </el-tabs>
-    </template>
->>>>>>> f4d1a409e117cf25b555348f2209450eff3fd3a6
 
       <!-- 上传图片模态框 -->
       <el-dialog
@@ -738,13 +687,10 @@ export default {
     houseRentType: {
       type: Number,
       default: 1 // 1.整租 2.合租
-<<<<<<< HEAD
     },
     editFlag: {
       type: Boolean,
       default: false
-=======
->>>>>>> f4d1a409e117cf25b555348f2209450eff3fd3a6
     }
   },
   data () {
