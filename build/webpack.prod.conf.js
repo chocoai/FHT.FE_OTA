@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:31:14
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-12 16:58:25
+ * @Last Modified time: 2018-09-21 14:49:24
  */
 'use strict'
 const path = require('path')
@@ -61,7 +61,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true,
       favicon: resolve('favicon.ico'),
-      title: 'vue-admin-template',
+      title: 'FHT_OTA',
       minify: {
         removeComments: true,
         collapseWhitespace: true,

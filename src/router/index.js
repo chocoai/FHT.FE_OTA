@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 14:46:48
+ * @Last Modified time: 2018-09-21 15:00:06
  */
 
 import Vue from 'vue'
@@ -50,9 +50,9 @@ export const constantRouterMap = [{
 
 export default new Router({
   // https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90
-  mode: 'history',
-  // 线上部署路径
-  base: __dirname,
+  // mode: 'history',
+  // // 线上部署路径
+  // base: __dirname,
   // 后退后页面位置
   scrollBehavior: () => ({
     y: 0
