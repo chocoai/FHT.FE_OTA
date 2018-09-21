@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 15:00:06
+ * @Last Modified time: 2018-09-21 15:24:42
  */
 
 import Vue from 'vue'
@@ -32,7 +32,7 @@ export const constantRouterMap = [{
   component: _import('404').default,
   hidden: true
 }, {
-  path: '',
+  path: '/house',
   name: '主页',
   component: Layout,
   redirect: '/houseManage',
@@ -108,6 +108,11 @@ export const asyncRouterMap = [
       path: 'hostingJointRentPage',
       component: _import('hostingEntryHouse/jointRent').default
     }]
+  },
+  {
+    path: '/',
+    redirect: '/house/houseManage',
+    hidden: true
   },
   {
     path: '*',

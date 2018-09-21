@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:31:06
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-12 16:57:49
+ * @Last Modified time: 2018-09-21 15:15:26
  */
 
 'use strict'
@@ -64,7 +64,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true,
       favicon: resolve('favicon.ico'),
-      title: 'vue-admin-template'
+      title: 'FHT_OTA'
     })
   ]
 })
