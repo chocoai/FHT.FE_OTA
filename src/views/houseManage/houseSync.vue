@@ -21,6 +21,7 @@
               level="1"
               class="item-select"
               filterable
+              clearable
               @change="handleChange"
             />
           </el-form-item>
@@ -28,7 +29,9 @@
             <el-select
               v-model="searchParams.regionAddressId"
               size="small"
+              filterable
               placeholder="请选择小区"
+              clearable
               class="item-select"
             >
               <el-option
@@ -45,6 +48,7 @@
               size="small"
               placeholder="请输入房间号"
               class="item-select"
+              clearable
             />
           </el-form-item>
           <el-form-item>
@@ -67,6 +71,7 @@
               size="small"
               placeholder="请选择出租状态"
               class="item-select"
+              clearable
             >
               <el-option
                 value="9"
@@ -82,6 +87,7 @@
               size="small"
               placeholder="麦邻发布状态"
               class="item-select"
+              clearable
             >
               <el-option
                 value="0"
@@ -100,6 +106,7 @@
               size="small"
               placeholder="闲鱼发布状态"
               class="item-select"
+              clearable
             >
               <el-option
                 value="0"
@@ -135,16 +142,16 @@
             <div>
               <input
                 id="mlRent"
-                v-model="publishSelect.mlzf"
+                v-model="publishSelect.mailin"
                 type="checkbox"
               >
               <label for="mlRent">
                 <div
-                  :class="{changeBackground:publishSelect.mlzf}"
+                  :class="{changeBackground:publishSelect.mailin}"
                   class="ml-selectName">麦邻租房</div>
                 <div class="ml-selectStatus">
                   <i
-                    v-show="publishSelect.mlzf"
+                    v-show="publishSelect.mailin"
                     class="el-icon-check"/>
                 </div>
               </label>
@@ -218,7 +225,7 @@
             placement="top">
             <p>发布失败原因: {{ scope.row.mailinfailMessage }}</p>
             <div slot="reference">
-              <el-tag :type="(scope.row.mailinStatus||scope.row.idlefishStatus) | renderStatusType">
+              <el-tag :type="(scope.row.mailinStatus) | renderStatusType">
                 {{ (scope.row.mailinStatus) | renderStatusValue }}
               </el-tag>
             </div>
@@ -325,7 +332,6 @@
       </el-dialog>
     </div>
   </div>
-
 </template>
 <script>
 import { deepClone } from '@/utils'
@@ -389,7 +395,7 @@ export default {
       selectedItems: [],
       filterManagerList: [],
       authorizeShow: false,
-      dialogTitle: '闲鱼授权',
+      dialogTitle: '',
       roomStatusArry: [],
       goAuthorizeShow: false,
       certificationShow: false,
@@ -405,27 +411,39 @@ export default {
       },
       colModels: [
         {slot: 'selection', width: 30},
-        {prop: 'subdistrictName', label: '公寓/小区', width: 300},
-        {prop: 'roomNo', label: '房间号', width: 100},
+        {prop: 'subdistrictName', label: '公寓/小区', width: 150},
+        {prop: 'roomNo', label: '房间号', width: 150},
         {prop: 'chamberCount',
           label: '户型',
-          width: 200,
+          width: 150,
           render (row) {
             return (row.chamberCount || 0) + '室' + (row.boardCount || 0) + '厅' + (row.toiletCount || 0) + '卫'
           }
         },
-        {prop: 'roomArea', label: '整套面积', width: 80},
-        {prop: 'rentPrice', label: '推广价格', width: 80},
+        {prop: 'roomArea',
+          label: '整套面积',
+          width: 150,
+          render (row) {
+            return (row.roomArea || 0) + 'm²'
+          }
+        },
+        {prop: 'rentPrice',
+          label: '推广价格',
+          width: 150,
+          render (row) {
+            return (row.rentPrice || 0) + '元'
+          }
+        },
         {
           prop: 'mailinStatus',
           label: '麦邻租房',
-          width: 100,
+          width: 150,
           type: 'status',
           slotName: 'slot_mailinStatus'
         },
         { prop: 'idlefishStatus',
           label: '闲鱼租房',
-          width: 100,
+          width: 150,
           type: 'status',
           slotName: 'slot_idlefishStatus'
         },
@@ -446,7 +464,7 @@ export default {
         }
       ],
       publishSelect: {
-        mlzf: true,
+        mailin: true,
         idlefish: true
       },
       dialogVisible: false,
@@ -641,9 +659,9 @@ export default {
       this.dialogVisible = true
       this.dialogTitle = typeConfig[type].title
       if (type === 'off') {
-        this.publishSelect.mlzf = false
+        this.publishSelect.mailin = false
       } else {
-        this.publishSelect.mlzf = true
+        this.publishSelect.mailin = true
       }
       this.publishSelect.idlefish = false
     },
@@ -661,13 +679,15 @@ export default {
         }
       }
       let params = {
-        platforms: platform,
-        roomCodeList: roomCodes
+        platform: platform,
+        roomCodes: roomCodes
+        // platform: ['mailin'],
+        // roomCodes: ['200708852']
       }
       console.log('发布的数据', params)
       if (this.dialogTitle === '发布') {
-        for (let i = 0; i < params.platforms.length; i++) {
-          if (params.platforms[i] === 'idlefish' && !this.authorizeStatus) {
+        for (let i = 0; i < params.platform.length; i++) {
+          if (params.platform[i] === 'idlefish' && !this.authorizeStatus) {
             this.dialogVisible = false
             this.goAuthorizeShow = true
             return false
@@ -712,7 +732,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-            // this.userAuthentication = true
+            this.userAuthentication = true
             this.$store.dispatch('GetInfo').then(res => {
               // 认证成功之后 的回调函数
             })

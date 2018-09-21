@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 18:29:58
+ * @Last Modified time: 2018-09-21 16:16:58
  */
 
 import Vue from 'vue'
@@ -23,14 +23,17 @@ Vue.use(Router)
 
 export const constantRouterMap = [{
   path: '/login',
-  component: _import('login/index').default,
+  name: '登录',
+  component: _import('login/index'),
   hidden: true
 }, {
   path: '/404',
-  component: _import('404').default,
+  name: '404',
+  component: _import('404'),
   hidden: true
 }, {
-  path: '',
+  path: '/house',
+  name: '主页',
   component: Layout,
   redirect: '/houseManage',
   noDropdown: true,
@@ -38,39 +41,32 @@ export const constantRouterMap = [{
   children: [{
     name: '房源管理',
     path: 'houseManage',
-    component: _import('houseManage/houseSync').default,
+    component: _import('houseManage/houseSync'),
     meta: {
       isHomePage: true
     }
   }]
-}
-//, {
-//   path: '',
-//   component: Layout,
-//   redirect: '/dashboard',
-//   icon: 'home',
-//   noDropdown: true,
-//   children: [{
-//     name: '首页',
-//     path: 'dashboard',
-//     component: _import('dashboard/index').default
-//   }]
-// }
-]
+}]
 
 export default new Router({
-  /* mode: 'history', //需要服务器配置路由 */
+  // https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90
+  mode: 'history',
+  // 线上部署路径
+  base: __dirname,
+  // 后退后页面位置
   scrollBehavior: () => ({
     y: 0
-  }), // 后退后页面位置
+  }),
   routes: constantRouterMap
 })
+
+console.log(__dirname)
 
 export const asyncRouterMap = [
   {
     path: '/example',
     component: Layout,
-    redirect: 'noredirect',
+    redirect: 'noRedirect',
     name: '示例',
     icon: 'example',
     hidden: true,
@@ -79,37 +75,44 @@ export const asyncRouterMap = [
     },
     children: [{
       path: 'image',
-      component: _import('example/image').default,
+      component: _import('example/image'),
       name: '图片组件'
     }, {
       path: 'grid',
-      component: _import('example/tablePagenation').default,
+      component: _import('example/tablePagenation'),
       name: '表格组件'
     }]
   },
   {
-    path: '',
+    path: '/addHouse',
+    name: '整租录入',
     component: Layout,
-    redirect: '/hostingHoleRentPage',
+    redirect: 'noRedirect',
     icon: 'rent_whole',
     noDropdown: true,
     children: [{
       name: '分散整租录入',
       path: 'hostingHoleRentPage',
-      component: _import('hostingEntryHouse/holeRent').default
+      component: _import('hostingEntryHouse/holeRent')
     }]
   },
   {
-    path: '',
+    path: '/addHouse',
+    name: '合租录入',
     component: Layout,
-    redirect: '/hostingJointRentPage',
+    redirect: 'noRedirect',
     icon: 'rent_join',
     noDropdown: true,
     children: [{
       name: '分散合租录入',
       path: 'hostingJointRentPage',
-      component: _import('hostingEntryHouse/jointRent').default
+      component: _import('hostingEntryHouse/jointRent')
     }]
+  },
+  {
+    path: '/',
+    redirect: '/house/houseManage',
+    hidden: true
   },
   {
     path: '*',

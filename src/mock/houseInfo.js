@@ -22,7 +22,7 @@ const houseManage_info = {
         'rentPrice': 1700.0,
         'roomArea': 30.0,
         'roomCode': '10003',
-        'roomNo': '302',
+        'roomNo': '1幢1单元501',
         'roomStatus': 2,
         'subdistrictName': '花园小区',
         'toiletCount': 1

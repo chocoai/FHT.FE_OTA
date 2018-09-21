@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:23:00
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 11:43:48
+ * @Last Modified time: 2018-09-21 14:02:50
  */
 
 <template>
@@ -36,9 +36,9 @@
         </div>
         <div class="bullshit__headline">{{ message }}</div>
         <div class="bullshit__info">请检查您输入的网址是否正确，请点击以下按钮返回主页</div>
-        <a
-          :href="returnHomePath"
-          class="bullshit__return-home">返回主页</a>
+        <div
+          class="bullshit__return-home"
+          @click="returnHomePage">返回主页</div>
       </div>
     </div>
   </div>
@@ -58,6 +58,11 @@ export default {
   computed: {
     message () {
       return '复恒科技说了，这个页面你不能进......'
+    }
+  },
+  methods: {
+    returnHomePage () {
+      this.$router.push('/')
     }
   }
 }

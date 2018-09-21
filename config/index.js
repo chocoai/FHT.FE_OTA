@@ -1,8 +1,8 @@
 /*
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:31:28
- * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-20 09:48:27
+ * @Last Modified by: FT.FE.Bolin
+ * @Last Modified time: 2018-09-21 16:43:18
  */
 
 let path = require('path')
@@ -41,7 +41,8 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: './',
+    // history路由打包到根路径
+    assetsPublicPath: '/',
     productionSourceMap: false,
     devtool: '#source-map',
     productionGzip: false,
