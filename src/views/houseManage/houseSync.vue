@@ -271,7 +271,7 @@
           top="0">
           <hosting-room-detail
             ref="hostingRoomDetail"
-            :house-rent-type="1"
+            :house-rent-type="activeName === '分散式整租' ? 1 : 2"
             :edit-flag="true"
             @closeDialog="closeRoomDetailDialog" />
         </el-dialog>
@@ -493,7 +493,6 @@ export default {
     this.authorizeStatus = this.$store.getters.idlefished // 判断是否授权的参数
     this.userAuthentication = this.$store.getters.authed // 判断实名认证的参数
     this.getCityName()
-    this.openRoomDetail()
   },
   methods: {
     // 查询数据
@@ -743,8 +742,7 @@ export default {
     // 添加修改房间信息
     openRoomDetail (params) {
       hostingHouseInfoApi({
-        // fangyuanCode: params.fangyuanCode
-        fangyuanCode: '2000631463'
+        fangyuanCode: params.fangyuanCode
       }).then((res) => {
         this.roomDetailModelVisible = true
         this.$nextTick(() => {
