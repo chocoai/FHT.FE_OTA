@@ -678,13 +678,15 @@ export default {
         }
       }
       let params = {
-        platforms: platform,
-        roomCodeList: roomCodes
+        platform: platform,
+        roomCodes: roomCodes
+        // platform: ['mailin'],
+        // roomCodes: ['200708852']
       }
       console.log('发布的数据', params)
       if (this.dialogTitle === '发布') {
-        for (let i = 0; i < params.platforms.length; i++) {
-          if (params.platforms[i] === 'idlefish' && !this.authorizeStatus) {
+        for (let i = 0; i < params.platform.length; i++) {
+          if (params.platform[i] === 'idlefish' && !this.authorizeStatus) {
             this.dialogVisible = false
             this.goAuthorizeShow = true
             return false
