@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 10:07:18
+ * @Last Modified time: 2018-09-21 10:25:12
  */
 
 import Vue from 'vue'
@@ -32,7 +32,7 @@ export const constantRouterMap = [{
 }, {
   path: '',
   component: Layout,
-  redirect: '/houseManage',
+  redirect: 'noRedirect',
   noDropdown: true,
   icon: 'house_manage',
   children: [{
@@ -72,7 +72,7 @@ export const asyncRouterMap = [
   {
     path: '/example',
     component: Layout,
-    redirect: 'noredirect',
+    redirect: 'noRedirect',
     name: '示例',
     icon: 'example',
     hidden: true,
@@ -92,7 +92,7 @@ export const asyncRouterMap = [
   {
     path: '',
     component: Layout,
-    redirect: '/hostingHoleRentPage',
+    redirect: 'noRedirect',
     icon: 'rent_whole',
     noDropdown: true,
     children: [{
@@ -104,7 +104,7 @@ export const asyncRouterMap = [
   {
     path: '',
     component: Layout,
-    redirect: '/hostingJointRentPage',
+    redirect: 'noRedirect',
     icon: 'rent_join',
     noDropdown: true,
     children: [{
