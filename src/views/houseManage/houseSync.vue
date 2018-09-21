@@ -142,16 +142,16 @@
             <div>
               <input
                 id="mlRent"
-                v-model="publishSelect.mlzf"
+                v-model="publishSelect.mailin"
                 type="checkbox"
               >
               <label for="mlRent">
                 <div
-                  :class="{changeBackground:publishSelect.mlzf}"
+                  :class="{changeBackground:publishSelect.mailin}"
                   class="ml-selectName">麦邻租房</div>
                 <div class="ml-selectStatus">
                   <i
-                    v-show="publishSelect.mlzf"
+                    v-show="publishSelect.mailin"
                     class="el-icon-check"/>
                 </div>
               </label>
@@ -332,7 +332,6 @@
       </el-dialog>
     </div>
   </div>
-
 </template>
 <script>
 import { deepClone } from '@/utils'
@@ -465,7 +464,7 @@ export default {
         }
       ],
       publishSelect: {
-        mlzf: true,
+        mailin: true,
         idlefish: true
       },
       dialogVisible: false,
@@ -659,9 +658,9 @@ export default {
       this.dialogVisible = true
       this.dialogTitle = typeConfig[type].title
       if (type === 'off') {
-        this.publishSelect.mlzf = false
+        this.publishSelect.mailin = false
       } else {
-        this.publishSelect.mlzf = true
+        this.publishSelect.mailin = true
       }
       this.publishSelect.idlefish = false
     },
