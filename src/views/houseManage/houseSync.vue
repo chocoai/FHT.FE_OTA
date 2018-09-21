@@ -225,7 +225,7 @@
             placement="top">
             <p>发布失败原因: {{ scope.row.mailinfailMessage }}</p>
             <div slot="reference">
-              <el-tag :type="(scope.row.mailinStatus||scope.row.idlefishStatus) | renderStatusType">
+              <el-tag :type="(scope.row.mailinStatus) | renderStatusType">
                 {{ (scope.row.mailinStatus) | renderStatusValue }}
               </el-tag>
             </div>
@@ -396,7 +396,7 @@ export default {
       selectedItems: [],
       filterManagerList: [],
       authorizeShow: false,
-      dialogTitle: '闲鱼授权',
+      dialogTitle: '',
       roomStatusArry: [],
       goAuthorizeShow: false,
       certificationShow: false,
