@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:50:08
  * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-20 16:10:32
+ * @Last Modified time: 2018-09-21 17:01:14
  */
 
 <template>
@@ -277,7 +277,7 @@ export default {
 }
 
 .pswp {
-  z-index: 9999999;
+  z-index: 9999999 !important;
 }
 
 .pswp__img {

@@ -21,7 +21,8 @@
             @input="searchZoneList(false)" />
         </el-form-item>
         <el-form-item
-          :prop="zoneList.length ? 'zoneId' : ''"
+          :rules="{ required: zoneList.length > 0, message: '请选择所属板块', trigger: 'change' }"
+          prop="zoneId"
           label="所属板块"
           style="width: 50%">
           <el-select
@@ -141,7 +142,9 @@
                 class="room-item-count">
                 <el-input
                   v-model="hostingRoomDetail.houseArea"
-                  type="number" />
+                  min="0"
+                  type="number"
+                  @change="setPrecision" />
               </el-form-item>
             </el-col>
             <el-col
@@ -189,6 +192,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item
+              prop="contactName"
               label="看房电话">
               <el-input
                 v-model="hostingRoomDetail.contactName"
@@ -209,36 +213,52 @@
           </el-col>
           <el-col :span="6">
             <el-form-item
+              prop="contactMobile"
               label-width="0">
               <el-input
                 v-model="hostingRoomDetail.contactMobile"
+                type="number"
                 placeholder="联系电话" />
             </el-form-item>
           </el-col>
         </el-row>
         <div
-          style="width: 50%"
+          style="position: relative"
           class="room-detail-floor-container">
           <el-form-item
+            :show-message="false"
             label="层高"
-            prop="floorName">
-            <el-input
-              v-model="hostingRoomDetail.floorName"
-              type="number"
-              class="room-detail-floor-input">
-              <template slot="prepend">所在层</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            label-width="0"
-            prop="floorAmount">
-            <el-input
-              v-model="hostingRoomDetail.floorAmount"
-              type="number"
-              class="room-detail-floor-input">
-              <template slot="prepend">总楼层</template>
-            </el-input>
-          </el-form-item>
+            class="room-count room-count-container"
+            prop="chamberCount" />
+          <el-row
+            :gutter="0"
+            class="room-count-row">
+            <el-col :span="5">
+              <el-form-item
+                label=""
+                label-width="0"
+                prop="floorName">
+                <el-input
+                  v-model="hostingRoomDetail.floorName"
+                  type="number"
+                  class="room-detail-floor-input">
+                  <template slot="prepend">所在层</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5">
+              <el-form-item
+                label-width="0"
+                prop="floorAmount">
+                <el-input
+                  v-model="hostingRoomDetail.floorAmount"
+                  type="number"
+                  class="room-detail-floor-input">
+                  <template slot="prepend">总楼层</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </div>
         <div v-if="hostingRoomDetail.houseRentType === 1">
           <el-form-item label="房间照片">
@@ -338,7 +358,7 @@
               </el-form-item>
             </el-col>
             <el-col
-              :span="1"
+              :span="2"
               style="text-align: left"
               class="inline-item-label">
               元/月
@@ -356,7 +376,7 @@
               </el-form-item>
             </el-col>
             <el-col
-              :span="1"
+              :span="2"
               style="text-align: left"
               class="inline-item-label">
               元
@@ -446,7 +466,9 @@
                           class="room-item-count">
                           <el-input
                             v-model="hostingRoomDetail.hostingRooms[index].roomArea"
-                            type="number" />
+                            min="0"
+                            type="number"
+                            @change="setPrecision(index)" />
                         </el-form-item>
                       </el-col>
                       <el-col
@@ -479,12 +501,20 @@
               <el-row>
                 <el-col :span="7">
                   <el-form-item label="房间照片">
-                    <el-badge :value="hostingRoomDetail.hostingRooms[index].pictures ? hostingRoomDetail.hostingRooms[index].pictures.length : 0">
+                    <template v-if="hostingRoomDetail.hostingRooms[index].pictures.length > 0">
+                      <el-badge :value="hostingRoomDetail.hostingRooms[index].pictures.length">
+                        <el-button
+                          type="primary"
+                          size="mini"
+                          @click="openPicModel(index)">上传照片</el-button>
+                      </el-badge>
+                    </template>
+                    <template v-else>
                       <el-button
                         type="primary"
                         size="mini"
                         @click="openPicModel(index)">上传照片</el-button>
-                    </el-badge>
+                    </template>
                   </el-form-item>
                 </el-col>
                 <el-col :span="14">
@@ -730,7 +760,7 @@ export default {
           {
             required: true,
             validator: (rule, value, callback) => {
-              if (value[0] === '') {
+              if (!value[0]) {
                 callback(new Error('请选择所在地区'))
               } else {
                 callback()
@@ -738,9 +768,6 @@ export default {
             },
             trigger: 'change'
           }
-        ],
-        zoneId: [
-          { required: true, message: '请选择所属板块', trigger: 'change' }
         ],
         address: [
           { required: true, message: '请输入公寓/小区', trigger: 'change' }
@@ -775,12 +802,12 @@ export default {
         floorAmount: [
           { required: true, message: '请输入总楼层数', trigger: 'blur' }
         ],
-        // contactName: [
-        //   { required: true, message: '请输入联系人姓名', trigger: 'blur' }
-        // ],
-        // contactMobile: [
-        //   { required: true, message: '请输入联系人电话', trigger: 'blur' }
-        // ],
+        contactName: [
+          { required: true, message: '请输入联系人姓名', trigger: 'blur' }
+        ],
+        contactMobile: [
+          { required: true, message: '请输入联系人电话', trigger: 'blur' }
+        ],
         houseDesc: [
           { required: true, message: '请输入房源描述', trigger: 'blur' },
           { max: 150, message: '长度不能超过150个字符', trigger: 'change' }
@@ -1017,20 +1044,25 @@ export default {
         })
       }
     },
+    // 计算押金，保留2位精度
     handleRentChange (target) {
+      if (target.rent > 0) {
+        let list = target.rent.split('.')
+        if (!list[1]) {
+          target.rent = target.rent + '.00'
+        } else {
+          target.rent = Number(target.rent).toFixed(2)
+        }
+      } else {
+        target.rent = 0
+      }
       if (target.rent !== '' && target.depositOfPayment !== '' && target.depositOfPayment !== 13) {
         target.deposit = target.rent * target.depositOfPayment
+        target.deposit = target.deposit === 0 ? 0 : target.deposit.toFixed(2)
       } else {
         target.deposit = ''
       }
-    },
-    handleDepositChange (target) {
-      if (target.depositOfPayment !== 13) {
-        if (target.rent === '') {
-          target.deposit = ''
-          return
-        }
-        target.deposit = target.depositOfPayment * target.rent
+      if (target.depositOfPayment !== '') {
         if (target.roomName) {
           const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.roomName.replace('房间', ''))
           this.$refs.hostingRoomDetail.validateField('hostingRooms.' + index + '.deposit')
@@ -1039,9 +1071,42 @@ export default {
         }
       }
     },
-    setFacilityItemsList (val) {
-      this.hostingRoomDetail.facilityItemsList = val
+    // 计算押金，保留2位精度
+    handleDepositChange (target) {
+      if (target.depositOfPayment !== 13) {
+        if (target.rent === '') {
+          target.deposit = ''
+          return
+        }
+        target.deposit = target.rent * target.depositOfPayment
+        target.deposit = target.deposit === 0 ? 0 : target.deposit.toFixed(2)
+        if (target.roomName) {
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.roomName.replace('房间', ''))
+          this.$refs.hostingRoomDetail.validateField('hostingRooms.' + index + '.deposit')
+        } else {
+          this.$refs.hostingRoomDetail.validateField('deposit')
+        }
+      }
     },
+    // setFacilityItemsList (val) {
+    //   this.hostingRoomDetail.facilityItemsList = val
+    // },
+    // 房间面积保留2位精度
+    setPrecision (index) {
+      let val = typeof index === 'number' ? this.hostingRoomDetail.hostingRooms[index].roomArea : this.hostingRoomDetail.houseArea
+      if (val > 0) {
+        let list = val.split('.')
+        if (!list[1]) {
+          val = val + '.00'
+        } else {
+          val = Number(val).toFixed(2)
+        }
+      } else {
+        val = 0
+      }
+      typeof index === 'number' ? this.hostingRoomDetail.hostingRooms[index].roomArea = val : this.hostingRoomDetail.houseArea = val
+    },
+    // 初始化房间信息
     setRoomDetailData (val) {
       if (val) {
         val.areaCode = [val.provinceId, val.cityId, val.regionId]
@@ -1219,6 +1284,7 @@ export default {
       })
       return roomDetailData
     },
+    // 保存
     saveRoomDetailData (type) {
       // type 1.
       if (type === 3) {
@@ -1266,6 +1332,7 @@ export default {
       this.curPicListIndex === -1 ? (this.hostingRoomDetail.pictures = this.currentPicList) : (this.hostingRoomDetail.hostingRooms[this.curPicListIndex].pictures = this.currentPicList)
       this.currentPicList = []
     },
+    // 检查是否能删除当前房间
     deleteCurRoom (curRoom, index) {
       if (curRoom.needCheck) {
         deleteRoomApi({
@@ -1366,6 +1433,28 @@ export default {
 
 <style lang="scss" scoped>
 .room-detail-container {
+  .room-detail-select {
+    width: 100%;
+  }
+  &.hosting-room-detail {
+    .inline-item-label {
+      text-align: center;
+      line-height: 32px;
+      padding: 0 !important;
+      font-size: 14px;
+      color: #606266;
+    }
+  }
+  .room-count {
+    .room-item-count {
+      margin-bottom: 0;
+      input {
+        padding: 0 8px;
+      }
+    }
+  }
+}
+.room-detail-container {
   max-width: 800px;
   min-width: 660px;
   overflow-y: scroll;
@@ -1417,4 +1506,51 @@ export default {
 .upload-pics-info {
   margin: 0 0 5px;
 }
+</style>
+
+<style lang="scss">
+  .room-detail-container {
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0;
+    }
+    input {
+      padding: 0 8px;
+    }
+    .el-form-item__error {
+      width: 100px;
+    }
+    .sub-room-info-list {
+      .el-tabs__new-tab {
+        margin-right: 15px;
+        border: 1px solid #409EFF;
+        color: #409EFF;
+        background-color: #fff;
+      }
+    }
+    .room-detail-floor-container {
+      .el-col {
+        &:first-child {
+          input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+          }
+        }
+        &:last-child {
+          .el-input-group__prepend {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: 0;
+          }
+        }
+      }
+      .el-input-group__prepend {
+        padding: 0 8px;
+      }
+      .el-input__inner {
+        padding: 0 8px;
+      }
+    }
+  }
 </style>
