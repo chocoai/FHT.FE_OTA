@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 13:29:48
+ * @Last Modified time: 2018-09-21 14:13:18
  */
 
 import Vue from 'vue'
@@ -23,16 +23,19 @@ Vue.use(Router)
 
 export const constantRouterMap = [{
   path: '/login',
+  name: '登录',
   component: _import('login/index').default,
   hidden: true
 }, {
   path: '/404',
+  name: '404',
   component: _import('404').default,
   hidden: true
 }, {
   path: '',
+  name: '主页',
   component: Layout,
-  redirect: 'noRedirect',
+  redirect: '/houseManage',
   noDropdown: true,
   icon: 'house_manage',
   children: [{
@@ -43,26 +46,13 @@ export const constantRouterMap = [{
       isHomePage: true
     }
   }]
-}
-//, {
-//   path: '',
-//   component: Layout,
-//   redirect: '/dashboard',
-//   icon: 'home',
-//   noDropdown: true,
-//   children: [{
-//     name: '首页',
-//     path: 'dashboard',
-//     component: _import('dashboard/index').default
-//   }]
-// }
-]
+}]
 
 export default new Router({
   // https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90
   mode: 'history',
-  // 线上部署根路径
-  base: '/',
+  // 线上部署路径
+  base: __dirname,
   // 后退后页面位置
   scrollBehavior: () => ({
     y: 0
@@ -92,7 +82,8 @@ export const asyncRouterMap = [
     }]
   },
   {
-    path: '',
+    path: '/addHouse',
+    name: '整租录入',
     component: Layout,
     redirect: 'noRedirect',
     icon: 'rent_whole',
@@ -104,7 +95,8 @@ export const asyncRouterMap = [
     }]
   },
   {
-    path: '',
+    path: '/addHouse',
+    name: '合租录入',
     component: Layout,
     redirect: 'noRedirect',
     icon: 'rent_join',
