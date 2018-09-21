@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 15:24:42
+ * @Last Modified time: 2018-09-21 16:06:33
  */
 
 import Vue from 'vue'
@@ -24,12 +24,12 @@ Vue.use(Router)
 export const constantRouterMap = [{
   path: '/login',
   name: '登录',
-  component: _import('login/index').default,
+  component: _import('login/index'),
   hidden: true
 }, {
   path: '/404',
   name: '404',
-  component: _import('404').default,
+  component: _import('404'),
   hidden: true
 }, {
   path: '/house',
@@ -41,7 +41,7 @@ export const constantRouterMap = [{
   children: [{
     name: '房源管理',
     path: 'houseManage',
-    component: _import('houseManage/houseSync').default,
+    component: _import('houseManage/houseSync'),
     meta: {
       isHomePage: true
     }
@@ -75,11 +75,11 @@ export const asyncRouterMap = [
     },
     children: [{
       path: 'image',
-      component: _import('example/image').default,
+      component: _import('example/image'),
       name: '图片组件'
     }, {
       path: 'grid',
-      component: _import('example/tablePagenation').default,
+      component: _import('example/tablePagenation'),
       name: '表格组件'
     }]
   },
@@ -93,7 +93,7 @@ export const asyncRouterMap = [
     children: [{
       name: '分散整租录入',
       path: 'hostingHoleRentPage',
-      component: _import('hostingEntryHouse/holeRent').default
+      component: _import('hostingEntryHouse/holeRent')
     }]
   },
   {
