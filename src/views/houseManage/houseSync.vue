@@ -497,7 +497,6 @@ export default {
   methods: {
     // 查询数据
     searchParam (type) {
-      console.log('selectedOpthons', this.selectedOpthons)
       if (type === 'clear') {
         this.searchParams = {
           pageNo: 1,
@@ -514,7 +513,6 @@ export default {
         this.selectedOpthons = []
         this.selectedArea = []
       }
-      console.log('查询数据', this.searchParams)
       this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2
       this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
       // 解决watch执行顺序
@@ -563,7 +561,6 @@ export default {
           this.selectedArea.push(cityName)
         }
       })
-      console.log('selectedArea', this.selectedArea)
     },
     roomStatusText (status) {
       if (status === 2) {
@@ -574,7 +571,6 @@ export default {
     },
     // 改变出租状态
     changeRoomStatus (scope) {
-      console.log(scope)
       var params =
       {
         'roomCode': scope.roomCode,
@@ -587,9 +583,11 @@ export default {
     },
     // 删除房间
     deleteRoom (row) {
+      console.log(row)
       const h = this.$createElement
       this.$msgbox({
         title: '确认消息',
+        type: 'warning',
         message: h('p', null, [
           h('span', null, '确定删除房间吗？ '),
           h('span', { style: 'color: red' })
@@ -601,7 +599,6 @@ export default {
         estateDeleteEstateApi({
           'fangyuanCode': row.fangyuanCode
         }).then((res) => {
-          console.log(res)
           if (res.code === '0') {
             this.$message({
               message: res.message,
@@ -619,7 +616,6 @@ export default {
     // 选择列表
     handleSelectionChange (list) {
       this.selectedItems = list
-      console.log('selectedItems', this.selectedItems)
     },
     // 发布 或者 下架房源  弹窗显示
     syncItems (type = 'on') {
@@ -628,7 +624,6 @@ export default {
         this.certificationShow = true
         return false
       }
-      console.log('type', type)
       const typeConfig = {
         'on': {
           title: '发布'
@@ -683,7 +678,6 @@ export default {
         // platform: ['mailin'],
         // roomCodes: ['200708852']
       }
-      console.log('发布的数据', params)
       if (this.dialogTitle === '发布') {
         for (let i = 0; i < params.platform.length; i++) {
           if (params.platform[i] === 'idlefish' && !this.authorizeStatus) {
@@ -731,7 +725,6 @@ export default {
               type: 'success',
               duration: 2000
             })
-            this.userAuthentication = true
             this.$store.dispatch('GetInfo').then(res => {
               // 认证成功之后 的回调函数
             })

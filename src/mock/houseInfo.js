@@ -14,7 +14,7 @@ const houseManage_info = {
       'houseList': [{
         'boardCount': 1,
         'chamberCount': 1,
-        'fangyuanCode': 'fangyuanCode',
+        'fangyuanCode': '111111',
         'idlefishStatus': 1,
         'idlefishfailMessage': '闲鱼失败原因',
         'mailinStatus': 1,
