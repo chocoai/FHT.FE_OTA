@@ -21,6 +21,7 @@
               level="1"
               class="item-select"
               filterable
+              clearable
               @change="handleChange"
             />
           </el-form-item>
@@ -28,7 +29,9 @@
             <el-select
               v-model="searchParams.regionAddressId"
               size="small"
+              filterable
               placeholder="请选择小区"
+              clearable
               class="item-select"
             >
               <el-option
@@ -45,6 +48,7 @@
               size="small"
               placeholder="请输入房间号"
               class="item-select"
+              clearable
             />
           </el-form-item>
           <el-form-item>
@@ -67,6 +71,7 @@
               size="small"
               placeholder="请选择出租状态"
               class="item-select"
+              clearable
             >
               <el-option
                 value="9"
@@ -82,6 +87,7 @@
               size="small"
               placeholder="麦邻发布状态"
               class="item-select"
+              clearable
             >
               <el-option
                 value="0"
@@ -100,6 +106,7 @@
               size="small"
               placeholder="闲鱼发布状态"
               class="item-select"
+              clearable
             >
               <el-option
                 value="0"
@@ -711,7 +718,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-            // this.userAuthentication = true
+            this.userAuthentication = true
             this.$store.dispatch('GetInfo').then(res => {
               // 认证成功之后 的回调函数
             })
