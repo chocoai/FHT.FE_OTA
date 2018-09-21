@@ -15,6 +15,8 @@ module.exports = {
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
     'no-console': 'off',
+    // 不限制自闭合标签
+    'vue/html-self-closing': 'off',
     'camelcase': [0, {
       'properties': 'always'
     }]
