@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 16:06:33
+ * @Last Modified time: 2018-09-21 16:12:21
  */
 
 import Vue from 'vue'
@@ -106,7 +106,7 @@ export const asyncRouterMap = [
     children: [{
       name: '分散合租录入',
       path: 'hostingJointRentPage',
-      component: _import('hostingEntryHouse/jointRent').default
+      component: _import('hostingEntryHouse/jointRent')
     }]
   },
   {
