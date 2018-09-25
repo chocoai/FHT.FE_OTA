@@ -436,25 +436,25 @@ export default {
       },
       colModels: [
         {slot: 'selection', width: 30},
-        {prop: 'subdistrictName', label: '公寓/小区', width: 150},
-        {prop: 'roomNo', label: '房间号', width: 150},
+        {prop: 'subdistrictName', label: '公寓/小区', width: 200},
+        {prop: 'roomNo', label: '房间号', width: 200},
         {prop: 'chamberCount',
           label: '户型',
-          width: 150,
+          width: 100,
           render (row) {
             return (row.chamberCount || 0) + '室' + (row.boardCount || 0) + '厅' + (row.toiletCount || 0) + '卫'
           }
         },
         {prop: 'roomArea',
           label: '整套面积',
-          width: 150,
+          width: 100,
           render (row) {
             return (row.roomArea || 0) + 'm²'
           }
         },
         {prop: 'rentPrice',
           label: '推广价格',
-          width: 150,
+          width: 100,
           render (row) {
             return (row.rentPrice || 0) + '元'
           }
@@ -462,13 +462,13 @@ export default {
         {
           prop: 'mailinStatus',
           label: '麦邻租房',
-          width: 150,
+          width: 100,
           type: 'status',
           slotName: 'slot_mailinStatus'
         },
         { prop: 'idlefishStatus',
           label: '闲鱼租房',
-          width: 150,
+          width: 100,
           type: 'status',
           slotName: 'slot_idlefishStatus'
         },
@@ -476,7 +476,7 @@ export default {
           prop: 'roomStatus',
           label: '出租状态',
           slotName: 'roomStatusHosting',
-          width: 150,
+          width: 100,
           type: 'status',
           fixed: 'right'
         },
