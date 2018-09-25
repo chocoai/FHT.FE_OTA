@@ -206,7 +206,7 @@
           slot="slot_idlefishStatus"
           slot-scope="scope">
           <el-popover
-            v-if="scope.row.idlefishStatus === 5"
+            v-if="scope.row.idlefishStatus === 9"
             trigger="hover"
             placement="top">
             <p>发布失败原因: {{ scope.row.idlefishfailMessage }}</p>
@@ -226,7 +226,7 @@
           slot="slot_mailinStatus"
           slot-scope="scope">
           <el-popover
-            v-if="scope.row.mailinStatus === 5"
+            v-if="scope.row.mailinStatus === 9"
             trigger="hover"
             placement="top">
             <p>发布失败原因: {{ scope.row.mailinfailMessage }}</p>
@@ -369,18 +369,21 @@ export default {
     // 麦邻 闲鱼发布状态
     renderStatusType (status) {
       const statusMap = {
-        '1': 'info',
-        '2': 'success',
-        '5': 'danger',
-        '9': 'primary'
-
+        '1': 'info', // 未发布
+        '2': 'success', // 已发布
+        '5': 'danger', // 发布中
+        '6': 'primary', // 下架中
+        '9': 'warning', // 发布失败
+        '10': 'warning' // 下架失败
       }
       return statusMap[status] || 'info'
     },
     renderStatusValue (status) {
       const statusStrData = ['', '未发布', '已发布']
-      statusStrData[5] = '发布失败'
-      statusStrData[9] = '发布中'
+      statusStrData[5] = '发布中'
+      statusStrData[6] = '下架中'
+      statusStrData[9] = '发布失败'
+      statusStrData[10] = '下架失败'
       return statusStrData[status] || '未知'
     }
   },
@@ -698,8 +701,6 @@ export default {
       let params = {
         platform: platform,
         roomCodes: roomCodes
-        // platform: ['mailin'],
-        // roomCodes: ['200708852']
       }
       if (this.dialogTitle === '发布') {
         for (let i = 0; i < params.platform.length; i++) {
