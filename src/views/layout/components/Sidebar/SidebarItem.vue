@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:36
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-25 19:59:54
+ * @Last Modified time: 2018-09-25 21:06:22
  */
 
 <template>
@@ -100,10 +100,17 @@ export default {
   align-items: center;
   align-content: center;
 }
+.inlineBlock {
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform 0;
+}
 .el-menu-item.is-active {
   background-color:rgba(41, 44, 207, 1) !important;
   .inlineBlock {
-    transform: translate(-6px)
+    transform: translate(-6px);
+    backface-visibility: hidden;
+    perspective: 1000;
   }
 }
 
