@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:53
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 18:28:53
+ * @Last Modified time: 2018-09-25 10:34:00
  */
 
 @import './element-ui.scss';
@@ -194,3 +194,21 @@ a:hover {
     }
   }
 }
+
+// // 全局chrome滚动条
+// ::-webkit-scrollbar-track-piece {
+//   background: none;
+// }
+// ::-webkit-scrollbar {
+//   width: 6px;
+//   height: 8px;
+// }
+// ::-webkit-scrollbar-thumb {
+//   background: rgba(0, 0, 0, 0.5);
+//   border-radius: 20px;
+// }
+
+// // el-srcollbar
+// .el-scrollbar__wrap.default-scrollbar__wrap {
+//   overflow-x: auto;
+// }
