@@ -54,7 +54,7 @@ vue + vue-router + vuex + axios + elementUI （es6 + eslint：vscode自动纠正
 
 2、npm scripts请自行参考[package.json](https://github.com/BolinWang/FHT.FE_OTA/blob/master/package.json)
 
-3、本项目基于`webpack4`开发，若还想使用`webpack3`开发，请使用该分支[webpack3](https://github.com/BolinWang/FHT.FE_OTA/tree/webpack3)
+3、本项目基于`webpack4`开发，若还想使用`webpack3`开发，请使用该分支[webpack3](https://github.com/BolinWang/FHT.FE_admin_seed/tree/webpack3)
 
 # 项目结构
 
