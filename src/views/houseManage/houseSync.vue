@@ -90,14 +90,11 @@
               clearable
             >
               <el-option
-                value="0"
+                value="1"
                 label="麦邻未发布"/>
               <el-option
-                value="1"
-                label="麦邻已发布"/>
-              <el-option
                 value="2"
-                label="麦邻发布失败"/>
+                label="麦邻已发布"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -109,13 +106,13 @@
               clearable
             >
               <el-option
-                value="0"
+                value="1"
                 label="闲鱼未发布"/>
               <el-option
-                value="1"
+                value="2"
                 label="闲鱼已发布"/>
               <el-option
-                value="2"
+                value="5"
                 label="闲鱼发布失败"/>
             </el-select>
           </el-form-item>
@@ -520,6 +517,9 @@ export default {
         this.selectedOpthons = []
         this.selectedArea = []
       }
+
+      console.log('查询数据', this.searchParams)
+
       this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2
       this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
       // 解决watch执行顺序
