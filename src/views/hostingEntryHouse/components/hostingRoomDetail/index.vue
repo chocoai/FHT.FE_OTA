@@ -1458,6 +1458,7 @@ export default {
   max-width: 800px;
   min-width: 660px;
   overflow-y: scroll;
+  overflow-x: hidden;
   .estate-iontro-length-tips {
     position: absolute;
     bottom: 0px;
