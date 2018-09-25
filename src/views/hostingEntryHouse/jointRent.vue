@@ -2,7 +2,7 @@
   <div>
     <div class="layout_pageHeader">
       <div class="entry-house-title">
-        新建分散式整租
+        新建分散式合租
       </div>
     </div>
     <div class="layout-container">
