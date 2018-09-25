@@ -31,7 +31,7 @@ export default {
     },
     filterable: {
       type: Boolean,
-      default: false
+      default: true
     },
     clearable: {
       type: Boolean,
