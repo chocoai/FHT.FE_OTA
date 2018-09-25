@@ -351,7 +351,7 @@
 import { deepClone } from '@/utils'
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
-import authorize from '@/views/houseManage/components/authorize'
+import authorize from '@/components/Authorize'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
 import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi, certificationFromApi } from '@/api/houseManage'
 export default {
@@ -651,7 +651,7 @@ export default {
     // 发布 或者 下架房源  弹窗显示
     syncItems (type = 'on') {
       // 验证是否认证
-      if (!this.userAuthentication && type === 'on') {
+      if (!this.$store.getters.authed && type === 'on') {
         this.certificationShow = true
         return false
       }
@@ -697,7 +697,7 @@ export default {
       }
       if (this.dialogTitle === '发布') {
         for (let i = 0; i < params.platform.length; i++) {
-          if (params.platform[i] === 'idlefish' && !this.authorizeStatus) {
+          if (params.platform[i] === 'idlefish' && !this.$store.getters.idlefished) {
             this.dialogVisible = false
             this.goAuthorizeShow = true
             return false
