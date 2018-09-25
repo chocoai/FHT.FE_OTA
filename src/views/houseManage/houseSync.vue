@@ -624,7 +624,7 @@ export default {
               message: res.message,
               type: 'success'
             })
-            this.searchParam('clear')
+            this.searchParam()
           }
         }).catch(err => { console.log(err) })
       })
@@ -664,7 +664,7 @@ export default {
         }
       }
       if (type === 'off') {
-        const unfilterItem = this.selectedItems.filter(item => ((item.idlefishStatus === 1 || item.idlefishStatus === 5) && (item.mailinStatus === 1 || item.mailinStatus === 5)))
+        const unfilterItem = this.selectedItems.filter(item => ((item.idlefishStatus === 1 || item.idlefishStatus === 5) && item.mailinStatus === 1))
         if (unfilterItem.length !== 0) {
           this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
           return false
