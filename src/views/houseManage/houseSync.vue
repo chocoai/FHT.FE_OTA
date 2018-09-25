@@ -585,7 +585,15 @@ export default {
         'resource': this.searchParams.houseRentType
       }
       changeRoomStatusApi(params).then(response => {
-        this.searchParam('clear')
+        if (response.message === '操作成功') {
+          this.$message({
+            message: '状态修改成功',
+            type: 'success'
+          })
+        } else if (response.message === '修改失败') {
+          this.$message.error('状态修改失败')
+        }
+        this.searchParam()
       })
     },
     // 删除房间
