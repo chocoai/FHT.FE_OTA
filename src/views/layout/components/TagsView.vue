@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:33
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-18 14:36:45
+ * @Last Modified time: 2018-09-25 22:06:31
  */
 
 <template>
@@ -39,7 +39,10 @@
 import ScrollPane from '@/components/ScrollPane'
 
 export default {
-  components: { ScrollPane },
+  components: {
+    ScrollPane
+  },
+  inject: ['reloadPage'],
   data () {
     return {
       visible: false,
@@ -120,8 +123,13 @@ export default {
       if (visitedViews.length === 1 && visitedViews[0].name === '首页') {
         return false
       }
-      this.$store.dispatch('delAllViews')
-      this.$router.push('/')
+      this.$store.dispatch('delAllViews').then(() => {
+        if (this.$route.meta.isHomePage) {
+          this.reloadPage()
+        } else {
+          this.$router.push('/')
+        }
+      })
     },
     openMenu (tag, e) {
       this.visible = true
