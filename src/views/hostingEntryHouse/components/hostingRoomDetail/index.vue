@@ -1199,7 +1199,6 @@ export default {
             }
           ]
         }
-        this.zoneList = []
       }
 
       if (this.houseRentType === 2) {
@@ -1212,6 +1211,8 @@ export default {
         this.$set(this, 'tempFormData', deepClone(val))
         if (this.editFlag && val.zoneId) {
           this.searchZoneList(true)
+        } else {
+          this.zoneList = []
         }
         this.$nextTick(() => {
           this.$refs.hostingRoomDetail.clearValidate()
