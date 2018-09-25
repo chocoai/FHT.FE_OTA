@@ -592,6 +592,11 @@ export default {
           })
         } else if (response.message === '修改失败') {
           this.$message.error('状态修改失败')
+        } else {
+          this.$message({
+            message: response.message,
+            type: 'warning'
+          })
         }
         this.searchParam()
       })
