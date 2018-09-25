@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-25 10:11:56
+ * @Last Modified time: 2018-09-25 13:34:05
  */
 
 <template>
@@ -58,14 +58,14 @@
                   <span v-else>闲鱼已授权</span>
                 </span>
               </el-dropdown-item>
-              <router-link
-                class="inlineBlock"
-                to="/">
-                <el-dropdown-item>
+              <el-dropdown-item>
+                <span
+                  class="inlineBlock"
+                  @click="gotoHomePage">
                   <i class="iconfont icon-shouye"/>
                   主页
-                </el-dropdown-item>
-              </router-link>
+                </span>
+              </el-dropdown-item>
               <el-dropdown-item divided>
                 <span
                   style="display:block;"
@@ -121,6 +121,7 @@ export default {
     TagsView,
     authorize
   },
+  inject: ['reloadPage'],
   data () {
     return {
       layer_showUserInfo: false,
@@ -172,6 +173,13 @@ export default {
         return false
       }
       this.authorizeShow = true
+    },
+    gotoHomePage () {
+      if (this.$route.meta.isHomePage) {
+        this.reloadPage()
+      } else {
+        this.$router.push('/')
+      }
     }
   }
 }

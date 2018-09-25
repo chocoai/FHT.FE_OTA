@@ -1,12 +1,16 @@
 <template>
-  <div class="layout-container">
-    <div class="entry-house-title">
-      新建分散式整租
+  <div>
+    <div class="layout_pageHeader">
+      <div class="entry-house-title">
+        新建分散式整租
+      </div>
     </div>
-    <hosting-room-detail
-      ref="hostingRoomDetail"
-      :edit-flag="false"
-      :house-rent-type="1" />
+    <div class="layout-container">
+      <hosting-room-detail
+        ref="hostingRoomDetail"
+        :edit-flag="false"
+        :house-rent-type="1" />
+    </div>
   </div>
 </template>
 
@@ -29,6 +33,6 @@ export default {
 .entry-house-title {
   font-size: 18px;
   line-height: 25px;
-  margin-bottom: 20px;
+  padding-bottom: 20px;
 }
 </style>

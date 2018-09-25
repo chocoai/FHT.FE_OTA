@@ -266,13 +266,14 @@
       <div class="editHouse">
         <el-dialog
           :visible.sync="roomDetailModelVisible"
+          :width="roomDetailWidth"
           title="编辑房间"
-          width="60%"
           top="0">
           <hosting-room-detail
             ref="hostingRoomDetail"
             :house-rent-type="activeName === '分散式整租' ? 1 : 2"
             :edit-flag="true"
+            :tools-width="roomDetailWidth"
             @closeDialog="closeRoomDetailDialog" />
         </el-dialog>
       </div>
@@ -380,6 +381,7 @@ export default {
       }
     }
     return {
+      roomDetailWidth: '60%', // 房间信息弹窗宽度
       certificationFrom: {
         userName: '',
         userId: ''
@@ -760,21 +762,22 @@ export default {
     width: 140px;
     margin-right:10px;
   }
-  .user-input{width:300px;}
+  .user-input{
+    width:300px;
+  }
   .item-flex{
     display: flex;
-    height:46px;
   }
   .select-dialog {
-  .dialog-footer {
-  .tips {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    font-size: 14px;
-    color: #999;
-  }
-  }
+    .dialog-footer {
+      .tips {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        font-size: 14px;
+        color: #999;
+      }
+    }
   }
   .select-platform-container {
     display:flex;
@@ -782,15 +785,12 @@ export default {
     .left {
       margin-left: 30px;
     }
-
     .right {
       margin-right: 30px;
     }
-
     input[type="checkbox"] {
       display: none;
     }
-
     label {
       display: block;
       width: 120px;
@@ -841,13 +841,19 @@ export default {
 </style>
 <style>
 .editHouse .el-dialog{
-     margin: 0;
-     position: fixed;
-     top: 0;
-     left: auto;
-     right: 0;
-     height: 100%;
-  }
-.roomSelectStatus .el-switch__label *{font-size:12px;color:#909399}
-.roomSelectStatus  .el-switch__label.is-active span{color:#409DFF}
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: auto;
+  right: 0;
+  height: 100%;
+  overflow: auto;
+}
+.roomSelectStatus .el-switch__label *{
+  font-size:12px;
+  color:#909399
+}
+.roomSelectStatus .el-switch__label.is-active span{
+  color:#409DFF
+}
 </style>

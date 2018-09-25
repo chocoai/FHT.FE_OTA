@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:53
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-25 10:34:00
+ * @Last Modified time: 2018-09-25 13:27:50
  */
 
 @import './element-ui.scss';
@@ -105,8 +105,14 @@ a:hover {
   border-radius: 5px;
 }
 
-.model-search .filter-item {
-  margin-left: 10px;
+.model-search {
+  padding-bottom: 10px;
+  .el-form-item {
+    margin-bottom: 0;
+  }
+  .filter-item {
+    margin-left: 10px;
+  }
 }
 
 .img-center,
@@ -208,7 +214,7 @@ a:hover {
 //   border-radius: 20px;
 // }
 
-// // el-srcollbar
-// .el-scrollbar__wrap.default-scrollbar__wrap {
-//   overflow-x: auto;
-// }
+// el-srcollbar
+.el-scrollbar__wrap {
+  overflow-x: auto;
+}

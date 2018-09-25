@@ -6,7 +6,6 @@
         ref="hostingRoomDetail"
         :model="hostingRoomDetail"
         :rules="hostingRoomDetailRules"
-        :style="{height: mainHeight + 'px'}"
         label-width="90px"
         size="small"
         class="room-detail-container hosting-room-detail">
@@ -701,7 +700,9 @@
         </el-dialog>
       </el-form>
     </div>
-    <div class="entry-house-bottom">
+    <div
+      :style="{width: toolsWidth}"
+      class="entry-house-bottom">
       <template v-if="editFlag">
         <el-button
           type="primary"
@@ -731,6 +732,7 @@ import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import ServiceList from './serviceList'
 import { estateZoneListByAreaIdApi, deleteRoomApi, hostingSaveHouseInfoApi, hostingEditHouseInfoApi } from '@/api/houseManage'
+// eslint-disable-next-line
 import { debounce, deepClone } from '@/utils'
 export default {
   components: {
@@ -748,11 +750,15 @@ export default {
     editFlag: {
       type: Boolean,
       default: false
+    },
+    toolsWidth: {
+      type: String,
+      default: '100%'
     }
   },
   data () {
     return {
-      mainHeight: 500,
+      // mainHeight: 500,
       hostingRoomDetail: {},
       tempFormData: {},
       hostingRoomDetailRules: {
@@ -973,11 +979,11 @@ export default {
     }
   },
   mounted () {
-    let changeMainHeight = debounce(() => {
-      this.mainHeight = Math.max(document.body.clientHeight - (this.editFlag ? 150 : 240), 250)
-    }, 100)
-    changeMainHeight()
-    window.addEventListener('resize', changeMainHeight)
+    // let changeMainHeight = debounce(() => {
+    //   this.mainHeight = Math.max(document.body.clientHeight - (this.editFlag ? 150 : 240), 250)
+    // }, 100)
+    // changeMainHeight()
+    // window.addEventListener('resize', changeMainHeight)
   },
   methods: {
     searchZoneList (flag) { // 搜索板块列表
@@ -1433,6 +1439,10 @@ export default {
 
 <style lang="scss" scoped>
 .room-detail-container {
+  max-width: 800px;
+  min-width: 660px;
+  overflow: hidden;
+  margin-bottom: 15px;
   .room-detail-select {
     width: 100%;
   }
@@ -1453,12 +1463,6 @@ export default {
       }
     }
   }
-}
-.room-detail-container {
-  max-width: 800px;
-  min-width: 660px;
-  overflow-y: scroll;
-  overflow-x: hidden;
   .estate-iontro-length-tips {
     position: absolute;
     bottom: 0px;
@@ -1490,11 +1494,15 @@ export default {
   }
 }
 .entry-house-bottom {
-  max-width: 800px;
-  min-width: 660px;
-  padding-top: 20px;
-  // border-top: 1px solid #ccc;
-  text-align: right;
+  padding: 10px 0;
+  box-shadow:0 -1px 4px rgba(0, 0, 0, .08);
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  right: 0;
+  background: #fff;
+  z-index: 9;
 }
 .previewItems {
   margin-bottom: 10px;
