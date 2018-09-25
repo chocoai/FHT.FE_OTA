@@ -110,7 +110,7 @@ import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 import ThemePicker from '@/components/ThemePicker'
 import Screenfull from '@/components/Screenfull'
-import authorize from '@/views/houseManage/components/authorize'
+import authorize from '@/components/Authorize'
 import { default as TagsView } from './TagsView'
 
 export default {

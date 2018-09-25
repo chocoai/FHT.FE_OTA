@@ -90,14 +90,11 @@
               clearable
             >
               <el-option
-                value="0"
+                value="1"
                 label="麦邻未发布"/>
               <el-option
-                value="1"
-                label="麦邻已发布"/>
-              <el-option
                 value="2"
-                label="麦邻发布失败"/>
+                label="麦邻已发布"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -109,14 +106,11 @@
               clearable
             >
               <el-option
-                value="0"
+                value="1"
                 label="闲鱼未发布"/>
               <el-option
-                value="1"
-                label="闲鱼已发布"/>
-              <el-option
                 value="2"
-                label="闲鱼发布失败"/>
+                label="闲鱼已发布"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -297,7 +291,8 @@
       <el-dialog
         :visible.sync="certificationShow"
         title="完成实名认证方可发布房源"
-        width="450px"
+        width="500px"
+        @close="clearValidate('certificationFrom')"
       >
         <div>
           <el-form
@@ -305,31 +300,35 @@
             :model="certificationFrom"
             :rules="rules"
             label-width="80px"
+            size="small"
             status-icon
+            width="100%"
           >
             <el-form-item
               label="姓名"
               prop="userName">
               <el-input
-                v-model="certificationFrom.userName"
-                class="user-input"
-                size="small"/>
+                v-model="certificationFrom.userName" />
             </el-form-item>
             <el-form-item
               label="身份证"
               prop="userId">
               <el-input
-                v-model="certificationFrom.userId"
-                class="user-input"/>
-            </el-form-item>
-            <el-form-item>
-              <el-button
-                type="primary"
-                class="user-button"
-                @click="goCertification()">确认</el-button>
+                v-model="certificationFrom.userId" />
             </el-form-item>
           </el-form>
         </div>
+        <span
+          slot="footer"
+          class="dialog-footer">
+          <el-button
+            type="primary"
+            size="small"
+            @click="goCertification()">确 定</el-button>
+          <el-button
+            size="small"
+            @click="certificationShow = false">取 消</el-button>
+        </span>
       </el-dialog>
     </div>
   </div>
@@ -338,7 +337,7 @@
 import { deepClone } from '@/utils'
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
-import authorize from '@/views/houseManage/components/authorize'
+import authorize from '@/components/Authorize'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
 import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi, certificationFromApi } from '@/api/houseManage'
 export default {
@@ -515,6 +514,9 @@ export default {
         this.selectedOpthons = []
         this.selectedArea = []
       }
+
+      console.log('查询数据', this.searchParams)
+
       this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2
       this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
       // 解决watch执行顺序
@@ -582,7 +584,20 @@ export default {
         'resource': this.searchParams.houseRentType
       }
       changeRoomStatusApi(params).then(response => {
-        this.searchParam('clear')
+        if (response.message === '操作成功') {
+          this.$message({
+            message: '状态修改成功',
+            type: 'success'
+          })
+        } else if (response.message === '修改失败') {
+          this.$message.error('状态修改失败')
+        } else {
+          this.$message({
+            message: response.message,
+            type: 'warning'
+          })
+        }
+        this.searchParam()
       })
     },
     // 删除房间
@@ -608,7 +623,7 @@ export default {
               message: res.message,
               type: 'success'
             })
-            this.searchParam('clear')
+            this.searchParam()
           }
         }).catch(err => { console.log(err) })
       })
@@ -624,7 +639,7 @@ export default {
     // 发布 或者 下架房源  弹窗显示
     syncItems (type = 'on') {
       // 验证是否认证
-      if (!this.userAuthentication && type === 'on') {
+      if (!this.$store.getters.authed && type === 'on') {
         this.certificationShow = true
         return false
       }
@@ -639,20 +654,6 @@ export default {
       if (this.selectedItems.length === 0) {
         this.$message.error(`请选择需要${typeConfig[type].title}的房源`)
         return false
-      }
-      if (type === 'on') {
-        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 2 && item.mailinStatus === 2)
-        if (unfilterItem.length !== 0) {
-          this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
-          return false
-        }
-      }
-      if (type === 'off') {
-        const unfilterItem = this.selectedItems.filter(item => ((item.idlefishStatus === 1 || item.idlefishStatus === 5) && (item.mailinStatus === 1 || item.mailinStatus === 5)))
-        if (unfilterItem.length !== 0) {
-          this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
-          return false
-        }
       }
       this.dialogVisible = true
       this.dialogTitle = typeConfig[type].title
@@ -684,7 +685,7 @@ export default {
       }
       if (this.dialogTitle === '发布') {
         for (let i = 0; i < params.platform.length; i++) {
-          if (params.platform[i] === 'idlefish' && !this.authorizeStatus) {
+          if (params.platform[i] === 'idlefish' && !this.$store.getters.idlefished) {
             this.dialogVisible = false
             this.goAuthorizeShow = true
             return false
@@ -750,6 +751,11 @@ export default {
     // 闲鱼授权
     handleSetting () {
       this.authorizeShow = true
+    },
+
+    // 移除校验结果
+    clearValidate (ref) {
+      this.$refs[ref].clearValidate()
     }
   }
 }
@@ -764,9 +770,7 @@ export default {
     width: 140px;
     margin-right:10px;
   }
-  .user-input{
-    width:300px;
-  }
+
   .item-flex{
     display: flex;
   }

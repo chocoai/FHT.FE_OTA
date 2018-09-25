@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:31:28
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 16:43:18
+ * @Last Modified time: 2018-09-25 14:24:37
  */
 
 let path = require('path')
@@ -45,7 +45,7 @@ module.exports = {
     assetsPublicPath: '/',
     productionSourceMap: false,
     devtool: '#source-map',
-    productionGzip: false,
+    productionGzip: true,
     productionGzipExtensions: ['js', 'css'],
     bundleAnalyzerReport: process.env.npm_config_report
   }

@@ -1,10 +1,6 @@
 <template>
-  <div>
+  <div class="authorize">
     <div class="dialog_apply">
-      <!-- <el-dialog
-        :title="dialogTitle"
-        :visible.sync="layer_showApply"
-        @close="dialogClose"> -->
       <el-steps
         :active="active_step"
         align-center
@@ -17,10 +13,10 @@
           title="扫码授权"
           description="打开闲鱼APP进行扫码授权"/>
       </el-steps>
+
       <div
         v-if="active_step === 0"
-        class="text-center"
-        style="display: flex; justify-content: center;">
+        class="text-center picture">
         <el-form
           ref="dataForm"
           :rules="rules"
@@ -33,7 +29,9 @@
               v-model="temp.account"
               placeholder="请输入闲鱼昵称"
               clearable
-              size="small">
+              size="small"
+              @keyup.enter="nextStep"
+            >
               <template slot="prepend">闲鱼昵称</template>
             </el-input>
           </el-form-item>
@@ -41,8 +39,7 @@
       </div>
       <div
         v-else
-        class="text-center"
-        style="display: flex; justify-content: center;">
+        class="text-center picture">
         <el-card
           :body-style="{ padding: '0px' }"
           style="max-width: 500px;">
@@ -54,6 +51,7 @@
           </div>
         </el-card>
       </div>
+
       <div
         slot="footer"
         class="dialog-footer text-center">
@@ -72,82 +70,98 @@
           size="small"
           @click="saveApplyInfo">确认授权</el-button>
       </div>
-      <!-- </el-dialog> -->
     </div>
   </div>
 </template>
 <script>
-// import areaData from './cityData'
-// import { deepClone } from '@/utils'
+import { authorizeApi, authorizePictureApi, authorizeStatusApi } from '@/api/houseManage'
 export default {
   name: 'Authorize',
-  props: {
-    dialogTitle: {
-      type: String,
-      default: ''
-    },
-    layer_showApply: {
-      type: Boolean,
-      default: false
-    }
+  components: {
   },
   data () {
     return {
-      active_step: 0
+      layer_showApply: true,
+      active_step: 0,
+      dialogStatus: false,
+      picUrl: '',
+      temp: {
+        account: ''
+      },
+      rules: {
+        account: [
+          { required: true, message: '请填写闲鱼昵称', trigger: 'blur' }
+        ]
+      }
     }
   },
+  mounted () {
+
+  },
   methods: {
-    dialogClose () {}
-  //   // 下一步
-  //   nextStep () {
-  //     this.$refs['dataForm'].validate((valid) => {
-  //       if (valid) {
-  //         let bindParams = {
-  //           platform: 'idlefish',
-  //           userid: this.temp.userId,
-  //           account: this.temp.account,
-  //           type: this.temp.type,
-  //           mobile: this.temp.mobile,
-  //           brand: this.temp.name
-  //         }
-  //         authorizeApi.bind(ObjectMap(bindParams)).then(response => {
-  //           authorizeApi.picture({
-  //             platform: 'idlefish',
-  //             saasId: 0
-  //           }).then(response => {
-  //             this.picUrl = response.data.picUrl
-  //             this.active_step = 1
-  //           })
-  //         })
-  //       }
-  //     })
-  //   },
-  //   // 确认授权
-  //   saveApplyInfo () {
-  //     authorizeApi.status(ObjectMap({
-  //       platform: 'idlefish',
-  //       userid: this.temp.userId
-  //     })).then(response => {
-  //       this.layer_showApply = false
-  //       this.searchParam()
-  //       this.$notify({
-  //         title: '成功',
-  //         message: '授权成功',
-  //         type: 'success',
-  //         duration: 2000
-  //       })
-  //     })
-  //   },
-  //   dialogClose () {
-  //     this.temp = {
-  //       account: ''
-  //     }
-  //     this.active_step = 0
-  //     if (this.$refs.dataForm) {
-  //       this.$refs.dataForm.resetFields()
-  //     }
-  //     this.layer_showApply = false
-  //   }
+    // 申请开通
+    handleSetting (row, type, bindType) {
+      this.dialogTitle = '闲鱼授权'
+      // this.temp = {
+      //   ...row,
+      //   account: '',
+      //   type,
+      //   bindType
+      // }
+      this.layer_showApply = true
+    },
+    // 下一步
+    nextStep () {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          let bindParams = {
+            platform: 'idlefish',
+            account: this.temp.account
+          }
+          console.log(bindParams)
+          authorizeApi(bindParams).then(response => {
+            authorizePictureApi({platform: 'idlefish'}).then(res => {
+              this.picUrl = res.data.picUrl
+              this.active_step = 1
+            })
+          })
+        }
+      })
+    },
+    // 确认授权
+    saveApplyInfo () {
+      authorizeStatusApi({platform: 'idlefish'}).then(response => {
+        this.$notify({
+          title: '成功',
+          message: '授权成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.$emit('closeAuthorize', this.dialogStatus)
+        this.$store.dispatch('GetInfo').then(res => {
+          // 认证成功之后 的回调函数
+        })
+      })
+    },
+    dialogClose () {
+      this.temp = {
+        account: ''
+      }
+      this.active_step = 0
+      if (this.$refs.dataForm) {
+        this.$refs.dataForm.resetFields()
+      }
+      this.layer_showApply = false
+    }
+  },
+  //  关闭弹窗
+  dialogClose () {
+    this.layer_showApply = false
   }
 }
 </script>
+<style>
+   .picture{display: flex; justify-content: center;margin-bottom:20px;}
+   .authorize{background: #fff;padding: 30px;}
+   .authorize .el-step.is-center .el-step__description{color:#c0c4cc}
+</style>
