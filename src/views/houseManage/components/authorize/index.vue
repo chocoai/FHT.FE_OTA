@@ -138,6 +138,9 @@ export default {
           duration: 2000
         })
         this.$emit('closeAuthorize', this.dialogStatus)
+        this.$store.dispatch('GetInfo').then(res => {
+          // 认证成功之后 的回调函数
+        })
       })
     },
     dialogClose () {
