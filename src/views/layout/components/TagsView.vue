@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:33
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 15:48:45
+ * @Last Modified time: 2018-09-18 14:36:45
  */
 
 <template>
@@ -48,7 +48,6 @@ export default {
       selectedTag: {}
     }
   },
-  inject: ['reloadPage'],
   computed: {
     visitedViews () {
       return this.$store.state.tagsView.visitedViews
@@ -96,7 +95,7 @@ export default {
     },
     closeSelectedTag (view) {
       const visitedViews = this.$store.state.tagsView.visitedViews
-      if (view.isHomePage && visitedViews.length === 1 && view.name === visitedViews[0].name) {
+      if (view.name === '首页' && visitedViews.length === 1 && view.name === visitedViews[0].name) {
         return false
       }
       this.$store.dispatch('delVisitedViews', view).then((views) => {
@@ -118,16 +117,11 @@ export default {
     },
     closeAllTags () {
       const visitedViews = this.$store.state.tagsView.visitedViews
-      if (visitedViews.length === 1 && visitedViews[0].isHomePage) {
+      if (visitedViews.length === 1 && visitedViews[0].name === '首页') {
         return false
       }
-      this.$store.dispatch('delAllViews').then(() => {
-        if (this.$route.meta.isHomePage) {
-          this.reloadPage()
-        } else {
-          this.$router.push('/')
-        }
-      })
+      this.$store.dispatch('delAllViews')
+      this.$router.push('/')
     },
     openMenu (tag, e) {
       this.visible = true
