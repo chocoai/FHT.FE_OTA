@@ -96,11 +96,8 @@
                 value="2"
                 label="麦邻已发布"/>
               <el-option
-                value="9"
-                label="麦邻发布中"/>
-              <el-option
                 value="5"
-                label="麦邻发布失败"/>
+                label="麦邻发布中"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -118,11 +115,18 @@
                 value="2"
                 label="闲鱼已发布"/>
               <el-option
-                value="9"
+                value="5"
                 label="闲鱼发布中"/>
               <el-option
-                value="5"
+                value="6"
+                label="闲鱼下架中"/>
+              <el-option
+                value="9"
                 label="闲鱼发布失败"/>
+              <el-option
+                value="10"
+                label="闲鱼下架失败"/>
+
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -225,7 +229,7 @@
         <template
           slot="slot_mailinStatus"
           slot-scope="scope">
-          <el-popover
+          <!-- <el-popover
             v-if="scope.row.mailinStatus === 9"
             trigger="hover"
             placement="top">
@@ -235,9 +239,8 @@
                 {{ (scope.row.mailinStatus) | renderStatusValue }}
               </el-tag>
             </div>
-          </el-popover>
+          </el-popover> -->
           <el-tag
-            v-else
             :type="( scope.row.mailinStatus) | renderStatusType">
             {{ scope.row.mailinStatus | renderStatusValue }}
           </el-tag>
