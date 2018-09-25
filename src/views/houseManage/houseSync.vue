@@ -95,6 +95,12 @@
               <el-option
                 value="2"
                 label="麦邻已发布"/>
+              <el-option
+                value="5"
+                label="麦邻发布失败"/>
+              <el-option
+                value="9"
+                label="麦邻发布中"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -114,6 +120,9 @@
               <el-option
                 value="5"
                 label="闲鱼发布失败"/>
+              <el-option
+                value="9"
+                label="闲鱼发布中"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -655,20 +664,6 @@ export default {
       if (this.selectedItems.length === 0) {
         this.$message.error(`请选择需要${typeConfig[type].title}的房源`)
         return false
-      }
-      if (type === 'on') {
-        const unfilterItem = this.selectedItems.filter(item => item.idlefishStatus === 2 && item.mailinStatus === 2)
-        if (unfilterItem.length !== 0) {
-          this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
-          return false
-        }
-      }
-      if (type === 'off') {
-        const unfilterItem = this.selectedItems.filter(item => ((item.idlefishStatus === 1 || item.idlefishStatus === 5) && item.mailinStatus === 1))
-        if (unfilterItem.length !== 0) {
-          this.$message.error(`已${typeConfig[type].title}的房源不能再${typeConfig[type].title}`)
-          return false
-        }
       }
       this.dialogVisible = true
       this.dialogTitle = typeConfig[type].title
