@@ -95,6 +95,12 @@
               <el-option
                 value="2"
                 label="麦邻已发布"/>
+              <el-option
+                value="9"
+                label="麦邻发布中"/>
+              <el-option
+                value="5"
+                label="麦邻发布失败"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -111,6 +117,12 @@
               <el-option
                 value="2"
                 label="闲鱼已发布"/>
+              <el-option
+                value="9"
+                label="闲鱼发布中"/>
+              <el-option
+                value="5"
+                label="闲鱼发布失败"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -272,9 +284,14 @@
         </el-dialog>
       </div>
       <el-dialog
+        ref="authorizeDialog"
         :visible.sync="authorizeShow"
-        title="闲鱼授权">
-      <authorize @closeAuthorize ="closeAuthorizeDialog"/></el-dialog>
+        title="闲鱼授权"
+        @close="closeAuthorizeDialog('authorizeDialog')"
+      >
+        <authorize
+          ref="authorzeUser"
+          @closeAuthorize ="closeAuthorizeDialog"/></el-dialog>
       <el-dialog
         :visible.sync="goAuthorizeShow"
         title="授权提示"
@@ -525,6 +542,7 @@ export default {
       })
     },
     closeAuthorizeDialog (status) {
+      this.$refs.authorzeUser.$refs.dataForm.clearValidate()
       this.authorizeShow = false
     },
     closeRoomDetailDialog () {

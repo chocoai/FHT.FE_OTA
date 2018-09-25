@@ -101,8 +101,12 @@
     </el-dialog>
     <el-dialog
       :visible.sync="authorizeShow"
-      title="闲鱼授权">
-    <authorize @closeAuthorize ="closeAuthorizeDialog"/></el-dialog>
+      title="闲鱼授权"
+      @close="closeAuthorizeDialog('authorzeUser')"
+    >
+      <authorize
+        ref="authorzeUser"
+        @closeAuthorize ="closeAuthorizeDialog"/></el-dialog>
   </div>
 </template>
 <script>
@@ -144,6 +148,7 @@ export default {
   },
   methods: {
     closeAuthorizeDialog (status) {
+      this.$refs.authorzeUser.$refs.dataForm.clearValidate()
       this.authorizeShow = false
     },
     toggleSideBar () {
