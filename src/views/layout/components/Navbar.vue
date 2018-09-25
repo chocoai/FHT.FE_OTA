@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 18:20:59
+ * @Last Modified time: 2018-09-25 10:11:56
  */
 
 <template>
@@ -47,12 +47,15 @@
                   style="display:block;"
                   @click="layer_showUserInfo = true">个人信息</span>
               </el-dropdown-item> -->
-              <el-dropdown-item v-if="!idlefished">
+              <el-dropdown-item>
                 <span
                   style="display:block;"
                   @click="goAuthorize">
-                  <i class="iconfont icon-access"/>
-                  闲鱼授权
+                  <i
+                    :class="{'icon-access': !idlefished, 'icon-idlefish': idlefished}"
+                    class="iconfont"/>
+                  <span v-if="!idlefished">闲鱼授权</span>
+                  <span v-else>闲鱼已授权</span>
                 </span>
               </el-dropdown-item>
               <router-link
@@ -164,6 +167,10 @@ export default {
       this.$refs.ruleForm.resetFields()
     },
     goAuthorize () {
+      if (this.idlefished) {
+        this.$message.info('该账号已完成闲鱼授权，无需重新授权')
+        return false
+      }
       this.authorizeShow = true
     }
   }
