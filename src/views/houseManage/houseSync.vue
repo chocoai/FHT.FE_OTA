@@ -526,7 +526,9 @@ export default {
       this.authorizeShow = false
     },
     closeRoomDetailDialog () {
+      this.$refs.hostingRoomDetail.$refs.hostingRoomDetail.clearValidate()
       this.roomDetailModelVisible = false
+      this.searchParam()
     },
     // 城市区域
     getCityName () {

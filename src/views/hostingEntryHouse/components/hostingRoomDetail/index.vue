@@ -1293,7 +1293,7 @@ export default {
     },
     // 保存
     saveRoomDetailData (type) {
-      // type 1.
+      // type 1.保存并添加 2.保存 3.取消
       if (type === 3) {
         if (this.editFlag) {
           this.$emit('closeDialog')
