@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:36
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-25 21:20:00
+ * @Last Modified time: 2018-09-25 21:45:46
  */
 
 <template>
@@ -17,24 +17,22 @@
           :class="item.icon ? 'linkItem_icon' : '' "
           class="menu_linkItem">
           <el-menu-item :index="item.path+'/'+item.children[0].path">
-            <span class="inlineBlock">
-              <i
-                v-if="item.icon"
-                :class="`iconfont icon-${item.icon}`" />
-              <span slot="title">{{ item.children[0].name }}</span>
-            </span>
+            <span class="activeBlock" />
+            <i
+              v-if="item.icon"
+              :class="`iconfont icon-${item.icon}`" />
+            <span slot="title">{{ item.children[0].name }}</span>
           </el-menu-item>
         </router-link>
         <el-submenu
           v-if="!item.noDropdown&&!item.hidden"
           :index="item.name">
           <template slot="title">
-            <span class="inlineBlock">
-              <i
-                v-if="item.icon"
-                :class="`iconfont icon-${item.icon}`" />
-              <span slot="title">{{ item.name }}</span>
-            </span>
+            <span class="activeBlock" />
+            <i
+              v-if="item.icon"
+              :class="`iconfont icon-${item.icon}`" />
+            <span slot="title">{{ item.name }}</span>
           </template>
           <div
             v-for="(child, childIndex) in item.children"
@@ -51,12 +49,11 @@
                 :class="child.icon ? 'linkItem_icon' : '' "
                 class="menu-indent menu_linkItem">
                 <el-menu-item :index="item.path+'/'+child.path">
-                  <span class="inlineBlock">
-                    <i
-                      v-if="child.icon"
-                      :class="`iconfont icon-${child.icon}`" />
-                    <span slot="title">{{ child.name }}</span>
-                  </span>
+                  <span class="activeBlock" />
+                  <i
+                    v-if="child.icon"
+                    :class="`iconfont icon-${child.icon}`" />
+                  <span slot="title">{{ child.name }}</span>
                 </el-menu-item>
               </router-link>
             </template>
@@ -102,15 +99,24 @@ export default {
 }
 
 .menu_linkItem {
+  position: relative;
+  .activeBlock {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: #1E52FF;
+  }
   display: inline-block;
   width: 100%;
   &.router-link-active {
-    border-left: 6px solid #1E52FF;
+    .activeBlock {
+      opacity: 1;
+      transition: 300ms;
+    }
     .is-active {
       background-color:rgba(41, 44, 207, 1) !important;
-      .inlineBlock {
-        transform: translate(-6px);
-      }
     }
   }
 }
