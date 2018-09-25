@@ -297,7 +297,8 @@
       <el-dialog
         :visible.sync="certificationShow"
         title="完成实名认证方可发布房源"
-        width="450px"
+        width="500px"
+        @close="clearValidate('certificationFrom')"
       >
         <div>
           <el-form
@@ -305,31 +306,35 @@
             :model="certificationFrom"
             :rules="rules"
             label-width="80px"
+            size="small"
             status-icon
+            width="100%"
           >
             <el-form-item
               label="姓名"
               prop="userName">
               <el-input
-                v-model="certificationFrom.userName"
-                class="user-input"
-                size="small"/>
+                v-model="certificationFrom.userName" />
             </el-form-item>
             <el-form-item
               label="身份证"
               prop="userId">
               <el-input
-                v-model="certificationFrom.userId"
-                class="user-input"/>
-            </el-form-item>
-            <el-form-item>
-              <el-button
-                type="primary"
-                class="user-button"
-                @click="goCertification()">确认</el-button>
+                v-model="certificationFrom.userId" />
             </el-form-item>
           </el-form>
         </div>
+        <span
+          slot="footer"
+          class="dialog-footer">
+          <el-button
+            type="primary"
+            size="small"
+            @click="goCertification()">确 定</el-button>
+          <el-button
+            size="small"
+            @click="certificationShow = false">取 消</el-button>
+        </span>
       </el-dialog>
     </div>
   </div>
@@ -748,6 +753,11 @@ export default {
     // 闲鱼授权
     handleSetting () {
       this.authorizeShow = true
+    },
+
+    // 移除校验结果
+    clearValidate (ref) {
+      this.$refs[ref].clearValidate()
     }
   }
 }
@@ -762,9 +772,7 @@ export default {
     width: 140px;
     margin-right:10px;
   }
-  .user-input{
-    width:300px;
-  }
+
   .item-flex{
     display: flex;
   }
