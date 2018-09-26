@@ -177,12 +177,13 @@
                 <el-select
                   v-model="hostingRoomDetail.decorationDegree"
                   class="room-detail-select"
-                  placeholder="装修程度">
+                  placeholder="装修程度"
+                  disabled>
                   <el-option
                     v-for="item in decorationDegreeList"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value" />
+                    :value="item.value"/>
                 </el-select>
               </el-form-item>
             </el-col>
