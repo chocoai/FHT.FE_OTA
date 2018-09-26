@@ -169,24 +169,6 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="4">
-              <el-form-item
-                label-width="0"
-                prop="decorationDegree"
-                class="room-item-count">
-                <el-select
-                  v-model="hostingRoomDetail.decorationDegree"
-                  class="room-detail-select"
-                  placeholder="装修程度"
-                  disabled>
-                  <el-option
-                    v-for="item in decorationDegreeList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
           </el-row>
         </div>
         <el-row :gutter="20">

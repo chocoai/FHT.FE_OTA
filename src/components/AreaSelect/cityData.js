@@ -14436,19 +14436,4 @@ module.exports = [{
       'label': '铁门关市'
     }]
   }]
-}, {
-  'value': 710000,
-  'parentvalue': 1,
-  'label': '台湾省',
-  'children': []
-}, {
-  'value': 810000,
-  'parentvalue': 1,
-  'label': '香港特别行政区',
-  'children': []
-}, {
-  'value': 820000,
-  'parentvalue': 1,
-  'label': '澳门特别行政区',
-  'children': []
 }]
