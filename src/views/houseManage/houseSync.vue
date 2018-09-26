@@ -204,6 +204,7 @@
         :show-selection="true"
         :is-mock="isMock"
         list-field="data.houseList"
+        total-field="data.record"
         @selection-change="handleSelectionChange"
       >
         <template
