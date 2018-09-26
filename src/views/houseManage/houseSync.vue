@@ -518,7 +518,7 @@ export default {
   mounted () {
     this.authorizeStatus = this.$store.getters.idlefished // 判断是否授权的参数
     this.userAuthentication = this.$store.getters.authed // 判断实名认证的参数
-    this.getCityName()
+    this.getCityName(this.searchParams.houseRentType)
   },
   methods: {
     // 查询数据
@@ -559,9 +559,9 @@ export default {
       this.searchParam()
     },
     // 城市区域
-    getCityName () {
+    getCityName (houseRentType) {
       var params = {
-        'resource': this.searchParams.houseRentType
+        'resource': houseRentType
       }
       var cityData = []
       queryCityAreaPlotApi(params).then(res => {
@@ -656,6 +656,7 @@ export default {
     },
     // tabs切换
     handleClickTab (tab) {
+      this.getCityName(this.searchParams.houseRentType)
       this.searchParam('clear')
     },
     // 选择列表
