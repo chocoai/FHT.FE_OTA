@@ -97,7 +97,7 @@
                 label="麦邻已发布"/>
               <el-option
                 value="5"
-                label="麦邻发布中"/>
+                label="麦邻申请中"/>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -116,7 +116,7 @@
                 label="闲鱼已发布"/>
               <el-option
                 value="5"
-                label="闲鱼发布中"/>
+                label="闲鱼申请中"/>
               <el-option
                 value="6"
                 label="闲鱼下架中"/>
@@ -376,7 +376,7 @@ export default {
       const statusMap = {
         '1': 'info', // 未发布
         '2': 'success', // 已发布
-        '5': 'danger', // 发布中
+        '5': 'danger', // 申请中
         '6': 'primary', // 下架中
         '9': 'warning', // 发布失败
         '10': 'warning' // 下架失败
@@ -385,7 +385,7 @@ export default {
     },
     renderStatusValue (status) {
       const statusStrData = ['', '未发布', '已发布']
-      statusStrData[5] = '发布中'
+      statusStrData[5] = '申请中'
       statusStrData[6] = '下架中'
       statusStrData[9] = '发布失败'
       statusStrData[10] = '下架失败'
