@@ -243,7 +243,9 @@
           </el-row>
         </div>
         <div v-if="hostingRoomDetail.houseRentType === 1">
-          <el-form-item label="房间照片">
+          <el-form-item
+            label="房间照片"
+            prop="pictures">
             <el-badge
               v-if="hostingRoomDetail.pictures.length"
               :value="hostingRoomDetail.pictures.length">
@@ -257,24 +259,6 @@
               type="primary"
               size="mini"
               @click="openPicModel(-1)">上传照片</el-button>
-          <!-- <div class="previewItems">
-            <Preview
-              :pic-list="currentPicList"
-              :delete-icon="true"
-              :disabled="``"
-              @emitDelete="emitDelete" />
-            <label
-              class="el-upload el-upload--picture-card uploadImage"
-              for="uploadImages">
-              <i class="el-icon-plus" />
-              <input
-                id="uploadImages"
-                :accept="accept"
-                type="file"
-                multiple
-                @change="uploadImg($event)">
-            </label>
-          </div> -->
           </el-form-item>
           <div style="position: relative">
             <el-form-item
@@ -482,7 +466,10 @@
               </el-row>
               <el-row>
                 <el-col :span="7">
-                  <el-form-item label="房间照片">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.pictures'"
+                    :rules="hostingRoomDetailRules.roomDetail.pictures"
+                    label="房间照片">
                     <template v-if="hostingRoomDetail.hostingRooms[index].pictures.length > 0">
                       <el-badge :value="hostingRoomDetail.hostingRooms[index].pictures.length">
                         <el-button
@@ -744,6 +731,7 @@ export default {
       // mainHeight: 500,
       hostingRoomDetail: {},
       tempFormData: {},
+      editRoomInfo: {},
       hostingRoomDetailRules: {
         areaCode: [
           {
@@ -786,10 +774,46 @@ export default {
           { required: true, message: '请选择装修程度', trigger: 'change' }
         ],
         floorName: [
-          { required: true, message: '请输入房源所在层', trigger: 'blur' }
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback(new Error('请输入房源所在层'))
+              } else if (!(value > 0 && (value === parseInt(value).toString()))) {
+                callback(new Error('所在层必须为整数'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         floorAmount: [
-          { required: true, message: '请输入总楼层数', trigger: 'blur' }
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback(new Error('请输入总楼层数'))
+              } else if (!(value > 0 && (value.toString() === parseInt(value).toString()))) {
+                callback(new Error('总楼层必须为整数'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          }
+        ],
+        pictures: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (!value.length) {
+                callback(new Error('请上传房间照片'))
+              } else {
+                callback()
+              }
+            }
+          }
         ],
         contactName: [
           { required: true, message: '请输入联系人姓名', trigger: 'blur' }
@@ -819,6 +843,18 @@ export default {
           ],
           roomDirection: [
             { required: true, message: '请选择房间朝向', trigger: 'change' }
+          ],
+          pictures: [
+            {
+              required: true,
+              validator: (rule, value, callback) => {
+                if (!value.length) {
+                  callback(new Error('请上传房间照片'))
+                } else {
+                  callback()
+                }
+              }
+            }
           ],
           payOfPayment: [
             { required: true, message: '请选择付款方式', trigger: 'change' }
@@ -1036,6 +1072,7 @@ export default {
     // 计算押金，保留2位精度
     handleRentChange (target) {
       if (target.rent > 0) {
+        target.rent = Math.min(100000, target.rent).toString()
         let list = target.rent.split('.')
         if (!list[1]) {
           target.rent = target.rent + '.00'
@@ -1077,9 +1114,6 @@ export default {
         }
       }
     },
-    // setFacilityItemsList (val) {
-    //   this.hostingRoomDetail.facilityItemsList = val
-    // },
     // 房间面积保留2位精度
     setPrecision (index) {
       let val = typeof index === 'number' ? this.hostingRoomDetail.hostingRooms[index].roomArea : this.hostingRoomDetail.houseArea
@@ -1096,14 +1130,17 @@ export default {
       typeof index === 'number' ? this.hostingRoomDetail.hostingRooms[index].roomArea = val : this.hostingRoomDetail.houseArea = val
     },
     // 初始化房间信息
-    setRoomDetailData (val) {
+    setRoomDetailData (val, editRoomInfo) {
       if (val) {
         val.areaCode = [val.provinceId, val.cityId, val.regionId]
         val.address = val.subdistrictName ? (val.subdistrictName + ' - ' + val.subdistrictAddress) : ''
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
+        parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')
         val.zoneId = val.zoneId === 0 ? '' : val.zoneId
         if (this.houseRentType === 1) {
+          parseInt(val.rent) === val.rent && (val.rent = val.rent + '.00')
+          parseInt(val.deposit) === val.deposit && (val.deposit = val.deposit + '.00')
           val.pictures = val.pictures || []
           if (val.pictures.length) {
             val.pictures.forEach((item) => {
@@ -1114,6 +1151,9 @@ export default {
           }
         } else {
           val.hostingRooms.forEach((item, index) => {
+            parseInt(item.roomArea) === item.roomArea && (item.roomArea = item.roomArea + '.00')
+            parseInt(item.rent) === item.rent && (item.rent = item.rent + '.00')
+            parseInt(item.deposit) === item.deposit && (item.deposit = item.deposit + '.00')
             item.name = ++index + ''
             item.facilityItemsList = item.facilityItems ? item.facilityItems.split(',') : []
             item.roomAttributesList = item.roomAttributes ? item.roomAttributes.split(',') : []
@@ -1186,12 +1226,23 @@ export default {
 
       if (this.houseRentType === 2) {
         this.tabIndex = val.hostingRooms.length
-        this.activeRoomName = '1'
+        if (editRoomInfo && this.tabIndex > 1) {
+          val.hostingRooms.forEach((item, index) => {
+            if (item.roomCode === editRoomInfo.roomCode) {
+              this.activeRoomName = item.name
+            }
+          })
+        } else {
+          this.activeRoomName = '1'
+        }
       }
 
       this.$nextTick(() => {
         this.$set(this, 'hostingRoomDetail', val)
         this.$set(this, 'tempFormData', deepClone(val))
+        if (editRoomInfo) {
+          this.$set(this, 'editRoomInfo', editRoomInfo)
+        }
         if (this.editFlag && val.zoneId) {
           this.searchZoneList(true)
         } else {
@@ -1266,6 +1317,12 @@ export default {
                   return false
                 }
               })
+              this.$refs.hostingRoomDetail.validateField('hostingRooms.' + index + '.pictures', (msg) => {
+                if (msg) {
+                  this.activeRoomName = this.hostingRoomDetail.hostingRooms[index].name
+                  return false
+                }
+              })
             }
           }
           this.$message.error('您还有必填信息未填写完全，请全部填写好后再保存')
@@ -1292,26 +1349,46 @@ export default {
       }
 
       let api = this.editFlag ? hostingEditHouseInfoApi : hostingSaveHouseInfoApi
-      console.log(roomDetailData)
-      api({
-        hostingHouseInfo: JSON.stringify(roomDetailData)
-      }).then((res) => {
-        if (res.code === '0') {
-          this.$message({
-            message: res.message,
-            type: 'success'
-          })
-          if (type === 1) {
-            this.setRoomDetailData()
-          } else {
-            if (this.editFlag) {
+      // console.log(roomDetailData)
+      if (this.editFlag && (this.editRoomInfo.mailinStatus === 2 || this.editRoomInfo.mailinStatus === 5)) {
+        this.$confirm('当前房源保存后将从APP下架，确认保存？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          api({
+            hostingHouseInfo: JSON.stringify(roomDetailData)
+          }).then((res) => {
+            if (res.code === '0') {
+              this.$message({
+                message: res.message,
+                type: 'success'
+              })
               this.$emit('closeDialog')
+            }
+          })
+        }).catch(() => {})
+      } else {
+        api({
+          hostingHouseInfo: JSON.stringify(roomDetailData)
+        }).then((res) => {
+          if (res.code === '0') {
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+            if (type === 1) {
+              this.setRoomDetailData()
             } else {
-              this.$router.push({name: '房源管理'})
+              if (this.editFlag) {
+                this.$emit('closeDialog')
+              } else {
+                this.$router.push({name: '房源管理'})
+              }
             }
           }
-        }
-      })
+        })
+      }
     },
     openPicModel (index) { // 打开上传图片列表
       this.curPicListIndex = index
@@ -1319,7 +1396,13 @@ export default {
       this.uploadPicsModelVisible = true
     },
     uploadModelClose () { // 关闭上传图片列表
-      this.curPicListIndex === -1 ? (this.hostingRoomDetail.pictures = this.currentPicList) : (this.hostingRoomDetail.hostingRooms[this.curPicListIndex].pictures = this.currentPicList)
+      if (this.curPicListIndex === -1) {
+        this.hostingRoomDetail.pictures = this.currentPicList
+        this.$refs.hostingRoomDetail.validateField('pictures')
+      } else {
+        this.hostingRoomDetail.hostingRooms[this.curPicListIndex].pictures = this.currentPicList
+        this.$refs.hostingRoomDetail.validateField('hostingRooms.' + this.curPicListIndex + '.pictures')
+      }
       this.currentPicList = []
     },
     // 检查是否能删除当前房间

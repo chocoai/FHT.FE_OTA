@@ -87,13 +87,8 @@ export function certificationFromApi (params) {
 
 /* 集中式删除房间 */
 export function deleteRoomApi (params) {
-  return fetch({
-    url: '/market/fangyuan',
-    method: 'post',
-    data: {
-      method: 'deleteRoom',
-      params
-    }
+  return fetch('/fangyuan/deleteRoom', {
+    params
   })
 }
 

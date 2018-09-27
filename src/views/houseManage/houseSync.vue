@@ -764,12 +764,13 @@ export default {
     },
     // 添加修改房间信息
     openRoomDetail (params) {
+      console.log(params)
       hostingHouseInfoApi({
         fangyuanCode: params.fangyuanCode
       }).then((res) => {
         this.roomDetailModelVisible = true
         this.$nextTick(() => {
-          this.$refs.hostingRoomDetail.setRoomDetailData(res.data)
+          this.$refs.hostingRoomDetail.setRoomDetailData(res.data, params)
         })
       }).catch(err => console.log(err))
     },
