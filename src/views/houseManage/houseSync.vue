@@ -550,6 +550,9 @@ export default {
       })
     },
     closeAuthorizeDialog (status) {
+      if (this.$refs.authorzeUser.$refs.dataForm) {
+        this.$refs.authorzeUser.$refs.dataForm.clearValidate()
+      }
       this.$refs.authorzeUser.$refs.dataForm.clearValidate()
       this.authorizeShow = false
     },

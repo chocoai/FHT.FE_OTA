@@ -148,7 +148,9 @@ export default {
   },
   methods: {
     closeAuthorizeDialog (status) {
-      this.$refs.authorzeUser.$refs.dataForm.clearValidate()
+      if (this.$refs.authorzeUser.$refs.dataForm) {
+        this.$refs.authorzeUser.$refs.dataForm.clearValidate()
+      }
       this.authorizeShow = false
     },
     toggleSideBar () {
