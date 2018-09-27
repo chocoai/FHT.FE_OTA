@@ -656,8 +656,8 @@ export default {
     },
     // tabs切换
     handleClickTab (tab) {
-      this.getCityName(this.searchParams.houseRentType)
       this.searchParam('clear')
+      this.getCityName(this.searchParams.houseRentType)
     },
     // 选择列表
     handleSelectionChange (list) {
