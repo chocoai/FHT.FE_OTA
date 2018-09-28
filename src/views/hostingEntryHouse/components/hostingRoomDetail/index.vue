@@ -418,7 +418,9 @@
                   <el-form-item label="房间名称">
                     <el-input
                       v-model="hostingRoomDetail.hostingRooms[index].roomPlaceName"
-                      placeholder="如主卧/侧卧" />
+                      placeholder="如主卧/侧卧"
+                      @change="handleRoomNameLength(hostingRoomDetail.hostingRooms[index])"
+                      @keyup.native="handleRoomNameLength(hostingRoomDetail.hostingRooms[index])"/>
                   </el-form-item>
                 </el-col>
                 <el-col :span="7">
@@ -1135,6 +1137,12 @@ export default {
         val = 0
       }
       typeof index === 'number' ? this.hostingRoomDetail.hostingRooms[index].roomArea = val : this.hostingRoomDetail.houseArea = val
+    },
+    // 合租房间名称长度不能超过10位
+    handleRoomNameLength (room) {
+      if (room.roomPlaceName && room.roomPlaceName.length > 10) {
+        room.roomPlaceName = room.roomPlaceName.substr(0, 10)
+      }
     },
     // 初始化房间信息
     setRoomDetailData (val, editRoomInfo) {
