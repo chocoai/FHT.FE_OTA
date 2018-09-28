@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="entry-house-container">
+    <div
+      v-loading="saveLoading"
+      class="entry-house-container">
       <el-form
         v-if="JSON.stringify(hostingRoomDetail) !== '{}'"
         ref="hostingRoomDetail"
@@ -675,20 +677,24 @@
       class="entry-house-bottom">
       <template v-if="editFlag">
         <el-button
+          :loading="saveLoading"
           type="primary"
           size="small"
           @click="saveRoomDetailData(2)">保存</el-button>
       </template>
       <template v-else>
         <el-button
+          :loading="saveLoading"
           type="primary"
           size="small"
           @click="saveRoomDetailData(1)">保存并继续添加</el-button>
         <el-button
+          :loading="saveLoading"
           size="small"
           @click="saveRoomDetailData(2)">确定</el-button>
       </template>
       <el-button
+        :loading="saveLoading"
         size="small"
         @click="saveRoomDetailData(3)">取消</el-button>
     </div>
@@ -729,6 +735,7 @@ export default {
   data () {
     return {
       // mainHeight: 500,
+      saveLoading: false,
       hostingRoomDetail: {},
       tempFormData: {},
       editRoomInfo: {},
@@ -1356,9 +1363,11 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.saveLoading = true
           api({
             hostingHouseInfo: JSON.stringify(roomDetailData)
           }).then((res) => {
+            this.saveLoading = false
             if (res.code === '0') {
               this.$message({
                 message: res.message,
@@ -1366,12 +1375,17 @@ export default {
               })
               this.$emit('closeDialog')
             }
+          }).catch((err) => {
+            console.log(err)
+            this.saveLoading = false
           })
-        }).catch(() => {})
+        })
       } else {
+        this.saveLoading = true
         api({
           hostingHouseInfo: JSON.stringify(roomDetailData)
         }).then((res) => {
+          this.saveLoading = false
           if (res.code === '0') {
             this.$message({
               message: res.message,
@@ -1387,6 +1401,9 @@ export default {
               }
             }
           }
+        }).catch((err) => {
+          console.log(err)
+          this.saveLoading = false
         })
       }
     },
@@ -1430,7 +1447,6 @@ export default {
       list.forEach((v, i) => {
         v.type = 1
         v.imageName = v.title
-        v.image = v.src
         if (v.isBase64 === undefined) {
           v.isBase64 = 1
         }
@@ -1569,7 +1585,7 @@ export default {
   bottom: 0;
   right: 0;
   background: #fff;
-  z-index: 9;
+  z-index: 20000;
 }
 .previewItems {
   margin-bottom: 10px;

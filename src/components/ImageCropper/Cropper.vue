@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:49:39
  * @Last Modified by: chudequan
- * @Last Modified time: 2018-09-20 14:57:15
+ * @Last Modified time: 2018-09-28 14:29:14
  */
 
 <template>
@@ -63,6 +63,7 @@
                 :id="`changeImage${index}`"
                 :accept="accept"
                 type="file"
+                hidden
                 @change="uploadImg($event, index)"
               >
               <el-tooltip
