@@ -2,61 +2,66 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:52
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 10:50:18
+ * @Last Modified time: 2018-09-28 16:21:25
  */
 
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      label-position="left"
-      label-width="0px"
-      class="card-box login-form">
-      <h3 class="title">欢迎登录麦滴管家</h3>
-      <el-form-item
-        class="login_item"
-        prop="mobile">
-        <el-input
-          v-model="loginForm.mobile"
-          name="mobile"
-          type="text"
-          autocomplete="off"
-          clearable
-          placeholder="请输入账号">
-          <i
-            slot="prefix"
-            class="iconfont icon-user-fill" />
-        </el-input>
-      </el-form-item>
-      <el-form-item
-        class="login_item"
-        prop="password">
-        <el-input
-          v-model="loginForm.password"
-          name="password"
-          type="password"
-          clearable
-          autocomplete="off"
-          placeholder="请输入密码"
-          @keyup.enter.native="handleLogin">
-          <i
-            slot="prefix"
-            class="iconfont icon-lock-fill-open" />
-        </el-input>
-      </el-form-item>
-      <el-form-item class="login_handle">
-        <el-button
-          :loading="loading"
-          type="primary"
-          style="width:100%;"
-          class="btn_login"
-          @click.native.prevent="handleLogin">
-          登录
-        </el-button>
-      </el-form-item>
-    </el-form>
+    <section class="login_logo">
+      <img src="../../assets/login_fill.png" />
+    </section>
+    <section class="login_container">
+      <el-form
+        ref="loginForm"
+        :model="loginForm"
+        :rules="loginRules"
+        label-position="left"
+        label-width="0px"
+        class="card-box login-form">
+        <h3 class="title">欢迎登录小麦快租</h3>
+        <el-form-item
+          class="login_item"
+          prop="mobile">
+          <el-input
+            v-model="loginForm.mobile"
+            name="mobile"
+            type="text"
+            autocomplete="off"
+            clearable
+            placeholder="请输入账号">
+            <i
+              slot="prefix"
+              class="iconfont icon-user-fill" />
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          class="login_item"
+          prop="password">
+          <el-input
+            v-model="loginForm.password"
+            name="password"
+            type="password"
+            clearable
+            autocomplete="off"
+            placeholder="请输入密码"
+            @keyup.enter.native="handleLogin">
+            <i
+              slot="prefix"
+              class="iconfont icon-lock-fill-open" />
+          </el-input>
+        </el-form-item>
+        <el-form-item class="login_handle">
+          <el-button
+            :loading="loading"
+            type="primary"
+            style="width:100%;"
+            class="btn_login"
+            @click.native.prevent="handleLogin">
+            登录
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </section>
   </div>
 </template>
 <script>
@@ -192,6 +197,15 @@ export default {
       width: 25px;
       font-size: 22px;
       color: #999;
+    }
+  }
+  .login_logo {
+    position: absolute;
+    top: 50px;
+    left: 80px;
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
 }

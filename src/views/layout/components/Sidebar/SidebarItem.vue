@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:36
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-26 14:40:35
+ * @Last Modified time: 2018-09-28 16:35:53
  */
 
 <template>
@@ -78,7 +78,21 @@ export default {
 </script>
 <style lang="scss" scoped>
 .iconfont {
-  margin-right: 20px;
+  margin-right: 10px;
+  &+span {
+    display: inline-block;
+    transform: translate(0, 0);
+  }
+}
+.hideSidebar {
+  .iconfont+span {
+    transform: translate(10px, 0);
+  }
+  .sidebar-wrapper:hover {
+    .iconfont+span {
+      transform: translate(0, 0);
+    }
+  }
 }
 
 .inlineBlock {

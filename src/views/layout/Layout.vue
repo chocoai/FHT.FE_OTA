@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:41
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-18 14:06:36
+ * @Last Modified time: 2018-09-28 16:34:31
  */
 
 <template>
@@ -11,8 +11,12 @@
     class="app-wrapper">
     <div class="sidebar-wrapper">
       <div class="sidebar_logo">
-        <img src="../../assets/logo.png">
-        麦滴管家OTA
+        <img
+          class="logo"
+          src="../../assets/logo.png" />
+        <img
+          class="logo_title"
+          src="../../assets/logo_title.png" />
       </div>
       <sidebar class="sidebar-container"/>
     </div>
@@ -53,10 +57,16 @@ export default {
       .sidebar-container {
         transform: translate(140px, 0);
       }
+      .sidebar_logo .logo_title {
+        transform: translate(10px, 0);
+      }
       &:hover {
         transform: translate(0, 0);
         .sidebar_logo,
         .sidebar-container {
+          transform: translate(0, 0);
+        }
+        .sidebar_logo .logo_title {
           transform: translate(0, 0);
         }
       }
@@ -102,7 +112,9 @@ export default {
     color: #fff;
     img {
       height: 32px;
-      margin-right: 20px;
+      &.logo {
+        margin-right: 10px;
+      }
     }
   }
 }
