@@ -1353,7 +1353,12 @@ export default {
         if (this.editFlag) {
           this.$emit('closeDialog')
         } else {
-          this.$router.push({name: '房源管理'})
+          this.$router.push({
+            name: '房源管理',
+            query: {
+              curTab: this.hostingRoomDetail.houseRentType
+            }
+          })
         }
         return false
       }
@@ -1405,7 +1410,12 @@ export default {
               if (this.editFlag) {
                 this.$emit('closeDialog')
               } else {
-                this.$router.push({name: '房源管理'})
+                this.$router.push({
+                  name: '房源管理',
+                  query: {
+                    curTab: roomDetailData.houseRentType
+                  }
+                })
               }
             }
           }
