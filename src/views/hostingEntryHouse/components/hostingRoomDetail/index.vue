@@ -1603,7 +1603,7 @@ export default {
   bottom: 0;
   right: 0;
   background: #fff;
-  z-index: 20000;
+  z-index: 200;
 }
 .previewItems {
   margin-bottom: 10px;
