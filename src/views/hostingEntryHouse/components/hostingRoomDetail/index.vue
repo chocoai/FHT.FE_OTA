@@ -1355,7 +1355,7 @@ export default {
         } else {
           this.$router.push({
             name: '房源管理',
-            query: {
+            params: {
               curTab: this.hostingRoomDetail.houseRentType
             }
           })
@@ -1412,7 +1412,7 @@ export default {
               } else {
                 this.$router.push({
                   name: '房源管理',
-                  query: {
+                  params: {
                     curTab: roomDetailData.houseRentType
                   }
                 })
