@@ -515,13 +515,15 @@ export default {
   watch: {
 
   },
+  created () {
+    if (this.$route.params.curTab) {
+      this.activeName = this.$route.params.curTab === 1 ? '分散式整租' : '分散式合租'
+      this.searchParam()
+    }
+  },
   mounted () {
     this.authorizeStatus = this.$store.getters.idlefished // 判断是否授权的参数
     this.userAuthentication = this.$store.getters.authed // 判断实名认证的参数
-    if (this.$route.params.curTab) {
-      this.activeName = this.$route.params.curTab === 1 ? '分散式整租' : '分散式合租'
-      this.searchParam('clear')
-    }
     this.getCityName(this.searchParams.houseRentType)
   },
   methods: {
