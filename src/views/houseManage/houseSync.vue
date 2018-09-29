@@ -574,21 +574,25 @@ export default {
       }
       var cityData = []
       queryCityAreaPlotApi(params).then(res => {
-        this.residential = res.data.subdistrictList
-        cityData = res.data.cityList
-        if (cityData.length > 0) {
-          cityData.forEach((backData, index) => {
-            cityData[index].value = backData.cityId
-            cityData[index].label = backData.cityName
+        if (res.data.subdistrictList) {
+          this.residential = res.data.subdistrictList
+        }
+        if (res.data.cityList) {
+          cityData = res.data.cityList
+          if (cityData.length > 0) {
+            cityData.forEach((backData, index) => {
+              cityData[index].value = backData.cityId
+              cityData[index].label = backData.cityName
 
-            if (cityData[index].regionList.length > 0) {
-              cityData[index].regionList.forEach((cityArea, item) => {
-                cityArea.value = cityArea.areaId
-                cityArea.label = cityArea.areaName
-              })
-            }
-          })
-          this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
+              if (cityData[index].regionList.length > 0) {
+                cityData[index].regionList.forEach((cityArea, item) => {
+                  cityArea.value = cityArea.areaId
+                  cityArea.label = cityArea.areaName
+                })
+              }
+            })
+            this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
+          }
         }
       })
     },
