@@ -13,6 +13,14 @@ export function queryDepartmentApi (params) {
     isMock: true
   })
 }
+// 添加部门
+export function createDepartmentApi (params) {
+  return fetch('', {
+    params
+  }, {
+    isMock: true
+  })
+}
 // 表格数据
 export const houseAsyncApi = {
   requestPath: '/fangyuan/queryHostingList',

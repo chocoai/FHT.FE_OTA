@@ -67,7 +67,7 @@
               <el-button
                 type="danger"
                 size="mini"
-                @click="editAccount(scope.row)">编辑</el-button>
+                @click="editOrg(scope.row)">编辑</el-button>
             </el-row>
           </template>
         </GridUnit>
@@ -78,7 +78,7 @@
       <el-dialog
         :close-on-click-model="false"
         :visible.sync="layer_addOrg"
-        title="添加部门"
+        :title="isEditOrg ? '编辑部门' : '添加部门'"
         width="500px"
         @close="layerClose">
         <el-form
@@ -88,36 +88,68 @@
           label-position="left"
           label-width="80px"
           size="small">
-          <el-form-item
-            label="部门名称"
-            prop="depName">
-            <el-input
-              v-model="orgForm.depName"
-              max-length="20">
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            label="上级部门"
-            prop="">
-            <el-select
-              v-model="value"
-              placeholder="请选择">
-              <el-option>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="所在区域"
-            prop="">
-            <el-input
-              v-model="orgForm.depName"
-              max-length="20">
-            </el-input>
+          <div v-if="!editChangeOrg">
+            <el-form-item
+              label="部门名称"
+              prop="depName"
+              class="item-select">
+              <el-input
+                v-model="orgForm.depName"
+                placeholder="请输入部门名称"
+                max-length="20">
+              </el-input>
+            </el-form-item>
+            <el-form-item
+              label="上级部门"
+              prop="superiorName">
+              <el-select
+                v-model="orgForm.superiorName"
+                placeholder="请选择上级部门">
+                <el-option
+                  v-for="item in preDepNames"
+                  :value="item.value"
+                  :label="item.label"
+                  :key="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="所在区域"
+              prop="depNameArea">
+              <el-select
+                v-model="orgForm.depNameArea"
+                placeholder="请选择所在区域">
+                <el-option
+                  v-for="item in depNameAreas"
+                  :value="item.value"
+                  :label="item.label"
+                  :key="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <el-form-item>
+            <p v-if="editChangeOrg">确认更换上级部门吗？上级部门变动后，当前部门旗下的所有部门都会被迁移，包括旗下的人员</p>
+            <el-button
+              type="primary"
+              @click="submitOrg">确定</el-button>
+            <el-button @click="layer_addOrg = false">取消</el-button>
           </el-form-item>
         </el-form>
+
       </el-dialog>
     </div>
-
+    <!-- 确定编辑部门弹窗 -->
+    <!-- <div>
+      <el-dialog
+        :close-on-click-model="false"
+        :visible.sync="editChangeOrg"
+        title="更换部门"
+        width="400px"
+        @close="changeOrgClose">
+        <p>确认更换上级部门吗？上级部门变动后，当前部门旗下的所有部门都会被迁移，包括旗下的人员</p>
+      </el-dialog>
+    </div> -->
   </div>
 </template>
 
@@ -126,7 +158,7 @@ import GridUnit from '@/components/GridUnit/grid'
 // import { validateMobile, validateisCard } from '@/utils/validate'
 import { deepClone } from '@/utils'
 import { houseAsyncApi } from '@/api/houseManage'
-import { queryDepartmentApi } from '@/api/organization'
+import { queryDepartmentApi, createDepartmentApi } from '@/api/organization'
 
 export default {
   name: 'FrameWork',
@@ -162,14 +194,35 @@ export default {
         isDelete: 0
       },
       orgForm: {
-        depName: ''
+        depName: '',
+        superiorName: '',
+        depNameArea: ''
       },
+      // superiorName: '', // 添加部门上级部门
+      // depNameArea: '', // 添加部门所在区域
       rules: { // 添加部门验证
         depName: [
           { required: true, message: '请输入部门名称', trigger: 'blur' }
+        ],
+        superiorName: [
+          { required: true, message: '请选择上级部门', trigger: 'change' }
+        ],
+        depNameArea: [
+          { required: true, message: '请选择所在区域', trigger: 'change' }
         ]
       },
-      layer_addOrg: false, // 添加部门碳层
+      preDepNames: [{
+        value: '西湖总部',
+        label: '西湖总部'
+      }
+      ],
+      depNameAreas: [{
+        value: '西湖区',
+        label: '西湖区'
+      }],
+      layer_addOrg: false, // 添加部门弹窗
+      isEditOrg: false, // 为true 编辑  false  增加部门
+      editChangeOrg: false, // 确定更换上一部门
       colModels: [ // 表格数据
         {prop: 'depName', label: '部门名称', width: 300},
         {prop: 'predepName', label: '上级部门', width: 150},
@@ -229,6 +282,15 @@ export default {
 
     },
     addOrg () { // 添加部门
+      this.isEditOrg = false
+      this.layer_addOrg = true
+      this.orgForm.superiorName = this.nowOrgObj.depName // 上级部门
+    },
+    editOrg () { // 编辑部门
+      this.isEditOrg = true
+      this.orgForm.superiorName = this.parentOrg.depName
+      this.editParentId = this.parentOrg.id
+      this.orgForm.depName = this.nowOrgObj.depName
       this.layer_addOrg = true
     },
     layerClose () { // 部门弹框关闭
@@ -240,6 +302,24 @@ export default {
     },
     editAccount () { // 编辑账号
 
+    },
+    submitOrg () { // 确定添加部门 或者编辑部门
+      this.$refs['orgForm'].validate((valid) => {
+        if (valid) {
+          let param = deepClone(this.orgForm)
+          if (this.isEditOrg) { // 编辑部门
+            // if(){  //如果上一级部门发生了变化
+            this.editChangeOrg = true
+            // }
+            console.log(111111)
+          } else { // 新增部门
+            param.parentId = this.nowOrgObj.id
+          }
+          createDepartmentApi(param).then((res) => {
+
+          })
+        }
+      })
     }
   }
 }

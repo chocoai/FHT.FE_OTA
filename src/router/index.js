@@ -62,6 +62,21 @@ export const constantRouterMap = [{
       isHomePage: true
     }
   }]
+}, {
+  path: '/organization',
+  name: '主页',
+  component: Layout,
+  redirect: '/allotroom',
+  noDropdown: true,
+  icon: 'house_manage',
+  children: [{
+    name: '分配房源',
+    path: 'allotroom',
+    component: _import('organization/allotroom'),
+    meta: {
+      isHomePage: true
+    }
+  }]
 }]
 
 export default new Router({
