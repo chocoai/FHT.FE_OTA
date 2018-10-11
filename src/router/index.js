@@ -46,6 +46,22 @@ export const constantRouterMap = [{
       isHomePage: true
     }
   }]
+},
+{
+  path: '/organization',
+  name: '主页',
+  component: Layout,
+  redirect: '/framework',
+  noDropdown: true,
+  icon: 'house_manage',
+  children: [{
+    name: '组织架构',
+    path: 'framework',
+    component: _import('organization/framework'),
+    meta: {
+      isHomePage: true
+    }
+  }]
 }]
 
 export default new Router({
