@@ -70,9 +70,24 @@ export const constantRouterMap = [{
   noDropdown: true,
   icon: 'house_manage',
   children: [{
-    name: '分配房源',
+    name: '部门分配房源',
     path: 'allotroom',
     component: _import('organization/allotroom'),
+    meta: {
+      isHomePage: true
+    }
+  }]
+}, {
+  path: '/staffManages',
+  name: '主页',
+  component: Layout,
+  redirect: '/staffManages',
+  noDropdown: true,
+  icon: 'house_manage',
+  children: [{
+    name: '人员管理',
+    path: 'staffManage',
+    component: _import('staffManages/staffManage'),
     meta: {
       isHomePage: true
     }

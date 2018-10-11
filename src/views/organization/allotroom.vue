@@ -78,10 +78,6 @@
       :is-mock="isMock"
       :auto-load="false"
       :columns="colModels">
-      <template
-        slot="operateHosting"
-        slot-scope="scope">
-      </template>
     </GridUnit>
   </div>
 </template>

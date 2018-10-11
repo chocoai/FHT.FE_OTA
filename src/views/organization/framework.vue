@@ -73,7 +73,7 @@
         </GridUnit>
       </el-main>
     </el-container>
-    <!-- 添加部门弹窗 -->
+    <!-- 编辑、添加部门弹窗 -->
     <div class="editDep">
       <el-dialog
         :close-on-click-model="false"
