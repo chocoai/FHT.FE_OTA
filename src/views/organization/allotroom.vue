@@ -128,8 +128,7 @@ export default {
     searchParam () {
       this.formData = {}
       console.log(this.allotData.resource)
-      if (this.allotData.resource === 1) { // 如果是集中式
-        this.colModels = []
+      if (this.allotData.resource * 1 === 1) { // 如果是集中式
         this.colModels = [ // 集中式的
           {prop: 'depName', label: '公布', width: 300},
           {prop: 'predepName', label: '房间数'}

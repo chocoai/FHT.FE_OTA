@@ -29,6 +29,16 @@ const reg_certificationFrom = /\/user\/auth/
 
 // entryHouse
 const reg_roomDetailManage = /\/queryZoneListByAreaId/
+// 组织架构
+const reg_queryDepartment = /\/department\/getDepartments/
+// 组织架构表格数据
+const reg_getDepartmentInfo = /\/department\/getDepartmentInfo/
+// 创建部门
+const reg_addDepartment = /\/department\/addDepartment/
+// 编辑部门获取新
+const reg_queryOneDepartment = /\/department\/queryOneDepartment/
+// 编辑部门
+const reg_editDepartment = /\/department\/editDepartment/
 
 Mock.mock(reg_getUserInfo, 'post', userApi.getUserInfo)
 Mock.mock(reg_login, 'post', userApi.login)
@@ -48,4 +58,11 @@ Mock.mock(reg_authorize, 'post', houseAsyncApi.authorize)
 Mock.mock(reg_authorizePicture, 'post', houseAsyncApi.authorizePicture)
 Mock.mock(reg_authorizeStatus, 'post', houseAsyncApi.authorizeStatus)
 Mock.mock(reg_certificationFrom, 'post', houseAsyncApi.certificationFrom)
+
+// 门店系统
+Mock.mock(reg_queryDepartment, 'post', houseAsyncApi.queryDepartment)
+Mock.mock(reg_getDepartmentInfo, 'post', houseAsyncApi.getDepartmentInfo)
+Mock.mock(reg_addDepartment, 'post', houseAsyncApi.addDepartment)
+Mock.mock(reg_queryOneDepartment, 'post', houseAsyncApi.queryOneDepartment)
+Mock.mock(reg_editDepartment, 'post', houseAsyncApi.editDepartment)
 export default Mock

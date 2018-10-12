@@ -5,31 +5,41 @@
  * @Last Modified time: 2018-10-11 13:40
  */
 import { fetch } from '@/utils/fetch'
-// 组织架构
-export function queryDepartmentApi (params) {
-  return fetch('/fangyuan/queryHostingList', {
-    params
-  }, {
-    isMock: true
-  })
-}
-// 添加部门
-export function createDepartmentApi (params) {
-  return fetch('', {
-    params
-  }, {
-    isMock: true
-  })
-}
-// 表格数据
-export const houseAsyncApi = {
-  requestPath: '/fangyuan/queryHostingList',
+// 组织架构下的表格数据
+export const getDepartmentInfo = {
+  requestPath: 'department',
+  queryMethod: 'getDepartmentInfo',
   isMock: true,
-  queryActivityListByPage (params = {}) {
+  queryDepartmentApi (params) { // 组织结构
     return fetch(this.requestPath, {
+      method: 'getDepartments',
       params
     }, {
-      isMock: this.isMock
+      isMock: true
+    })
+  },
+  createDepartmentApi (params) { // 创建部门
+    return fetch(this.requestPath, {
+      method: 'addDepartment',
+      params
+    }, {
+      isMock: true
+    })
+  },
+  queryOneDepartmentApi (params) { // 查询一个部门
+    return fetch(this.requestPath, {
+      method: 'queryOneDepartment',
+      params
+    }, {
+      isMock: true
+    })
+  },
+  editDepartmentApi (params) { // 编辑部门
+    return fetch(this.requestPath, {
+      method: 'editDepartment',
+      params
+    }, {
+      isMock: true
     })
   }
 }

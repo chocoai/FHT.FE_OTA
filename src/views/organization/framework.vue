@@ -5,28 +5,28 @@
  * @Last Modified time: 2018-10-10 17:04:57
  */
 <template>
-  <div class=" con-f">
+  <div class="orgStyle">
     <el-container>
       <el-aside
-        width="250px"
+        width="220px"
         class="asideBox">
-        <div class="currentOr">当前架构</div>
+        <!-- <div class="currentOr">当前架构</div> -->
         <el-tree
           ref="trees"
           :data="treeData"
           :props="defaultProps"
-          :default-expanded-keys="[nowOrgObj.id]"
+          :default-expanded-keys="[nowOrgObj.depId]"
           :highlight-current="true"
           :expand-on-click-node="false"
           :indent="8"
-          node-key="id"
+          node-key="depId"
           @node-click="handleNodeClick">
         </el-tree>
       </el-aside>
       <el-main>
         <div class="search-area">
           <el-input
-            v-model="formData.depName"
+            v-model="searchDepartment"
             placeholder="请输入部门名称"
             size="small"
             class="item-select"></el-input>
@@ -35,7 +35,7 @@
             size="small"
             icon="el-icon-search"
             class="filter-item"
-            @click.native="searchParam">查询</el-button>
+            @click.native="searchformData">查询</el-button>
           <el-button
             plain
             size="small"
@@ -54,8 +54,9 @@
           :data-method="method"
           :url="url"
           :is-mock="isMock"
+          :columns="colModels"
           :auto-load="false"
-          :columns="colModels">
+          list-field="data">
           <template
             slot="operateHosting"
             slot-scope="scope">
@@ -92,11 +93,12 @@
             <el-form-item
               label="部门名称"
               prop="depName"
-              class="item-select">
+              class="item-select2">
               <el-input
                 v-model="orgForm.depName"
                 placeholder="请输入部门名称"
-                max-length="20">
+                max-length="20"
+              >
               </el-input>
             </el-form-item>
             <el-form-item
@@ -104,32 +106,40 @@
               prop="superiorName">
               <el-select
                 v-model="orgForm.superiorName"
-                placeholder="请选择上级部门">
+                placeholder="请选择上级部门"
+                class="item-select2">
+                <el-tree
+                  ref="overlayTree"
+                  :data="treeData"
+                  :props="defaultProps"
+                  :highlight-current="true"
+                  :expand-on-click-node="false"
+                  :default-expanded-keys="[parentOrg.depId]"
+                  node-key="depId"
+                  @node-click="editNodeclick"
+                  @current-change="editChangeclick"
+                >
+                </el-tree>
                 <el-option
-                  v-for="item in preDepNames"
-                  :value="item.value"
-                  :label="item.label"
-                  :key="item.id">
-                </el-option>
+                  style="display:none"
+                  value=""></el-option>
               </el-select>
             </el-form-item>
             <el-form-item
               label="所在区域"
-              prop="depNameArea">
-              <el-select
-                v-model="orgForm.depNameArea"
-                placeholder="请选择所在区域">
-                <el-option
-                  v-for="item in depNameAreas"
-                  :value="item.value"
-                  :label="item.label"
-                  :key="item.id">
-                </el-option>
-              </el-select>
+              prop="areaCode"
+            >
+              <area-select
+                ref="areaSelect"
+                v-model="orgForm.areaCode"
+                :level="1"
+                @input="searchZoneList(false)" />
             </el-form-item>
           </div>
           <el-form-item>
-            <p v-if="editChangeOrg">确认更换上级部门吗？上级部门变动后，当前部门旗下的所有部门都会被迁移，包括旗下的人员</p>
+            <p
+              v-if="editChangeOrg"
+              class="tipsStyle">确认更换上级部门吗？上级部门变动后，当前部门旗下的所有部门都会被迁移，包括旗下的人员</p>
             <el-button
               type="primary"
               @click="submitOrg">确定</el-button>
@@ -140,64 +150,63 @@
       </el-dialog>
     </div>
     <!-- 确定编辑部门弹窗 -->
-    <!-- <div>
-      <el-dialog
+    <div>
+      <!-- <el-dialog
         :close-on-click-model="false"
         :visible.sync="editChangeOrg"
         title="更换部门"
         width="400px"
         @close="changeOrgClose">
         <p>确认更换上级部门吗？上级部门变动后，当前部门旗下的所有部门都会被迁移，包括旗下的人员</p>
-      </el-dialog>
-    </div> -->
+      </el-dialog> -->
+    </div>
   </div>
 </template>
 
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 // import { validateMobile, validateisCard } from '@/utils/validate'
+import areaSelect from '@/components/AreaSelect'
 import { deepClone } from '@/utils'
-import { houseAsyncApi } from '@/api/houseManage'
-import { queryDepartmentApi, createDepartmentApi } from '@/api/organization'
+import { getDepartmentInfo } from '@/api/organization'
 
 export default {
   name: 'FrameWork',
   components: {
-    GridUnit
+    GridUnit,
+    areaSelect
   },
   data () {
     return {
-      treeData: [{
-        depName: '杭州来去自如房产管理有限公司',
-        id: 1,
-        child: [{
-          depName: '上海分部',
-          id: 2
-        }]
-      }],
+      treeData: [],
       defaultProps: {
-        children: 'child',
-        label: 'depName'
+        children: 'children',
+        label: 'depName',
+        id: 'depId'
       },
-      nowOrgObj: { // 默认展开选中
+      searchDepartment: '', // 搜索部门
+      nowOrgObj: { // 默认展开选中  保存第一次加载的ID
         depName: '',
-        id: '1'
+        depId: ''
       },
-      parentOrg: {
+      parentOrg: { // 顶级部门id
         depName: '',
-        id: ''
+        depId: ''
       },
       formData: { // 表格数据
         depName: '',
-        depId: '',
-        type: null,
-        isDelete: 0
+        depId: ''
       },
-      orgForm: {
+      orgName: '',
+      orgId: '',
+      orgForm: { // 添加部门 编辑部门 表单字段
         depName: '',
-        superiorName: '',
-        depNameArea: ''
+        depId: '',
+        superiorName: '', // 上级部门
+        parentDepId: '',
+        areaCode: []
       },
+      editParentId: '', // 上一级别ID
       // superiorName: '', // 添加部门上级部门
       // depNameArea: '', // 添加部门所在区域
       rules: { // 添加部门验证
@@ -207,36 +216,41 @@ export default {
         superiorName: [
           { required: true, message: '请选择上级部门', trigger: 'change' }
         ],
-        depNameArea: [
-          { required: true, message: '请选择所在区域', trigger: 'change' }
+        areaCode: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (!value[0]) {
+                callback(new Error('请选择所在地区'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'change'
+          }
         ]
       },
-      preDepNames: [{
-        value: '西湖总部',
-        label: '西湖总部'
-      }
-      ],
-      depNameAreas: [{
-        value: '西湖区',
-        label: '西湖区'
-      }],
+      treeChangeStatus: false,
+      currentPreDepName: '',
       layer_addOrg: false, // 添加部门弹窗
       isEditOrg: false, // 为true 编辑  false  增加部门
       editChangeOrg: false, // 确定更换上一部门
       colModels: [ // 表格数据
         {prop: 'depName', label: '部门名称', width: 300},
-        {prop: 'predepName', label: '上级部门', width: 150},
-        {prop: 'createTime', label: '创建时间', width: 150},
-        {prop: 'number', label: '管理房源数量', width: 150},
+        {prop: 'parent', label: '上级部门', width: 150},
+        {prop: 'gmtCreate', label: '创建时间', width: 150},
+        {prop: 'managedHouse', label: '管理房源数量', width: 150},
         {
           prop: 'operate',
           label: '操作',
+          fixed: 'right',
+          width: 200,
           slotName: 'operateHosting'
         }
       ],
-      url: houseAsyncApi.requestPath,
-      method: houseAsyncApi.queryMethod,
-      isMock: houseAsyncApi.isMock,
+      url: getDepartmentInfo.requestPath,
+      method: getDepartmentInfo.queryMethod,
+      isMock: getDepartmentInfo.isMock,
       searchParams: {
 
       }
@@ -247,79 +261,146 @@ export default {
   },
   methods: {
     getTree (id, fn) { // 获取组织架构名称并且默认表格数据
-      queryDepartmentApi().then(res => {
-        if (res.data && res.data instanceof Array) {
-          this.treeData = res.data
-          let nowId = id || this.treeData[0].id
+      getDepartmentInfo.queryDepartmentApi().then(res => {
+        if (res.data) {
+          this.$refs.trees.setCurrentKey(id)
+          this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+          // 初始化表格数据
+          this.formData.depId = res.data.orgId
+          this.formData.depName = res.data.orgName
+          let nowId = id || this.treeData[0].depId
           this.getFirstNode(nowId)
-          // if (fn) {
-          //   this.$nextTick(() => {
-          //     fn()
-          //   })
-          // }
+          if (fn) {
+            this.$nextTick(() => {
+              fn()
+            })
+          }
         }
       }).catch(rej => {})
     },
     getFirstNode (id) {
       this.$nextTick(() => { // 设置tree的默认选中节点 0是node-key设置的参数对应的值
-        this.$refs.trees.setCurrentKey(id)
-        const obj = this.$refs.trees.getNode(id) // 根据 data 或者 key 拿到 Tree 组件中的 node
+        this.$refs.trees.setCurrentKey(id) // 设置当前选中装填
+        const obj = this.$refs.trees.getNode(id)
+        console.log('obj', obj)
         this.nowOrgObj = deepClone(obj.data)
         this.parentOrg = obj.parent.data instanceof Array ? deepClone(obj.parent.data[0]) : deepClone(obj.parent.data)
-        this.formData.depId = this.nowOrgObj.id
+        this.formData.depId = this.nowOrgObj.depId
         this.$nextTick(() => {
           this.searchParam()
         })
       })
     },
-    searchParam (type) { // 查询
-      if (type === 'clear') {
-        this.formData.depName = ''
+    searchParam (type) { // 表格数据
+      if (type === 'clear') { // 清空就是查询总部数据
+        this.formData.depId = this.orgName
+        this.formData.depName = this.orgId
       }
-      this.$refs.refGridUnit.searchHandler()
+      this.$nextTick(() => {
+        this.$refs.refGridUnit.searchHandler()
+      })
+    },
+    searchformData () { // 查询
+      this.searchParam()
     },
     handleNodeClick (node, data) { // 点击tree节点函数
-
+      console.log('data', data)
+      this.nowOrgObj = deepClone(data.data)
+      console.log('cc', this.nowOrgObj)
+      this.parentOrg = data.parent.data instanceof Array ? deepClone(data.parent.data[0]) : deepClone(data.parent.data)
+      this.formData.depId = this.nowOrgObj.depId
+      this.formData.depName = this.nowOrgObj.depName
+      this.$nextTick(() => {
+        this.searchParam()
+      })
+    },
+    editNodeclick (node, data) { // 编辑部门  增加部门   tree被点击时候的回调
+      this.orgForm.depId = data.data.depId
+      this.parentOrg.depName = data.data.depName
+      this.editParentId = data.data.parentId
+      // this.superiorName = this.parentOrg.depName // 上级部门
+      this.orgForm.superiorName = this.parentOrg.depName // 这里的上级部门 到底是什么
+      // 点编辑切换上级部门的时候
+    },
+    editChangeclick (data, node) { //  节点改变时候变化
+      console.log('怎么就变化啦了', data)
+      console.log('old', this.currentPreDepName)
+      console.log(this.currentPreDepName !== data.depName)
+      if (this.isEditOrg && this.currentPreDepName !== data.depName) {
+        this.treeChangeStatus = true
+      }
     },
     addOrg () { // 添加部门
       this.isEditOrg = false
       this.layer_addOrg = true
       this.orgForm.superiorName = this.nowOrgObj.depName // 上级部门
     },
-    editOrg () { // 编辑部门
+    editOrg (data) { // 编辑部门
+      console.log('编辑部门', data)
       this.isEditOrg = true
-      this.orgForm.superiorName = this.parentOrg.depName
-      this.editParentId = this.parentOrg.id
-      this.orgForm.depName = this.nowOrgObj.depName
+      let param = {
+        depId: data.depId
+      }
+      getDepartmentInfo.queryOneDepartmentApi(param).then((res) => { // 获取单个部门信息
+        console.log('aaa', this.$refs.overlayTree.getNode(2))
+        let prevDepName = this.$refs.overlayTree.getNode(res.data.parentDepId).data.depName
+        this.orgForm = { // 添加部门 编辑部门 表单字段
+          depName: data.depName, // 当前部门
+          depId: res.data.depId,
+          superiorName: prevDepName, // 上级部门  根据id去查
+          parentDepId: res.data.parentDepId,
+          areaCode: [res.data.provinceId, res.data.cityId, res.data.districtId]
+        }
+        this.currentPreDepName = prevDepName
+      })
       this.layer_addOrg = true
     },
     layerClose () { // 部门弹框关闭
       this.$refs['orgForm'].resetFields()
       this.orgForm.depName = ''
+      this.editChangeOrg = false
     },
     assignHouse () { // 分配房源
 
     },
-    editAccount () { // 编辑账号
-
-    },
-    submitOrg () { // 确定添加部门 或者编辑部门
+    submitOrg () { // 提交添加部门 或者编辑部门
+      let oldOrgDepartment = this.orgForm.superiorName
+      console.log('old', oldOrgDepartment)
       this.$refs['orgForm'].validate((valid) => {
         if (valid) {
-          let param = deepClone(this.orgForm)
-          if (this.isEditOrg) { // 编辑部门
-            // if(){  //如果上一级部门发生了变化
-            this.editChangeOrg = true
-            // }
-            console.log(111111)
-          } else { // 新增部门
-            param.parentId = this.nowOrgObj.id
+          let param = {
+            'depName': this.orgForm.depName,
+            'parentDepId': this.editParentId, // 上一级ID
+            'provinceId': this.orgForm.areaCode[0],
+            'cityId': this.orgForm.areaCode[1],
+            'districtId': this.orgForm.areaCode[2]
           }
-          createDepartmentApi(param).then((res) => {
-
-          })
+          console.log('param', param)
+          if (this.isEditOrg) { // 编辑部门
+            // 判断是否更改了上级部门
+            if (this.treeChangeStatus) {
+              this.editChangeOrg = true
+            }
+            param.depId = this.orgForm.depId // 部门id
+            getDepartmentInfo.editDepartmentApi(param).then((res) => {
+              this.$message({
+                message: '编辑成功',
+                type: 'success'
+              })
+            })
+          } else { // 创建部门的接口
+            getDepartmentInfo.createDepartmentApi(param).then((res) => {
+              this.$message({
+                message: '创建成功',
+                type: 'success'
+              })
+            })
+          }
         }
       })
+    },
+    searchZoneList () { // 区域
+
     }
   }
 }
@@ -327,14 +408,17 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   .con-f {background:#fff;margin:-10px;}
   .asideBox {
-      border: 1px solid #ddd;
+      // border: 1px solid #ddd;
+      background:#fff;
       height: auto;
-      margin:20px 0 20px 20px;
+      padding-top:10px;
+      // margin:20px 0 20px 20px;
     }
   .item-select {
       width: 250px;
       margin-right:10px;
     }
+    .item-select2{width:100%}
   .currentOr {
     border-bottom: thin solid #ddd;
     font-size: 14px;
@@ -345,10 +429,23 @@ export default {
   .search-area {
     margin-bottom: 10px;
   }
+  .tipsStyle{
+    margin-left: -50px;
+  }
+
 </style>
 <style>
  .model-table {
     border: 1px solid #e6ebf5;
     border-bottom:none
   }
+ .orgStyle .el-main{
+   padding: 10px 10 0 10px;
+   background :#fff;
+   margin-left: 10px
+   }
+   .orgStyle .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
+     color:#0070FF;
+     background:#fff;
+   }
 </style>

@@ -196,6 +196,70 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': null
+  },
+  queryDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'depName': '华东地区', // 组织名
+      'depId': 1, // 上级组织
+      'children': [{// 组织架构层级
+        'depName': '上海分部', // 部门名
+        'parentId': 'aaaa', // 上级部门
+        'depId': 2, // 部门ID
+        'gmtCreate': '2018-08-08 11:11:11', // 创建时间
+        'managedHouse': 100, // 管理的房源数量
+        'children': [
+          {
+            'depName': '徐东地区', // 部门名
+            'parentId': 'child1', // 上级部门
+            'depId': 3, // 部门ID
+            'gmt_create': '2018-08-08 11:11:11', // 创建时间
+            'managedHouse': 100// 管理的房源数量
+          }
+        ]
+      }]
+    }
+  },
+  getDepartmentInfo: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': [{
+      'depName': '杭州总部', // 部门名
+      'parent': '中国总部', // 上级部门
+      'depId': 1111, // 部门ID
+      'gmtCreate': '2018-08-08 11:11:11', // 创建时间
+      'managedHouse': 100 // 管理的房源数量
+    }]
+  },
+  addDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
+  },
+  queryOneDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'depId': 1,
+      'depName': '上海总部',
+      'provinceId': 150000,
+      'cityId': 150500,
+      'districtId': 150522,
+      'parentDepId': 3
+    }
+  },
+  editDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
   }
 }
 
@@ -229,6 +293,20 @@ export default {
   },
   certificationFrom: () => {
     return houseManage_info.certificationFrom
+  },
+  queryDepartment: () => {
+    return houseManage_info.queryDepartment
+  },
+  getDepartmentInfo: () => {
+    return houseManage_info.getDepartmentInfo
+  },
+  addDepartment: () => {
+    return houseManage_info.addDepartment
+  },
+  queryOneDepartment: () => {
+    return houseManage_info.queryOneDepartment
+  },
+  editDepartment: () => {
+    return houseManage_info.editDepartment
   }
-
 }
