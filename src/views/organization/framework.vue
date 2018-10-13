@@ -346,8 +346,8 @@ export default {
       // this.$refs['orgForm'].clearValidate()
       this.orgForm.depName = ''
     },
-    assignHouse () { // 分配房源
-
+    assignHouse (data) { // 分配房源
+      this.$router.push({path: '/organization/allotroom', query: data})
     },
     submitOrg () { // 提交添加部门 或者编辑部门
       this.$refs['orgForm'].validate((valid) => {

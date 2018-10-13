@@ -260,6 +260,23 @@ const houseManage_info = {
     'message': '操作成功',
     'data': {
     }
+  },
+  queryDistributeToDepList: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'record': 1,
+      'houseList': [{
+        'fangyuanCode': 'fangyuanCode',
+        'subdistrictName': '余杭区-xx苑',
+        'roomNo': '302',
+        'boardCount': 1,
+        'chamberCount': 1,
+        'toiletCount': 1,
+        'roomCount': 99
+      }]
+    }
   }
 }
 
@@ -308,5 +325,8 @@ export default {
   },
   editDepartment: () => {
     return houseManage_info.editDepartment
+  },
+  queryDistributeToDepList: () => {
+    return houseManage_info.queryDistributeToDepList
   }
 }

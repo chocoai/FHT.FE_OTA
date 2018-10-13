@@ -1,7 +1,7 @@
 <template>
   <div class="layout-container">
     <h5 class=" allotTitle">房源分配管理</h5>
-    <p class="allotaddr">给部门<span>{{ depName }}</span>分配房源</p>
+    <p class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
     <el-form class="model-search clearfix">
       <div class="item-flex">
         <el-form-item>
@@ -10,10 +10,10 @@
             size="small"
             class="item-select">
             <el-option
-              value="1"
+              :value="1"
               label="集中式"></el-option>
             <el-option
-              value="2"
+              :value="2"
               label="分散式"></el-option>
           </el-select>
         </el-form-item>
@@ -77,13 +77,30 @@
       :url="url"
       :is-mock="isMock"
       :auto-load="false"
-      :columns="colModels">
+      :columns="colModels"
+      :show-selection="true"
+      list-field="hostList">
     </GridUnit>
+    <div class="btnpos">
+      <el-row
+        type="flex"
+        justify="end">
+        <el-button
+          type="primary"
+          size="small"
+          @click="submitList">确定</el-button>
+        <el-button
+          size="small"
+          @click="layer_addOrg = false">取消</el-button>
+      </el-row>
+    </div>
   </div>
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
-import { houseAsyncApi } from '@/api/houseManage'
+import { queryDistributeToDepListApi } from '@/api/organization'
+import { deepClone } from '@/utils'
+
 export default {
   name: 'Allotroom',
   components: {
@@ -91,6 +108,7 @@ export default {
   },
   data () {
     return {
+      orgData: [],
       depName: '这里是部门',
       allotData: {
         resource: '',
@@ -98,7 +116,15 @@ export default {
         regionAddressId: '',
         regionAddress: ''
       },
-      formData: {},
+      formData: {
+        depId: '',
+        resource: '2', // 1，集中式  2,分散式
+        pageNo: '1',
+        pageSize: '20',
+        regionId: '',
+        subdistrictId: '', // 小区名称
+        subdistrictName: '' // 小区名称（模糊查询）
+      },
       options: [
         {
           value: 'zhinan',
@@ -109,35 +135,51 @@ export default {
           }]
         }
       ],
-      colModels: [ // 表格数据
-        {prop: 'depName', label: '小区', width: 300},
-        {prop: 'predepName', label: '房间号', width: 150},
-        {prop: 'predepName', label: '户型'}
+      colModels: [],
+      colModelsFs: [ // 分散式
+        {prop: 'subdistrictName', label: '小区', width: 300},
+        {prop: 'roomNo', label: '房间号', width: 150},
+        {prop: 'chamberCount',
+          label: '户型',
+          render (row) {
+            return (row.chamberCount || 0) + '室' + (row.boardCount || 0) + '厅' + (row.toiletCount || 0) + '卫'
+          }
+        }
       ],
-      url: houseAsyncApi.requestPath,
-      method: houseAsyncApi.queryMethod,
-      isMock: houseAsyncApi.isMock
+      colModelsJz: [// 集中式
+        {prop: 'depName', label: '公寓', width: 300},
+        {prop: 'roomCount', label: '房间数'}
+      ],
+      url: queryDistributeToDepListApi.requestPath,
+      method: queryDistributeToDepListApi.queryMethod,
+      isMock: queryDistributeToDepListApi.isMock
     }
   },
   mounted () {
+    this.orgData = deepClone(this.$route.query) || []
+    this.colModels = deepClone(this.colModelsFs)
+    this.formData.depId = this.orgData.depId
+
+    console.log('queryData', this.orgData)
   },
   methods: {
     handleChange () {
 
     },
     searchParam () {
-      this.formData = {}
-      console.log(this.allotData.resource)
-      if (this.allotData.resource * 1 === 1) { // 如果是集中式
-        this.colModels = [ // 集中式的
-          {prop: 'depName', label: '公布', width: 300},
-          {prop: 'predepName', label: '房间数'}
-        ]
-        this.$nextTick(() => {
-          this.$refs.refGridUnit.searchHandler()
-        })
+      // this.formData = []
+      this.formData.resource = this.allotData.resource
+      if (this.allotData.resource === 1) { // 如果是集中式
+        this.colModels = deepClone(this.colModelsJz)
+      } else {
+        this.colModels = deepClone(this.colModelsFs)
       }
-      console.log(this.colModels)
+      this.$nextTick(() => {
+        this.$refs.refGridUnit.searchHandler()
+      })
+    },
+    submitList () { // 确定分配的房源
+
     }
   }
 }
@@ -161,5 +203,10 @@ export default {
   .item-flex {
     display: flex;
   }
-  .item-select{margin-right:10px;}
+  .item-select{
+    margin-right: 10px;
+    }
+  .btnpos {
+    margin-top:20px;
+  }
 </style>
