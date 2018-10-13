@@ -6,7 +6,7 @@
       <div class="item-flex">
         <el-form-item>
           <el-select
-            v-model="allotData.resource"
+            v-model="formData.resource"
             size="small"
             class="item-select">
             <el-option
@@ -18,42 +18,46 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-cascader
-            v-model="allotData.region"
-            :options="options"
-            placeholder="请选择区域"
+          <el-select
+            v-model="formData.regionId"
             size="small"
-            level="1"
-            class="item-select"
-            filterable
             clearable
-            @change="handleChange"
-          >
-          </el-cascader>
+            placeholder="请选择区域"
+            @change="handleChange">
+            <el-option
+              v-for="item in areaPotions"
+              :key="item.areaId"
+              :label="item.areaName"
+              :value="item.areaId"
+              class="item-select"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-select
-            v-model="allotData.regionAddress"
+            v-model="formData.subdistrictId"
+            clearable
             size="small"
             class="item-select"
             placeholder="请选择公寓小区">
             <el-option
-              value="1"
-              label="美元小区"></el-option>
-            <el-option
-              value="1"
-              label="西湖小区"></el-option>
+              v-for="item in subdistrictNames"
+              :key="item.regionAddressId"
+              :label="item.name"
+              :value="item.regionAddressId">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-input
-            v-model="allotData.regionAddressId"
+            v-model="formData.subdistrictName"
+            clearable
             placeholder="请输入公寓/小区"
             size="small"
             level="1"
             class="item-select"
             filterable
-            clearable
           />
         </el-form-item>
         <el-form-item>
@@ -66,6 +70,7 @@
             size="small"
             icon="el-icon-remove-outline"
             style="margin-left:10px"
+            @click="searchParam('clear')"
           >清空</el-button>
         </el-form-item>
       </div>
@@ -76,10 +81,12 @@
       :data-method="method"
       :url="url"
       :is-mock="isMock"
-      :auto-load="false"
       :columns="colModels"
       :show-selection="true"
-      list-field="hostList">
+      :selection-key="`fangyuanCodes`"
+      total-field="data.record"
+      list-field="data.houseList"
+      @selection-change="handleSelectionChange">
     </GridUnit>
     <div class="btnpos">
       <el-row
@@ -88,7 +95,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="submitList">确定</el-button>
+          @click="submitOrgRoom">确定</el-button>
         <el-button
           size="small"
           @click="layer_addOrg = false">取消</el-button>
@@ -98,7 +105,8 @@
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
-import { queryDistributeToDepListApi } from '@/api/organization'
+import { queryDistributeToDepListApi, distributeHouseToDepApi } from '@/api/organization'
+import { queryCityAreaPlotApi } from '@/api/houseManage'
 import { deepClone } from '@/utils'
 
 export default {
@@ -109,35 +117,25 @@ export default {
   data () {
     return {
       orgData: [],
-      depName: '这里是部门',
-      allotData: {
-        resource: '',
-        region: [],
-        regionAddressId: '',
-        regionAddress: ''
-      },
       formData: {
         depId: '',
-        resource: '2', // 1，集中式  2,分散式
+        resource: '分散式', // 1，集中式  2,分散式
         pageNo: '1',
-        pageSize: '20',
+        pageSize: '3',
         regionId: '',
         subdistrictId: '', // 小区名称
         subdistrictName: '' // 小区名称（模糊查询）
       },
-      options: [
-        {
-          value: 'zhinan',
-          label: '指南',
-          children: [{
-            value: 'shejiyuanze',
-            label: '设计原则'
-          }]
-        }
-      ],
+      // submitParams: {
+      //   'fangyuanCodes': []
+      // },
+      selectFangyuanCodes: [],
+      areaPotions: [], // 城市区域
+      subdistrictNames: [],
+      nowAreaName: [],
       colModels: [],
       colModelsFs: [ // 分散式
-        {prop: 'subdistrictName', label: '小区', width: 300},
+        {prop: 'subdistrictName', label: '公寓/小区', width: 300},
         {prop: 'roomNo', label: '房间号', width: 150},
         {prop: 'chamberCount',
           label: '户型',
@@ -147,7 +145,7 @@ export default {
         }
       ],
       colModelsJz: [// 集中式
-        {prop: 'depName', label: '公寓', width: 300},
+        {prop: 'subdistrictName', label: '公寓/小区', width: 300},
         {prop: 'roomCount', label: '房间数'}
       ],
       url: queryDistributeToDepListApi.requestPath,
@@ -155,31 +153,98 @@ export default {
       isMock: queryDistributeToDepListApi.isMock
     }
   },
-  mounted () {
+  created () {
     this.orgData = deepClone(this.$route.query) || []
     this.colModels = deepClone(this.colModelsFs)
     this.formData.depId = this.orgData.depId
-
-    console.log('queryData', this.orgData)
+  },
+  mounted () {
+    this.getAreaName()
   },
   methods: {
-    handleChange () {
-
+    getAreaName () { // 获取市的区域
+      let areaResource = this.formData.resource === 1 ? 3 : 4 // 查询城市中 3为集中式  4 为分散式
+      let param = {
+        'resource': areaResource
+      }
+      queryCityAreaPlotApi(param).then((res) => {
+        this.nowAreaName = deepClone(res.data.subdistrictList)
+        for (let i = 0; i < res.data.cityList.length; i++) {
+          if (res.data.cityList[i].cityId === this.orgData.cityId * 1) {
+            this.areaPotions = deepClone(res.data.cityList[i].regionList)
+          }
+        }
+        console.log('this.areaPotions', this.areaPotions)
+      })
     },
-    searchParam () {
-      // this.formData = []
-      this.formData.resource = this.allotData.resource
-      if (this.allotData.resource === 1) { // 如果是集中式
+    handleChange (areaId) {
+      this.nowAreaName.filter((item) => {
+        if (item.areaId === areaId && item.cityId === this.orgData.cityId * 1) {
+          this.subdistrictNames.push({
+            'name': item.name,
+            'regionAddressId': item.regionAddressId
+          })
+        }
+      })
+      console.log('this.subdistrictNames', this.subdistrictNames)
+    },
+    searchParam (type) {
+      if (this.formData.resource === 1) { // 如果是集中式
         this.colModels = deepClone(this.colModelsJz)
       } else {
         this.colModels = deepClone(this.colModelsFs)
       }
+      if (type === 'clear') {
+        this.formData = {
+          depId: '',
+          resource: this.formData.resource, // 1，集中式  2,分散式
+          pageNo: '1',
+          pageSize: '20',
+          regionId: '',
+          subdistrictId: '', // 小区名称
+          subdistrictName: '' // 小区名称（模糊查询）
+        }
+      }
+
+      this.formData.depId = this.orgData.depId
+      this.formData.resource = this.formData.resource === '分散式' ? 1 : 2
+      console.log(this.orgData.depId, 'id')
+      console.log(this.formData)
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
       })
     },
-    submitList () { // 确定分配的房源
+    handleSelectionChange () { // 单选
 
+    },
+    submitOrgRoom () { // 确定分配的房源
+      this.getMultipleSelectionAll()// 获取房源fangyuanCodes
+      let param = {
+        'depId': this.orgData.depId,
+        'fangyuanCodes': deepClone(this.selectFangyuanCodes)
+      }
+      if (!this.selectFangyuanCodes.length) {
+        this.$message({
+          message: '请选择要分配的房源',
+          type: 'warning'
+        })
+        return false
+      }
+      distributeHouseToDepApi(param).then((response) => {
+        this.$message({
+          message: '房源分部成功',
+          type: 'success'
+        })
+      })
+    },
+    getMultipleSelectionAll () { // 获取已选择数据
+      const multipleSelectionAll = this.$refs.refGridUnit.multipleSelection
+      this.selectFangyuanCodes = multipleSelectionAll // 暂时不是code   需要修改
+      console.log(multipleSelectionAll)
+      this.$message({
+        showClose: true,
+        message: `已选择${multipleSelectionAll.length}条数据`
+      })
     }
   }
 }

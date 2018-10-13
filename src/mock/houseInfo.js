@@ -159,7 +159,7 @@ const houseManage_info = {
       },
       {
         'regionAddressId': 3567,
-        'areaId': 555,
+        'areaId': 14000,
         'cityId': 444,
         'name': '北京高档小区'
       }, {
@@ -229,7 +229,8 @@ const houseManage_info = {
     'data': [{
       'depName': '杭州总部', // 部门名
       'parent': '中国总部', // 上级部门
-      'depId': 1111, // 部门ID
+      'depId': '部门ID2222', // 部门ID
+      'cityId': 444, // 市id
       'gmtCreate': '2018-08-08 11:11:11', // 创建时间
       'managedHouse': 100 // 管理的房源数量
     }]
@@ -268,15 +269,46 @@ const houseManage_info = {
     'data': {
       'record': 1,
       'houseList': [{
-        'fangyuanCode': 'fangyuanCode',
+        'fangyuanCode': '130000',
         'subdistrictName': '余杭区-xx苑',
         'roomNo': '302',
         'boardCount': 1,
         'chamberCount': 1,
         'toiletCount': 1,
         'roomCount': 99
+      }, {
+        'fangyuanCode': '14000',
+        'subdistrictName': '西湖小区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      },
+      {
+        'fangyuanCode': '140010',
+        'subdistrictName': '美丽小区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      }, {
+        'fangyuanCode': '140004',
+        'subdistrictName': '拱墅区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
       }]
     }
+  },
+  distributeHouseToDep: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
   }
 }
 
@@ -328,5 +360,8 @@ export default {
   },
   queryDistributeToDepList: () => {
     return houseManage_info.queryDistributeToDepList
+  },
+  distributeHouseToDep: () => {
+    return houseManage_info.distributeHouseToDep
   }
 }

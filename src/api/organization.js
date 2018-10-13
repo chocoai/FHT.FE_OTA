@@ -43,7 +43,7 @@ export const getDepartmentInfo = {
     })
   }
 }
-// 分配部门房源
+// 获取分配部门房源
 export const queryDistributeToDepListApi = { // 编辑部门
   requestPath: '/fangyuanDistribute/queryDistributeToDepList',
   isMock: true,
@@ -54,4 +54,12 @@ export const queryDistributeToDepListApi = { // 编辑部门
       isMock: this.isMock
     })
   }
+}
+// 分配房源
+export function distributeHouseToDepApi (params = {}) {
+  return fetch('/fangyuanDistribute/distributeHouseToDep', {
+    params
+  }, {
+    isMock: true
+  })
 }
