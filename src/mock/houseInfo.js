@@ -316,6 +316,7 @@ const houseManage_info = {
       'code': '0',
       'message': '操作成功',
       'data': [{
+        'cityId': 111,
         'id': 1,
         'name': '张三',
         'role': 3,
@@ -326,6 +327,7 @@ const houseManage_info = {
         'hasAllRoomAuth': 1
       },
       {
+        'cityId': 111,
         'id': 2,
         'name': '李四',
         'role': 1,
@@ -353,6 +355,12 @@ const houseManage_info = {
     'message': '操作成功',
     'data': {
     }
+  },
+  distributeHouseToUser: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
   }
 }
 
@@ -413,5 +421,8 @@ export default {
   },
   addAccount: () => {
     return houseManage_info.addAccount
+  },
+  distributeHouseToUser: () => {
+    return houseManage_info.distributeHouseToUser
   }
 }

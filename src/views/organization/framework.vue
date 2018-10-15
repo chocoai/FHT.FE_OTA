@@ -8,7 +8,7 @@
   <div class="orgStyle">
     <el-container>
       <el-aside
-        width="220px"
+        width="260px"
         class="asideBox">
         <!-- <div class="currentOr">当前架构</div> -->
         <el-tree

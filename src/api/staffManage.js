@@ -18,3 +18,11 @@ export const staffManageInfo = {
     })
   }
 }
+// 分配房源
+export function distributeHouseToUserApi (params = {}) {
+  return fetch('/fangyuanDistribute/distributeHouseToUser', {
+    params
+  }, {
+    isMock: true
+  })
+}

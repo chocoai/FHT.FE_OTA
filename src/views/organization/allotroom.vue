@@ -109,6 +109,7 @@
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 import { queryDistributeToDepListApi, distributeHouseToDepApi } from '@/api/organization'
+import { distributeHouseToUserApi } from '@/api/staffManage'
 import { queryCityAreaPlotApi } from '@/api/houseManage'
 import { deepClone } from '@/utils'
 
@@ -121,6 +122,7 @@ export default {
     return {
       orgData: [],
       formData: {
+        userId: '',
         depId: '',
         resource: '分散式', // 1，集中式  2,分散式
         pageNo: '1',
@@ -129,14 +131,12 @@ export default {
         subdistrictId: '', // 小区名称
         subdistrictName: '' // 小区名称（模糊查询）
       },
-      // submitParams: {
-      //   'fangyuanCodes': []
-      // },
       selectFangyuanCodes: [],
       areaPotions: [], // 城市区域
       subdistrictNames: [],
       nowAreaName: [],
       colModels: [],
+      distributeHouse: false, // true员工分配房源  false部门分配房源
       colModelsFs: [ // 分散式
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
         {prop: 'roomNo', label: '房间号', width: 150},
@@ -160,6 +160,12 @@ export default {
     this.orgData = deepClone(this.$route.query) || []
     this.colModels = deepClone(this.colModelsFs)
     this.formData.depId = this.orgData.depId
+    this.formData.userId = this.orgData.id
+    console.log('分配房源带过来的数据', this.orgData)
+    if (this.orgData.role) {
+      this.distributeHouse = true
+    }
+    console.log('this.distributeHouse ', this.distributeHouse)
   },
   mounted () {
     this.getAreaName()
@@ -174,10 +180,10 @@ export default {
         this.nowAreaName = deepClone(res.data.subdistrictList)
         for (let i = 0; i < res.data.cityList.length; i++) {
           if (res.data.cityList[i].cityId === this.orgData.cityId * 1) {
+            console.log('城市数据', res.data.cityList[i].regionList)
             this.areaPotions = deepClone(res.data.cityList[i].regionList)
           }
         }
-        console.log('this.areaPotions', this.areaPotions)
       })
     },
     handleChange (areaId) {
@@ -189,7 +195,6 @@ export default {
           })
         }
       })
-      console.log('this.subdistrictNames', this.subdistrictNames)
     },
     searchParam (type) {
       if (this.formData.resource === 1) { // 如果是集中式
@@ -199,6 +204,7 @@ export default {
       }
       if (type === 'clear') {
         this.formData = {
+          userId: '',
           depId: '',
           resource: this.formData.resource, // 1，集中式  2,分散式
           pageNo: '1',
@@ -208,11 +214,8 @@ export default {
           subdistrictName: '' // 小区名称（模糊查询）
         }
       }
-
       this.formData.depId = this.orgData.depId
-      this.formData.resource = this.formData.resource === '分散式' ? 1 : 2
-      console.log(this.orgData.depId, 'id')
-      console.log(this.formData)
+
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
       })
@@ -223,7 +226,6 @@ export default {
     submitOrgRoom () { // 确定分配的房源
       this.getMultipleSelectionAll()// 获取房源fangyuanCodes
       let param = {
-        'depId': this.orgData.depId,
         'fangyuanCodes': deepClone(this.selectFangyuanCodes)
       }
       if (!this.selectFangyuanCodes.length) {
@@ -233,21 +235,31 @@ export default {
         })
         return false
       }
-      distributeHouseToDepApi(param).then((response) => {
-        this.$message({
-          message: '房源分部成功',
-          type: 'success'
+      if (this.distributeHouse) {
+        param.userId = this.orgData.userId
+        distributeHouseToUserApi(param).then((response) => {
+          this.$message({
+            message: '房源分部成功',
+            type: 'success'
+          })
         })
-      })
+      } else {
+        param.depId = this.orgData.depId
+        distributeHouseToDepApi(param).then((response) => {
+          this.$message({
+            message: '房源分部成功',
+            type: 'success'
+          })
+        })
+      }
     },
     getMultipleSelectionAll () { // 获取已选择数据
-      const multipleSelectionAll = this.$refs.refGridUnit.multipleSelection
-      this.selectFangyuanCodes = multipleSelectionAll // 暂时不是code   需要修改
-      console.log(multipleSelectionAll)
-      this.$message({
-        showClose: true,
-        message: `已选择${multipleSelectionAll.length}条数据`
+      const multipleSelectionAll = this.$refs.refGridUnit.multipleSelectionAll
+      multipleSelectionAll.forEach((item) => {
+        this.selectFangyuanCodes.push(item.fangyuanCode)
       })
+      console.log('multipleSelectionAll', this.$refs.refGridUnit.multipleSelection)
+      console.log(this.selectFangyuanCodes)
     }
   }
 }

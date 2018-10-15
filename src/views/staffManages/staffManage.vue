@@ -71,7 +71,7 @@
           <el-button
             type="primary"
             size="mini"
-            @click="assignHouse(scope.row)">房源管理</el-button>
+            @click="assignHouse(scope.row)">分配房源</el-button>
           <el-button
             type="danger"
             size="mini"
@@ -238,7 +238,7 @@ export default {
       return statusMap[status] || 'info'
     },
     renderStatusValue (status) {
-      const statusStrData = ['', '负责人', '员工', '主账号']
+      const statusStrData = ['', '负责人', '员工', '负责人']
       return statusStrData[status] || '未知'
     }
   },
