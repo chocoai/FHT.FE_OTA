@@ -239,7 +239,7 @@ export default {
         param.userId = this.orgData.userId
         distributeHouseToUserApi(param).then((response) => {
           this.$message({
-            message: '房源分部成功',
+            message: '员工房源分配成功',
             type: 'success'
           })
         })
@@ -247,7 +247,7 @@ export default {
         param.depId = this.orgData.depId
         distributeHouseToDepApi(param).then((response) => {
           this.$message({
-            message: '房源分部成功',
+            message: '部门房源分部成功',
             type: 'success'
           })
         })

@@ -80,6 +80,6 @@ Mock.mock(reg_distributeHouseToDep, 'post', houseAsyncApi.distributeHouseToDep)
 Mock.mock(reg_depMembers, 'post', houseAsyncApi.depMembers)
 Mock.mock(reg_depMembers, 'post', houseAsyncApi.depMembers)
 Mock.mock(reg_addAccount, 'post', houseAsyncApi.addAccount)
-Mock.mock(reg_distributeHouseToUser, 'post', houseAsyncApi.reg_distributeHouseToUser)
+Mock.mock(reg_distributeHouseToUser, 'post', houseAsyncApi.distributeHouseToUser)
 
 export default Mock
