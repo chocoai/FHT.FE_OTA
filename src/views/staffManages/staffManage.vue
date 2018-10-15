@@ -31,7 +31,6 @@
             v-model="formData.keyword"
             placeholder="请输入姓名/部门"
             size="small"
-            level="1"
             class="item-select"
             filterable
             clearable
@@ -76,8 +75,13 @@
           <el-button
             type="danger"
             size="mini"
-            @click="editOrg(scope.row)">编辑</el-button>
+            @click="editAccount(scope.row)">编辑</el-button>
         </el-row>
+      </template>
+      <template
+        slot="slot_role"
+        slot-scope="scope">
+        {{ scope.row.role | renderStatusValue }}
       </template>
     </GridUnit>
     <!-- 新增，编辑账号 -->
@@ -104,6 +108,7 @@
               prop="mobile">
               <el-input
                 v-model="accountForm.mobile"
+                placeholder="请输入手机号码"
                 filterable
                 clearable></el-input>
             </el-form-item>
@@ -114,7 +119,8 @@
               prop="name">
               <el-input
                 v-model="accountForm.name"
-                :disabled="editAdd"
+                :disabled="userDetails"
+                placeholder="请输入姓名"
                 filterable
                 clearable
                 maxlength="10"></el-input>
@@ -126,6 +132,7 @@
               prop="gender">
               <el-select
                 v-model="accountForm.gender"
+                :disabled="userDetails"
                 filterable
                 clearable>
                 <el-option
@@ -145,6 +152,7 @@
               prop="depId">
               <el-select
                 v-model="addAcountDepName"
+                :disabled="userOrg"
                 style="width: 100%">
                 <el-tree
                   ref="overlayTree"
@@ -168,24 +176,24 @@
           <el-col :span="12">
             <el-form-item
               label="房源管理"
-              prop="role">
+              prop="hasAllRoomAuth">
               <el-select
-                v-model="orgRoomRole"
-                :disabled= "roleChecked===1?true:false"
+                v-model="accountForm.hasAllRoomAuth"
+                :disabled="userOrg"
                 style="width: 100%"
                 filterable
                 clearable>
                 <el-option
-                  value="3"
-                  label="部门旗下所有房源"></el-option>
-                <el-option
-                  value="2"
+                  :value="0"
                   label="部门旗下部分房源"></el-option>
+                <el-option
+                  :value="1"
+                  label="部门旗下所有房源"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="!isEditAccount">
           <el-form-item
             label="部门负责人"
             prop="orgRole">
@@ -219,6 +227,21 @@ export default {
   components: {
     GridUnit
   },
+  filters: {
+    // 麦邻 闲鱼发布状态
+    renderStatusType (status) {
+      const statusMap = {
+        '1': 'info', // 未发布
+        '2': 'success', // 已发布
+        '3': 'danger' // 申请中
+      }
+      return statusMap[status] || 'info'
+    },
+    renderStatusValue (status) {
+      const statusStrData = ['', '负责人', '员工', '主账号']
+      return statusStrData[status] || '未知'
+    }
+  },
   data () {
     const validatePhone = (rule, value, callback) => {
       if (!validateMobile(value)) {
@@ -240,14 +263,17 @@ export default {
       inputDepart: '',
       isEditAccount: false,
       layer_account: false,
-      orgRoomRole: '', // 房源管理
+      userId: '', // 用户ID
+      userRole: '',
+      // orgRoomRole: '', // 房源管理
       addAcountDepName: '', // 新增账户所属部门
       accountForm: {
         mobile: '',
         name: '',
-        gender: 1,
+        gender: '',
         depId: '',
-        role: ''
+        role: '',
+        hasAllRoomAuth: ''
       },
       rules: {
         depId: [
@@ -260,13 +286,14 @@ export default {
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         gender: [
-          { required: true, message: '请选择性别', trigger: 'change' }
+          { required: true, message: '请选择性别', trigger: 'blur' }
         ],
-        role: [
+        hasAllRoomAuth: [
           { required: true, message: '请选择房源管理', trigger: 'blur' }
         ]
       },
-      editAdd: true,
+      userDetails: true,
+      userOrg: false,
       nowOrgObj: {
         depId: '',
         depName: ''
@@ -290,7 +317,7 @@ export default {
       }, // 传到表格接口的参数
       colModels: [ // 表格数据
         {prop: 'name', label: '姓名', width: 300},
-        {prop: 'role', label: '职位', width: 150},
+        {prop: 'role', label: '职位', width: 150, slotName: 'slot_role'},
         {prop: 'depName', label: '部门'},
         {
           prop: 'operate',
@@ -342,10 +369,19 @@ export default {
       this.accountForm.depId = data.depId
     },
     handleApply () { // 新增账号
-      this.editAdd = false
+      this.accountForm = {
+        mobile: '',
+        name: '',
+        gender: '',
+        depId: '',
+        role: ''
+      }
       this.layer_account = true
+
+      this.userDetails = false
       this.isEditAccount = false
-      this.isTry = false
+      // this.isTry = false
+
       this.accountForm.depId = this.parentOrg.depId
       this.addAcountDepName = this.parentOrg.depName
       // this.$nextTick(() => {
@@ -353,13 +389,15 @@ export default {
       // })
     },
     submitAccount () {
-      if (this.roleChecked) {
-        this.accountForm.role = this.roleChecked
-      } else {
-        this.accountForm.role = this.orgRoomRole
-      }
-      console.log(this.accountForm.role)
+      this.accountForm.role = this.roleChecked || 2
       let param = deepClone(this.accountForm)
+      if (this.isEditAccount) {
+        param.id = this.userId // 用户id
+      }
+      if (!this.userDetails) {
+        param.role = 3
+      }
+
       console.log('新增账户的参数', param)
       this.$refs['accountForm'].validate((valid) => {
         if (valid) {
@@ -381,11 +419,31 @@ export default {
     },
     roleClick (data) {
       this.accountForm.role = this.roleChecked
-      console.log(this.roleChecked)
     },
+    editAccount (data) {
+      this.isEditAccount = true // 确定是点击的编辑
+      if (data.role === 3) {
+        this.userDetails = false
+        this.userOrg = true
+      } else {
+        this.userDetails = true
+        this.userOrg = false
+      }
+      this.accountForm = {
+        mobile: data.mobile,
+        name: data.name,
+        gender: data.gender,
+        // depId: this.parentOrg.depId,
+        role: data.role,
+        hasAllRoomAuth: data.hasAllRoomAuth
+      }
+      this.layer_account = true
+      this.addAcountDepName = data.depName // 部门名称
+      this.userId = data.id // 用户id
+      this.accountForm.depId = data.depId // 部门ID
+      this.accountForm.role = data.role
 
-    editOrg () {
-
+      console.log(data)
     }
   }
 

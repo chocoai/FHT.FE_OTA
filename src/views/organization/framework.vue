@@ -392,6 +392,7 @@ export default {
           }
         }
       })
+      this.searchParam()// 增加成功后 刷新当前页面
     },
     editSubmitSure (param) { // 编辑确定上传
       getDepartmentInfo.editDepartmentApi(param).then((res) => {
@@ -401,6 +402,7 @@ export default {
         })
         this.layer_addOrg = false
       })
+      this.searchParam()// 编辑成功后 刷新当前页面
     },
     searchZoneList () { // 区域
 

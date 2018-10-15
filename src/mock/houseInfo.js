@@ -318,14 +318,32 @@ const houseManage_info = {
       'data': [{
         'id': 1,
         'name': '张三',
-        'role': '员工',
-        'depName': '技术部'
+        'role': 3,
+        'depId': 3,
+        'depName': '上海分部',
+        'gender': 1,
+        'mobile': 13089887656,
+        'hasAllRoomAuth': 1
       },
       {
         'id': 2,
         'name': '李四',
-        'role': '负责人',
-        'depName': '产品部'
+        'role': 1,
+        'depName': '徐东地区',
+        'gender': 2,
+        'depId': 2,
+        'mobile': 15078667898,
+        'hasAllRoomAuth': 0
+      },
+      {
+        'id': 2,
+        'name': '李四',
+        'role': 2,
+        'depName': '徐东地区',
+        'gender': 2,
+        'depId': 2,
+        'mobile': 15078667898,
+        'hasAllRoomAuth': 0
       }]
 
     },
