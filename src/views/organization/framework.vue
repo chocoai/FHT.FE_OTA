@@ -97,6 +97,7 @@
               v-model="orgForm.depName"
               placeholder="请输入部门名称"
               max-length="20"
+              clearable
             >
             </el-input>
           </el-form-item>
@@ -105,6 +106,7 @@
             prop="superiorName">
             <el-select
               v-model="orgForm.superiorName"
+              clearable
               placeholder="请选择上级部门"
               class="item-select2">
               <el-tree
@@ -279,6 +281,7 @@ export default {
       if (type === 'clear') { // 清空就是查询总部数据
         this.formData.depId = this.orgName
         this.formData.depName = this.orgId
+        this.searchDepartment = ''
       }
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()

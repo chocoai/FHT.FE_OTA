@@ -43,6 +43,8 @@ const reg_editDepartment = /\/department\/editDepartment/
 const reg_queryDistributeToDepList = /\/fangyuanDistribute\/queryDistributeToDepList\/isMock/
 // 确认分配房源
 const reg_distributeHouseToDep = /\/fangyuanDistribute\/distributeHouseToDep\/isMock/
+// 人员管理获取部门及部门以下人员
+const reg_depMembers = /\/department\/depMembers/
 
 Mock.mock(reg_getUserInfo, 'post', userApi.getUserInfo)
 Mock.mock(reg_login, 'post', userApi.login)
@@ -71,5 +73,6 @@ Mock.mock(reg_queryOneDepartment, 'post', houseAsyncApi.queryOneDepartment)
 Mock.mock(reg_editDepartment, 'post', houseAsyncApi.editDepartment)
 Mock.mock(reg_queryDistributeToDepList, 'post', houseAsyncApi.queryDistributeToDepList)
 Mock.mock(reg_distributeHouseToDep, 'post', houseAsyncApi.distributeHouseToDep)
+Mock.mock(reg_depMembers, 'post', houseAsyncApi.depMembers)
 
 export default Mock

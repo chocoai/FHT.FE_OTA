@@ -21,15 +21,17 @@
           <el-select
             v-model="formData.regionId"
             size="small"
+            filterable
             clearable
             placeholder="请选择区域"
+            class="item-select"
             @change="handleChange">
             <el-option
               v-for="item in areaPotions"
               :key="item.areaId"
               :label="item.areaName"
               :value="item.areaId"
-              class="item-select"
+
             >
             </el-option>
           </el-select>
@@ -38,6 +40,7 @@
           <el-select
             v-model="formData.subdistrictId"
             clearable
+            filterable
             size="small"
             class="item-select"
             placeholder="请选择公寓小区">
@@ -268,9 +271,9 @@ export default {
   .item-flex {
     display: flex;
   }
-  .item-select{
-    margin-right: 10px;
-    }
+ .item-select {
+    margin-right:10px;
+ }
   .btnpos {
     margin-top:20px;
   }

@@ -309,7 +309,26 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': null
-  }
+  },
+  depMembers:
+    {
+      'reqId': null,
+      'code': '0',
+      'message': '操作成功',
+      'data': [{
+        'id': 1,
+        'name': '张三',
+        'role': '员工',
+        'depName': '技术部'
+      },
+      {
+        'id': 2,
+        'name': '李四',
+        'role': '负责人',
+        'depName': '产品部'
+      }]
+
+    }
 }
 
 export default {
@@ -363,5 +382,8 @@ export default {
   },
   distributeHouseToDep: () => {
     return houseManage_info.distributeHouseToDep
+  },
+  depMembers: () => {
+    return houseManage_info.depMembers
   }
 }

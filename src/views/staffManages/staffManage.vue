@@ -4,21 +4,31 @@
       <div class="item-flex">
         <el-form-item>
           <el-select
-            v-model="selectDepart"
+            v-model="selectDepName"
+            filterable
+            clearable
             size="small"
             class="item-select"
             placeholder="请选择部门">
+            <el-tree
+              ref="overlayTree"
+              :data="treeData"
+              :props="defaultProps"
+              :highlight-current="true"
+              :expand-on-click-node="false"
+              :default-expanded-keys="[parentOrg.depId]"
+              node-key="depId"
+              @node-click="editNodeclick"
+            >
+            </el-tree>
             <el-option
-              value="1"
-              label="全部部门"></el-option>
-            <el-option
-              value="1"
-              label="杭州总部"></el-option>
+              style="display:none"
+              value=""></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-input
-            v-model="inputDepart"
+            v-model="formData.keyword"
             placeholder="请输入姓名/部门"
             size="small"
             level="1"
@@ -34,15 +44,16 @@
             size="small"
             @click="searchParam">查询</el-button>
           <el-button
+            size="small"
+            icon="el-icon-remove-outline"
+            style="margin-left:10px"
+            @click="searchParam('clear')"
+          >清空</el-button>
+          <el-button
             style="margin-left:10px;"
             type="primary"
             size="small"
             @click="handleApply()">新增账号</el-button>
-          <el-button
-            size="small"
-            icon="el-icon-remove-outline"
-            style="margin-left:10px"
-          >清空</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -52,8 +63,8 @@
       :data-method="method"
       :url="url"
       :is-mock="isMock"
-      :auto-load="false"
-      :columns="colModels">
+      :columns="colModels"
+      list-field="data">
       <template
         slot="operateHosting"
         slot-scope="scope">
@@ -125,16 +136,32 @@
               <el-select
                 v-model="accountForm.depName"
                 style="width: 100%">
-                <!-- <el-tree
+                <el-tree
                   ref="overlayTree"
                   :data="treeData"
                   :props="defaultProps"
                   :highlight-current="true"
                   :expand-on-click-node="false"
-                  :default-expanded-keys="[nowOrgObj.id]"
-                  node-key="id"
-                  @node-click="overlayNodeClick">
-                </el-tree> -->
+                  :default-expanded-keys="[parentOrg.depId]"
+                  node-key="depId"
+                  @node-click="editNodeclick"
+                >
+                </el-tree>
+                <el-option
+                  style="display:none"
+                  value=""></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item
+              label="房源管理"
+              prop="gmtHire">
+              <el-select
+                v-model="accountForm.gmtHire"
+                style="width: 100%">
                 <el-option
                   style="display:none"
                   value=""></el-option>
@@ -148,7 +175,7 @@
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 import { validateMobile } from '@/utils/validate'
-import { houseAsyncApi } from '@/api/houseManage'
+import { getDepartmentInfo } from '@/api/organization'
 // import { deepClone } from '@/utils'
 export default {
   name: 'StaffManage',
@@ -164,7 +191,14 @@ export default {
       }
     }
     return {
-      selectDepart: '',
+      treeData: [],
+      defaultProps: {
+        children: 'children',
+        label: 'depName',
+        id: 'depId'
+      },
+      addDeName: '',
+      selectDepName: '',
       inputDepart: '',
       isEditAccount: false,
       layer_account: false,
@@ -204,24 +238,62 @@ export default {
           label: '女'
         }
       ],
-      formData: {}, // 传到表格接口的参数
+      parentOrg: {
+        depId: ''
+      },
+      formData: {
+        depId: '',
+        keyword: ''
+      }, // 传到表格接口的参数
       colModels: [ // 表格数据
-        {prop: 'depName', label: '姓名', width: 300},
-        {prop: 'predepName', label: '职位', width: 150},
-        {prop: 'predepName', label: '部门'},
+        {prop: 'name', label: '姓名', width: 300},
+        {prop: 'role', label: '职位', width: 150},
+        {prop: 'depName', label: '部门'},
         {
           prop: 'operate',
           label: '操作',
           slotName: 'operateHosting'
         }
       ],
-      url: houseAsyncApi.requestPath,
-      method: houseAsyncApi.queryMethod,
-      isMock: houseAsyncApi.isMock
+      url: getDepartmentInfo.requestPath,
+      method: getDepartmentInfo.staffInfoMethod,
+      isMock: getDepartmentInfo.isMock
     }
   },
+  created () {
+    this.getTree()
+  },
   methods: {
-    searchParam () {}, // 查询
+    searchParam (type) {
+      if (type === 'clear') {
+        this.formData = {
+          depId: '',
+          keyword: ''
+        }
+        this.selectDepName = ''
+      }
+      console.log('this.formData', this.formData)
+      this.$nextTick(() => {
+        this.$refs.refGridUnit.searchHandler()
+      })
+    }, // 查询
+    getTree () { // 获取组织架构名称并且默认表格数据
+      getDepartmentInfo.queryDepartmentApi().then(res => {
+        if (res.data) {
+          // this.$refs.trees.setCurrentKey(id)
+          this.parentOrg.depId = res.data.depId // 顶级部门
+          this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+          console.log('tree', this.parentOrg.depId)
+        }
+      }).catch(rej => {})
+    },
+    editNodeclick (data) {
+      console.log(data)
+      this.formData.depId = data.depId
+      this.selectDepName = data.depName
+
+      this.accountForm.depName = data.depName
+    },
     closeAccount () {
       this.layer_account = false
     },
@@ -236,6 +308,12 @@ export default {
       // this.$nextTick(() => {
       //   this.$refs.overlayTree.setCurrentKey(this.nowOrgObj.id)
       // })
+    },
+    assignHouse (data) { // 房源管理
+      this.$router.push({path: '/organization/allotroom', query: data})
+    },
+    editOrg () {
+
     }
   }
 

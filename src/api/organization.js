@@ -9,6 +9,7 @@ import { fetch } from '@/utils/fetch'
 export const getDepartmentInfo = {
   requestPath: 'department',
   queryMethod: 'getDepartmentInfo',
+  staffInfoMethod: 'depMembers', // 人员管理 method
   isMock: true,
   queryDepartmentApi (params) { // 组织结构
     return fetch(this.requestPath, {
@@ -37,6 +38,14 @@ export const getDepartmentInfo = {
   editDepartmentApi (params) { // 编辑部门
     return fetch(this.requestPath, {
       method: 'editDepartment',
+      params
+    }, {
+      isMock: true
+    })
+  },
+  depMembersApi (params) { // 获取部门以及部门一下人呀
+    return fetch(this.requestPath, {
+      method: 'depMembers',
       params
     }, {
       isMock: true
