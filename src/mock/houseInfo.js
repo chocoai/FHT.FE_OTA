@@ -328,7 +328,14 @@ const houseManage_info = {
         'depName': '产品部'
       }]
 
+    },
+  addAccount: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
     }
+  }
 }
 
 export default {
@@ -385,5 +392,8 @@ export default {
   },
   depMembers: () => {
     return houseManage_info.depMembers
+  },
+  addAccount: () => {
+    return houseManage_info.addAccount
   }
 }

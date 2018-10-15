@@ -82,11 +82,13 @@
     </GridUnit>
     <!-- 新增，编辑账号 -->
     <el-dialog
+
       :title="isEditAccount ? '编辑账号' : '新增账号'"
       :visible="layer_account"
       :close-on-click-modal="false"
       width="800px"
-      @close="closeAccount">
+      @close="cancelAddAccount">
+
       <el-form
         ref="accountForm"
         :model="accountForm"
@@ -100,7 +102,10 @@
             <el-form-item
               label="手机号码"
               prop="mobile">
-              <el-input v-model="accountForm.mobile"></el-input>
+              <el-input
+                v-model="accountForm.mobile"
+                filterable
+                clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -110,14 +115,19 @@
               <el-input
                 v-model="accountForm.name"
                 :disabled="editAdd"
+                filterable
+                clearable
                 maxlength="10"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
               label="性别"
-              prop="sex">
-              <el-select v-model="accountForm.sex">
+              prop="gender">
+              <el-select
+                v-model="accountForm.gender"
+                filterable
+                clearable>
                 <el-option
                   v-for="item in genderOpts"
                   :key="item.value"
@@ -132,9 +142,9 @@
           <el-col :span="12">
             <el-form-item
               label="所属部门"
-              prop="depName">
+              prop="depId">
               <el-select
-                v-model="accountForm.depName"
+                v-model="addAcountDepName"
                 style="width: 100%">
                 <el-tree
                   ref="overlayTree"
@@ -144,7 +154,7 @@
                   :expand-on-click-node="false"
                   :default-expanded-keys="[parentOrg.depId]"
                   node-key="depId"
-                  @node-click="editNodeclick"
+                  @node-click="accountNodeclick"
                 >
                 </el-tree>
                 <el-option
@@ -158,25 +168,52 @@
           <el-col :span="12">
             <el-form-item
               label="房源管理"
-              prop="gmtHire">
+              prop="role">
               <el-select
-                v-model="accountForm.gmtHire"
-                style="width: 100%">
+                v-model="orgRoomRole"
+                :disabled= "roleChecked===1?true:false"
+                style="width: 100%"
+                filterable
+                clearable>
                 <el-option
-                  style="display:none"
-                  value=""></el-option>
+                  value="3"
+                  label="部门旗下所有房源"></el-option>
+                <el-option
+                  value="2"
+                  label="部门旗下部分房源"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-    </el-form></el-dialog>
+        <el-row>
+          <el-form-item
+            label="部门负责人"
+            prop="orgRole">
+            <el-checkbox
+              v-model="roleChecked"
+              :true-label="1"
+              @change="roleClick"></el-checkbox>
+          </el-form-item>
+        </el-row>
+      </el-form>
+      <div
+        slot="footer"
+        style="margin-top:-30px;"
+        class="dialog-footer">
+        <el-button
+          type="primary"
+          @click="submitAccount">确定</el-button>
+        <el-button @click="cancelAddAccount">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
 import { validateMobile } from '@/utils/validate'
 import { getDepartmentInfo } from '@/api/organization'
-// import { deepClone } from '@/utils'
+import { staffManageInfo } from '@/api/staffManage'
+import { deepClone } from '@/utils'
 export default {
   name: 'StaffManage',
   components: {
@@ -198,25 +235,23 @@ export default {
         id: 'depId'
       },
       addDeName: '',
+      roleChecked: '',
       selectDepName: '',
       inputDepart: '',
       isEditAccount: false,
       layer_account: false,
+      orgRoomRole: '', // 房源管理
+      addAcountDepName: '', // 新增账户所属部门
       accountForm: {
         mobile: '',
         name: '',
-        sex: 1,
+        gender: 1,
         depId: '',
-        depName: '',
-        role: '',
-        imei: '',
-        type: 1,
-        gmtHire: '',
-        idNo: ''
+        role: ''
       },
       rules: {
-        depName: [
-          { required: true, message: '请输入部门名称', trigger: 'blur' }
+        depId: [
+          { required: true, message: '请选择部门', trigger: 'blur' }
         ],
         mobile: [
           { required: true, trigger: 'blur', validator: validatePhone }
@@ -224,11 +259,18 @@ export default {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
-        sex: [
+        gender: [
           { required: true, message: '请选择性别', trigger: 'change' }
+        ],
+        role: [
+          { required: true, message: '请选择房源管理', trigger: 'blur' }
         ]
       },
       editAdd: true,
+      nowOrgObj: {
+        depId: '',
+        depName: ''
+      },
       genderOpts: [
         {
           value: 1,
@@ -239,7 +281,8 @@ export default {
         }
       ],
       parentOrg: {
-        depId: ''
+        depId: '',
+        depName: ''
       },
       formData: {
         depId: '',
@@ -282,6 +325,7 @@ export default {
         if (res.data) {
           // this.$refs.trees.setCurrentKey(id)
           this.parentOrg.depId = res.data.depId // 顶级部门
+          this.parentOrg.depName = res.data.depName
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
           console.log('tree', this.parentOrg.depId)
         }
@@ -291,27 +335,55 @@ export default {
       console.log(data)
       this.formData.depId = data.depId
       this.selectDepName = data.depName
-
       this.accountForm.depName = data.depName
     },
-    closeAccount () {
-      this.layer_account = false
+    accountNodeclick (data) {
+      this.addAcountDepName = data.depName
+      this.accountForm.depId = data.depId
     },
     handleApply () { // 新增账号
       this.editAdd = false
       this.layer_account = true
       this.isEditAccount = false
       this.isTry = false
-      // this.accountForm = deepClone(this.defaultAccount)
-      // this.accountForm.depId = this.nowOrgObj.id
-      // this.accountForm.depName = this.nowOrgObj.depName
+      this.accountForm.depId = this.parentOrg.depId
+      this.addAcountDepName = this.parentOrg.depName
       // this.$nextTick(() => {
       //   this.$refs.overlayTree.setCurrentKey(this.nowOrgObj.id)
       // })
     },
+    submitAccount () {
+      if (this.roleChecked) {
+        this.accountForm.role = this.roleChecked
+      } else {
+        this.accountForm.role = this.orgRoomRole
+      }
+      console.log(this.accountForm.role)
+      let param = deepClone(this.accountForm)
+      console.log('新增账户的参数', param)
+      this.$refs['accountForm'].validate((valid) => {
+        if (valid) {
+          staffManageInfo.addAccountAPi(param).then((res) => {
+            this.$message({
+              message: '新增账户成功',
+              type: 'success'
+            })
+          })
+        }
+      })
+    },
+    cancelAddAccount () {
+      this.layer_account = false
+      this.$refs['accountForm'].clearValidate()
+    },
     assignHouse (data) { // 房源管理
       this.$router.push({path: '/organization/allotroom', query: data})
     },
+    roleClick (data) {
+      this.accountForm.role = this.roleChecked
+      console.log(this.roleChecked)
+    },
+
     editOrg () {
 
     }
