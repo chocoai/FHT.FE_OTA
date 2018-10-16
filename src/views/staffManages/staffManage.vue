@@ -86,7 +86,6 @@
     </GridUnit>
     <!-- 新增，编辑账号 -->
     <el-dialog
-
       :title="isEditAccount ? '编辑账号' : '新增账号'"
       :visible="layer_account"
       :close-on-click-modal="false"
@@ -214,6 +213,22 @@
         <el-button @click="cancelAddAccount">取消</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      :visible="closeAddAccountTips_layer"
+      title="新增账号成功"
+      width="30%"
+      @close="closeAddAccountTips_layer = false">
+      <p style="margin-bottom:40px;text-align:center">新增账号成功，记得给账号分配房源</p>
+      <div
+        slot="footer"
+        style="margin-top:-30px;"
+        class="dialog-footer">
+        <el-button
+          type="primary"
+          @click="goAssionRoom">去分配房源</el-button>
+        <el-button @click="closeAddAccountTips_layer = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -251,6 +266,7 @@ export default {
       }
     }
     return {
+      closeAddAccountTips_layer: false,
       treeData: [],
       defaultProps: {
         children: 'children',
@@ -311,6 +327,7 @@ export default {
         depId: '',
         depName: ''
       },
+      goRoomData: {},
       formData: {
         depId: '',
         keyword: ''
@@ -397,18 +414,29 @@ export default {
       if (!this.userDetails) {
         param.role = 3
       }
-
+      this.goRoomData = deepClone(param)// 去分配吧
       console.log('新增账户的参数', param)
       this.$refs['accountForm'].validate((valid) => {
         if (valid) {
           staffManageInfo.addAccountAPi(param).then((res) => {
-            this.$message({
-              message: '新增账户成功',
-              type: 'success'
-            })
+            if (param.hasAllRoomAuth === 0) {
+              this.closeAddAccountTips_layer = true
+            } else {
+              this.$message({
+                message: '新增账户成功',
+                type: 'success'
+              })
+            }
+            this.layer_account = false
           })
         }
       })
+    },
+    goAssionRoom () { // 新增成功后 去分配房源吧
+      let param = deepClone(this.goRoomData)
+      param.depName = this.$refs.overlayTree.getNode(this.goRoomData.depId).data.depName
+      param.cityId = ' ' // 需要从组织架构中获取
+      this.$router.push({path: '/organization/allotroom', query: param})
     },
     cancelAddAccount () {
       this.layer_account = false

@@ -1,7 +1,13 @@
 <template>
   <div class="layout-container">
-    <h5 class=" allotTitle">房源分配管理</h5>
-    <p class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
+    <h5
+      class=" allotTitle">房源分配管理</h5>
+    <p
+      v-if="!distributeHouse"
+      class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
+    <p
+      v-if="distributeHouse"
+      class="allotaddr">给部门&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
     <el-form class="model-search clearfix">
       <div class="item-flex">
         <el-form-item>
@@ -31,7 +37,6 @@
               :key="item.areaId"
               :label="item.areaName"
               :value="item.areaId"
-
             >
             </el-option>
           </el-select>

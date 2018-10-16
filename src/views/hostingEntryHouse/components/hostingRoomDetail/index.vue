@@ -8,7 +8,8 @@
           size="small"
           clearable
           type="number"
-          placeholder="请输入外部编码">
+          placeholder="请输入外部编码"
+          style="width:250px;">
         </el-input>
       </el-row>
       <el-row>
@@ -35,10 +36,9 @@
           prop="depId">
           <el-select
             v-model="hostingRoomDetail.depName"
-
             clearable
             placeholder="请选择归属部门"
-            class="item-select2">
+            class="room-detail-select">
             <el-tree
               ref="overlayTree"
               :data="treeData"
