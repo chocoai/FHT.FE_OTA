@@ -362,6 +362,7 @@ const houseManage_info = {
     'message': '操作成功',
     'data': null
   }
+
 }
 
 export default {

@@ -12,6 +12,30 @@
         size="small"
         class="room-detail-container hosting-room-detail">
         <el-form-item
+          label="归属部门"
+          prop="depId">
+          <el-select
+            v-model="hostingRoomDetail.depName"
+            clearable
+            placeholder="请选择归属部门"
+            class="item-select2">
+            <el-tree
+              ref="overlayTree"
+              :data="treeData"
+              :props="defaultProps"
+              :highlight-current="true"
+              :expand-on-click-node="false"
+              :default-expanded-keys="[parentOrg.depId]"
+              node-key="depId"
+              @node-click="editNodeclick"
+            >
+            </el-tree>
+            <el-option
+              style="display:none"
+              value=""></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
           label="所在地区"
           prop="areaCode"
           style="width: 50%">
@@ -709,6 +733,7 @@ import mapSelect from '@/components/MapSelect'
 import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import ServiceList from './serviceList'
+import { getDepartmentInfo } from '@/api/organization'
 import { estateZoneListByAreaIdApi, deleteRoomApi, hostingSaveHouseInfoApi, hostingEditHouseInfoApi } from '@/api/houseManage'
 // eslint-disable-next-line
 import { debounce, deepClone } from '@/utils'
@@ -736,6 +761,16 @@ export default {
   },
   data () {
     return {
+      treeData: [],
+      defaultProps: {
+        children: 'children',
+        label: 'depName',
+        id: 'depId'
+      },
+      parentOrg: { // 顶级部门id
+        depName: '',
+        depId: ''
+      },
       // mainHeight: 500,
       saveLoading: false,
       hostingRoomDetail: {},
@@ -755,6 +790,7 @@ export default {
             trigger: 'change'
           }
         ],
+        depId: {required: true, message: '请选择归属部门', trigger: 'change'},
         address: [
           { required: true, message: '请输入公寓/小区', trigger: 'change' }
         ],
@@ -1006,7 +1042,11 @@ export default {
       return list
     }
   },
+  created () {
+    this.getTree()
+  },
   mounted () {
+
     // let changeMainHeight = debounce(() => {
     //   this.mainHeight = Math.max(document.body.clientHeight - (this.editFlag ? 150 : 240), 250)
     // }, 100)
@@ -1014,6 +1054,18 @@ export default {
     // window.addEventListener('resize', changeMainHeight)
   },
   methods: {
+    getTree () { // 获取组织架构名称并且默认表格数据
+      getDepartmentInfo.queryDepartmentApi().then(res => {
+        if (res.data) {
+          this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+        }
+      }).catch(rej => {})
+    },
+    editNodeclick (data) { // 归属部门选择
+      console.log('data', data)
+      this.hostingRoomDetail.depId = data.depId
+      this.hostingRoomDetail.depName = data.depName
+    },
     searchZoneList (flag) { // 搜索板块列表
       [this.hostingRoomDetail.provinceId, this.hostingRoomDetail.cityId, this.hostingRoomDetail.regionId] = this.hostingRoomDetail.areaCode
       if (!flag) {
@@ -1151,6 +1203,7 @@ export default {
         val.address = val.subdistrictName ? (val.subdistrictName + ' - ' + val.subdistrictAddress) : ''
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
+        this.depName = this.$refs.overlayTree.getNode(val.depId).depName // tree 赋值
         parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')
         val.zoneId = val.zoneId === 0 ? '' : val.zoneId
         if (this.houseRentType === 1) {
@@ -1209,7 +1262,8 @@ export default {
           contactMobile: null,
           facilityItemsList: [],
           houseDesc: '',
-          houseRentType: this.houseRentType
+          houseRentType: this.houseRentType,
+          depId: ''
         }
         if (this.houseRentType === 1) {
           val = Object.assign(val, {
@@ -1369,7 +1423,7 @@ export default {
       }
 
       let api = this.editFlag ? hostingEditHouseInfoApi : hostingSaveHouseInfoApi
-      // console.log(roomDetailData)
+      console.log(roomDetailData)
       if (this.editFlag && (this.editRoomInfo.mailinStatus === 2 || this.editRoomInfo.mailinStatus === 5)) {
         this.$confirm('当前房源保存后将从APP下架，确认保存？', '提示', {
           confirmButtonText: '确定',
