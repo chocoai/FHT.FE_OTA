@@ -361,8 +361,111 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': null
+  },
+  queryHostingHouseByOuterHouseUuid: { // 外部编码
+    'depId': 1,
+    'outerHouseUuid': 'outerHouseUuid',
+    'fangyuanCode': '2000023087',
+    'orgId': 79,
+    'adminUserId': 143,
+    'houseRentType': 1,
+    'provinceId': 430000,
+    'provinceName': null,
+    'cityId': 430100,
+    'cityName': null,
+    'regionId': 430121,
+    'regionName': null,
+    'zoneId': 0,
+    'zoneName': null,
+    'subdistrictId': 10784,
+    'subdistrictName': '物贸路',
+    'subdistrictAddress': '物贸路',
+    'buildingName': '2',
+    'unitCode': '2',
+    'roomNo': '201',
+    'chamberCount': 2,
+    'boardCount': 2,
+    'toiletCount': 2,
+    'houseArea': 222,
+    'floorName': '2',
+    'floorAmount': 2,
+    'houseDirection': 1,
+    'decorationDegree': 1,
+    'facilityItems': '',
+    'houseDesc': '',
+    'contactName': 'yj',
+    'contactGender': 1,
+    'contactMobile': '13685772564',
+    'tag': null,
+    'sourceInfo': null,
+    'pictures': null,
+    'payOfPayment': 1,
+    'depositOfPayment': 1,
+    'rent': 1700.0,
+    'deposit': 1700.0,
+    'hostingRooms': [
+      {
+        'roomCode': '200061909',
+        'fangyuanCode': null,
+        'roomName': '房间A',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'payOfPayment': 1,
+        'depositOfPayment': 1,
+        'rent': 1700.0,
+        'deposit': 1700.0,
+        'facilityItems': '',
+        'pictures': [
+          {
+            'imageName': '1.png',
+            'src': 'src',
+            'isBase64': 0
+          }
+        ]
+      },
+      {
+        'roomCode': '200061910',
+        'fangyuanCode': null,
+        'roomName': '房间B',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      },
+      {
+        'roomCode': '200061911',
+        'fangyuanCode': null,
+        'roomName': '房间C',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      },
+      {
+        'roomCode': '200061912',
+        'fangyuanCode': null,
+        'roomName': '房间D',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      },
+      {
+        'roomCode': '200061913',
+        'fangyuanCode': null,
+        'roomName': '房间E',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      }
+    ]
   }
-
 }
 
 export default {
@@ -425,5 +528,8 @@ export default {
   },
   distributeHouseToUser: () => {
     return houseManage_info.distributeHouseToUser
+  },
+  queryHostingHouseByOuterHouseUuid: () => {
+    return houseManage_info.queryHostingHouseByOuterHouseUuid
   }
 }

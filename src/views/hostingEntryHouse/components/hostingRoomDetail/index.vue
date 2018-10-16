@@ -1,5 +1,23 @@
 <template>
   <div>
+    <div class="codeFlex entry-house-container">
+      <el-row class="codeLabelStyle">外部编码：</el-row>
+      <el-row style="margin-right:10px;">
+        <el-input
+          v-model="outerHouseUuid"
+          size="small"
+          clearable
+          type="number"
+          placeholder="请输入外部编码">
+        </el-input>
+      </el-row>
+      <el-row>
+        <el-button
+          type="primary"
+          size="small"
+          @click="checkOuterHouseUuid">确认</el-button>
+      </el-row>
+    </div>
     <div
       v-loading="saveLoading"
       class="entry-house-container">
@@ -13,9 +31,11 @@
         class="room-detail-container hosting-room-detail">
         <el-form-item
           label="归属部门"
+          style="width: 50%"
           prop="depId">
           <el-select
             v-model="hostingRoomDetail.depName"
+
             clearable
             placeholder="请选择归属部门"
             class="item-select2">
@@ -734,7 +754,7 @@ import Preview from '@/components/Preview/Preview'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import ServiceList from './serviceList'
 import { getDepartmentInfo } from '@/api/organization'
-import { estateZoneListByAreaIdApi, deleteRoomApi, hostingSaveHouseInfoApi, hostingEditHouseInfoApi } from '@/api/houseManage'
+import { estateZoneListByAreaIdApi, queryHostingHouseByOuterHouseUuidApi, deleteRoomApi, hostingSaveHouseInfoApi, hostingEditHouseInfoApi } from '@/api/houseManage'
 // eslint-disable-next-line
 import { debounce, deepClone } from '@/utils'
 export default {
@@ -771,6 +791,7 @@ export default {
         depName: '',
         depId: ''
       },
+      outerHouseUuid: '', // 外部编码
       // mainHeight: 500,
       saveLoading: false,
       hostingRoomDetail: {},
@@ -1019,7 +1040,8 @@ export default {
       cropperList: [],
       accept: 'image/png, image/jpeg, image/jpg',
       curPicListIndex: -1,
-      currentPicList: []
+      currentPicList: [],
+      houseRentName: ''
     }
   },
   computed: {
@@ -1065,6 +1087,23 @@ export default {
       console.log('data', data)
       this.hostingRoomDetail.depId = data.depId
       this.hostingRoomDetail.depName = data.depName
+    },
+    checkOuterHouseUuid () { // 查询外部编码
+      console.log(this.outerHouseUuid)
+      this.houseRentName = this.houseRentType === 1 ? '整租' : '合租'
+      queryHostingHouseByOuterHouseUuidApi({
+        'outerHouseUuid': this.outerHouseUuid
+      }).then((res) => {
+        console.log(res)
+        if (this.houseRentType === res.houseRentType) {
+          this.setRoomDetailData(res) // 调用编辑的
+        } else {
+          this.$message({
+            message: '请输入' + this.houseRentName + '房源的外部编码',
+            type: 'warning'
+          })
+        }
+      })
     },
     searchZoneList (flag) { // 搜索板块列表
       [this.hostingRoomDetail.provinceId, this.hostingRoomDetail.cityId, this.hostingRoomDetail.regionId] = this.hostingRoomDetail.areaCode
@@ -1204,6 +1243,7 @@ export default {
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
         this.depName = this.$refs.overlayTree.getNode(val.depId).depName // tree 赋值
+        this.parentOrg.id = val.depId // 默认部门的数组
         parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')
         val.zoneId = val.zoneId === 0 ? '' : val.zoneId
         if (this.houseRentType === 1) {
@@ -1717,4 +1757,13 @@ export default {
       }
     }
   }
+  .codeFlex {
+    margin-bottom:30px;
+    display: flex;
+    }
+    .codeLabelStyle {
+      font-size: 14px;
+      line-height:30px;
+      margin-right:10px;
+    }
 </style>

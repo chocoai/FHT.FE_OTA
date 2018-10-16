@@ -236,10 +236,7 @@ export default {
       ],
       url: getDepartmentInfo.requestPath,
       method: getDepartmentInfo.queryMethod,
-      isMock: getDepartmentInfo.isMock,
-      searchParams: {
-
-      }
+      isMock: getDepartmentInfo.isMock
     }
   },
   created () {

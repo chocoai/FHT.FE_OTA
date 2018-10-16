@@ -133,3 +133,11 @@ export function hostingEditHouseInfoApi (params) {
     params
   })
 }
+/* 外部编码 */
+export function queryHostingHouseByOuterHouseUuidApi (params) {
+  return fetch('/fangyuan/queryHostingHouseByOuterHouseUuid', {
+    params
+  }, {
+    isMock: false
+  })
+}

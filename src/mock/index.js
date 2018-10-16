@@ -49,6 +49,8 @@ const reg_depMembers = /\/department\/depMembers/
 const reg_addAccount = /\/user\/add/
 // 给员工分配房源
 const reg_distributeHouseToUser = /\/fangyuanDistribute\/distributeHouseToUser\/isMock/
+// 外部编号
+const reg_queryHostingHouseByOuterHouseUuid = /\/fangyuan\/queryHostingHouseByOuterHouseUuid\/isMock/
 
 Mock.mock(reg_getUserInfo, 'post', userApi.getUserInfo)
 Mock.mock(reg_login, 'post', userApi.login)
@@ -81,5 +83,6 @@ Mock.mock(reg_depMembers, 'post', houseAsyncApi.depMembers)
 Mock.mock(reg_depMembers, 'post', houseAsyncApi.depMembers)
 Mock.mock(reg_addAccount, 'post', houseAsyncApi.addAccount)
 Mock.mock(reg_distributeHouseToUser, 'post', houseAsyncApi.distributeHouseToUser)
+Mock.mock(reg_queryHostingHouseByOuterHouseUuid, 'post', houseAsyncApi.queryHostingHouseByOuterHouseUuid)
 
 export default Mock
