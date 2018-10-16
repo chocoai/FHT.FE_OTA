@@ -159,7 +159,7 @@ const houseManage_info = {
       },
       {
         'regionAddressId': 3567,
-        'areaId': 555,
+        'areaId': 14000,
         'cityId': 444,
         'name': '北京高档小区'
       }, {
@@ -196,7 +196,173 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': null
+  },
+  queryDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'depName': '华东地区', // 组织名
+      'depId': 1, // 上级组织
+      'children': [{// 组织架构层级
+        'depName': '上海分部', // 部门名
+        'parentId': 'aaaa', // 上级部门
+        'depId': 2, // 部门ID
+        'gmtCreate': '2018-08-08 11:11:11', // 创建时间
+        'managedHouse': 100, // 管理的房源数量
+        'children': [
+          {
+            'depName': '徐东地区', // 部门名
+            'parentId': 'child1', // 上级部门
+            'depId': 3, // 部门ID
+            'gmt_create': '2018-08-08 11:11:11', // 创建时间
+            'managedHouse': 100// 管理的房源数量
+          }
+        ]
+      }]
+    }
+  },
+  getDepartmentInfo: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': [{
+      'depName': '杭州总部', // 部门名
+      'parent': '中国总部', // 上级部门
+      'depId': '部门ID2222', // 部门ID
+      'cityId': 444, // 市id
+      'gmtCreate': '2018-08-08 11:11:11', // 创建时间
+      'managedHouse': 100 // 管理的房源数量
+    }]
+  },
+  addDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
+  },
+  queryOneDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'depId': 1,
+      'depName': '上海总部',
+      'provinceId': 150000,
+      'cityId': 150500,
+      'districtId': 150522,
+      'parentDepId': 3
+    }
+  },
+  editDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
+  },
+  queryDistributeToDepList: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'record': 1,
+      'houseList': [{
+        'fangyuanCode': '130000',
+        'subdistrictName': '余杭区-xx苑',
+        'roomNo': '302',
+        'boardCount': 1,
+        'chamberCount': 1,
+        'toiletCount': 1,
+        'roomCount': 99
+      }, {
+        'fangyuanCode': '14000',
+        'subdistrictName': '西湖小区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      },
+      {
+        'fangyuanCode': '140010',
+        'subdistrictName': '美丽小区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      }, {
+        'fangyuanCode': '140004',
+        'subdistrictName': '拱墅区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      }]
+    }
+  },
+  distributeHouseToDep: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
+  },
+  depMembers:
+    {
+      'reqId': null,
+      'code': '0',
+      'message': '操作成功',
+      'data': [{
+        'cityId': 111,
+        'id': 1,
+        'name': '张三',
+        'role': 3,
+        'depId': 3,
+        'depName': '上海分部',
+        'gender': 1,
+        'mobile': 13089887656,
+        'hasAllRoomAuth': 1
+      },
+      {
+        'cityId': 111,
+        'id': 2,
+        'name': '李四',
+        'role': 1,
+        'depName': '徐东地区',
+        'gender': 2,
+        'depId': 2,
+        'mobile': 15078667898,
+        'hasAllRoomAuth': 0
+      },
+      {
+        'id': 2,
+        'name': '李四',
+        'role': 2,
+        'depName': '徐东地区',
+        'gender': 2,
+        'depId': 2,
+        'mobile': 15078667898,
+        'hasAllRoomAuth': 0
+      }]
+
+    },
+  addAccount: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
+  },
+  distributeHouseToUser: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
   }
+
 }
 
 export default {
@@ -229,6 +395,35 @@ export default {
   },
   certificationFrom: () => {
     return houseManage_info.certificationFrom
+  },
+  queryDepartment: () => {
+    return houseManage_info.queryDepartment
+  },
+  getDepartmentInfo: () => {
+    return houseManage_info.getDepartmentInfo
+  },
+  addDepartment: () => {
+    return houseManage_info.addDepartment
+  },
+  queryOneDepartment: () => {
+    return houseManage_info.queryOneDepartment
+  },
+  editDepartment: () => {
+    return houseManage_info.editDepartment
+  },
+  queryDistributeToDepList: () => {
+    return houseManage_info.queryDistributeToDepList
+  },
+  distributeHouseToDep: () => {
+    return houseManage_info.distributeHouseToDep
+  },
+  depMembers: () => {
+    return houseManage_info.depMembers
+  },
+  addAccount: () => {
+    return houseManage_info.addAccount
+  },
+  distributeHouseToUser: () => {
+    return houseManage_info.distributeHouseToUser
   }
-
 }
