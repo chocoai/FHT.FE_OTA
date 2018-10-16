@@ -36,5 +36,23 @@ export const loginApi = {
     }, {
       isMock: true
     })
+  },
+  /* 修改密码 */
+  modifyPassword (params = {}) {
+    return fetch(this.requestPath, {
+      method: 'modifyPassword',
+      params
+    }, {
+      isMock: true
+    })
   }
+}
+/* 发送验证码 */
+export function sendVerifyCodeApi (params = {}) {
+  return fetch('sms', {
+    method: 'verifyCode',
+    params
+  }, {
+    isMock: true
+  })
 }

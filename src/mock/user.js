@@ -11,7 +11,8 @@ const mockData_user = {
     'code': '0',
     'message': 'bolin',
     'data': {
-      'sessionId': 'MTM2MA=='
+      'sessionId': 'MTM2MA==',
+      'firstLogin': true // true 首登 需要去修改密码
     }
   },
   userInfo: {

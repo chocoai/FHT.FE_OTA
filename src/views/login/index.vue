@@ -62,10 +62,64 @@
         </el-form-item>
       </el-form>
     </section>
+    <el-dialog
+      :visible.sync="modifyPassLayer"
+      :before-close="handleClose"
+      title="修改初始密码"
+      width="30%">
+      <el-form
+        ref="modifyPassForm"
+        :model="modifyPassData"
+        :rules="modifyPassRules"
+        label-width="80px">
+        <el-form-item label="手机">
+          <el-input
+            v-model="modifyPassData.account"
+            :disabled="true">
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          label="验证码"
+          prop="verifyCode">
+          <el-row> <el-input
+            v-model="modifyPassData.verifyCode"
+            style="width:50%"
+            placeholder="请输入的验证码"></el-input>
+            <el-button
+              v-show="sendAuthCode"
+              ref="sendVerifyRef"
+              type="primary"
+              @click="sendVerifyCode">发送验证码</el-button>
+            <el-button
+              v-show="!sendAuthCode"
+              ref="sendVerifyRef"
+              type="primary"
+              @click="sendVerifyCode">{{ auth_time }}后重新发送</el-button></el-row>
+        </el-form-item>
+        <el-form-item
+          label="新密码"
+          prop="modifyPassword">
+          <el-input
+            v-model="modifyPassData.modifyPassword"
+            type="password"
+            placeholder=" 请输入6-12位密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer">
+        <el-button
+          type="primary"
+          @click="sureModifyPass">确 定</el-button>
+        <el-button
+          @click="modifyPassLayer = false">取 消</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
-// import { validateMobile } from '@/utils/validate'
+import { loginApi, sendVerifyCodeApi } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -84,6 +138,19 @@ export default {
         callback()
       }
     }
+    const modifyValidatePass = (rule, value, callback) => {
+      console.log(value)
+      if (!value) {
+        callback(new Error('请输入密码'))
+      }
+      setTimeout(() => {
+        if (value.length < 6 || value.lenght > 12) {
+          callback(new Error('请输入6-12位密码'))
+        } else {
+          callback()
+        }
+      }, 1000)
+    }
     return {
       loginForm: {
         mobile: '',
@@ -97,7 +164,24 @@ export default {
           { required: true, trigger: 'blur', validator: validatePass }
         ]
       },
-      loading: false
+      modifyPassRules: {
+        modifyPassword: [
+          { required: true, trigger: 'blur', validator: modifyValidatePass }
+        ],
+        verifyCode: [
+          { required: true, trigger: 'blur', message: '请输入验证码' }
+        ]
+      },
+      loading: false,
+      modifyPassLayer: false,
+      modifyPassData: {
+        'account': '',
+        'modifyPassword': '',
+        'verifyCode': '', // 验证码
+        'mobile': ''
+      },
+      sendAuthCode: true, /* 布尔值，通过v-show控制显示‘获取按钮’还是‘倒计时’ */
+      auth_time: 0
     }
   },
   methods: {
@@ -105,15 +189,71 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
+          this.$store.dispatch('Login', this.loginForm).then((res) => {
             this.loading = false
-            this.$router.push({ path: '/' })
+            this.modifyPassData.account = this.loginForm.mobile
+            if (res.data.firstLogin) {
+              this.modifyPassLayer = true
+            } else {
+              this.$router.push({ path: '/' })
+            }
           }).catch(() => {
             this.loading = false
           })
         } else {
           return false
         }
+      })
+    },
+    handleClose () {
+      this.modifyPassLayer = false
+    },
+    sureModifyPass () { // 确认提交修改密码
+      let param = {
+        'account': this.modifyPassData.account,
+        'password': this.modifyPassData.modifyPassword,
+        'verifyCode': this.modifyPassData.verifyCode
+      }
+      console.log('param', param)
+      this.$refs.modifyPassForm.validate(valid => {
+        if (valid) {
+          loginApi.modifyPassword(param).then(() => {
+            this.$message({
+              message: '密码修改成功',
+              type: 'success'
+            })
+            this.$router.push({ path: '/' })
+          })
+        }
+      })
+    },
+    getAuthCode: function () { // 倒计时
+      this.sendAuthCode = false
+      this.auth_time = 6
+      var auth_timetimer = setInterval(() => {
+        this.auth_time--
+        if (this.auth_time <= 0) {
+          this.sendAuthCode = true
+          clearInterval(auth_timetimer)
+        }
+      }, 1000)
+    },
+    sendVerifyCode () { // 发送验证码
+      if (!this.sendAuthCode) {
+        this.$message({
+          message: '请' + this.auth_time + '秒后再发',
+          type: 'warning'
+        })
+        return false
+      }
+      this.getAuthCode()
+      sendVerifyCodeApi({
+        'mobile': this.modifyPassData.account
+      }).then((res) => {
+        this.$message({
+          message: '验证码发送成功',
+          type: 'success'
+        })
       })
     }
   }
@@ -137,7 +277,7 @@ export default {
   //   -webkit-box-shadow: 0 0 0px 1000px rgb(255, 255, 255) inset !important;
   //   -webkit-text-fill-color: #fff !important;
   // }
-  input {
+  .login-form input {
     background: transparent;
     border: 0px;
     -webkit-appearance: none;

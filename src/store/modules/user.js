@@ -56,7 +56,7 @@ const user = {
           const data = response.data
           setSessionId(data.sessionId)
           commit('SET_SESSIONID', data.sessionId)
-          resolve()
+          resolve(response)
         }).catch(error => {
           reject(error)
         })
