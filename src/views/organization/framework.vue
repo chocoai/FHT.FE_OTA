@@ -379,18 +379,18 @@ export default {
           } else { // 创建部门的接口
             console.log('添加部门参数', param)
             getDepartmentInfo.createDepartmentApi(param).then((res) => {
-              if (res.code === 6002) {
-                this.$message({
-                  message: res.message,
-                  type: 'success'
-                })
-              } else if (res.code === 0) {
+              if (res.code === 0) {
                 this.$message({
                   message: '创建成功',
                   type: 'success'
                 })
                 this.layer_addOrg = false
                 this.searchParam()// 增加成功后 刷新当前页面
+              } else {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
               }
             })
           }
@@ -399,18 +399,18 @@ export default {
     },
     editSubmitSure (param) { // 编辑确定上传
       getDepartmentInfo.editDepartmentApi(param).then((res) => {
-        if (res.code === 6002) {
-          this.$message({
-            message: res.message,
-            type: 'success'
-          })
-        } else if (res.code === 0) {
+        if (res.code === 0) {
           this.$message({
             message: '编辑成功',
             type: 'success'
           })
           this.layer_addOrg = false
           this.searchParam()// 编辑成功后 刷新当前页面
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
         }
       })
     },
