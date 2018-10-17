@@ -136,14 +136,18 @@
               :level="1"
               @input="searchZoneList(false)" />
           </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="submitOrg">确定</el-button>
-            <el-button @click="layer_addOrg = false">取消</el-button>
-          </el-form-item>
         </el-form>
-
+        <div
+          slot="footer"
+          class="dialog-footer">
+          <el-button
+            type="primary"
+            size="small"
+            @click="submitOrg">确定</el-button>
+          <el-button
+            size="small"
+            @click="layer_addOrg = false">取消</el-button>
+        </div>
       </el-dialog>
     </div>
     <!-- 确定编辑部门弹窗 -->

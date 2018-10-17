@@ -369,6 +369,7 @@ const houseManage_info = {
     'data': null
   },
   queryHostingHouseByOuterHouseUuid: { // 外部编码
+    'code': '0',
     'depId': 1,
     'outerHouseUuid': 'outerHouseUuid',
     'fangyuanCode': '2000023087',
