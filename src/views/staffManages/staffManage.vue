@@ -287,6 +287,7 @@ export default {
       layer_account: false,
       userId: '', // 用户ID
       userRole: '',
+      cityId: '', // 组织架构中获取城市ID
       // orgRoomRole: '', // 房源管理
       addAcountDepName: '', // 新增账户所属部门
       accountForm: {
@@ -377,6 +378,7 @@ export default {
           this.parentOrg.depId = res.data.depId // 顶级部门
           this.parentOrg.depName = res.data.depName
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+          this.cityId = this.$refs.overlayTree.getNode(res.data.depId).data.cityId
           console.log('tree', this.parentOrg.depId)
         }
       }).catch(rej => {})
@@ -390,6 +392,7 @@ export default {
     accountNodeclick (data) {
       this.addAcountDepName = data.depName
       this.accountForm.depId = data.depId
+      this.cityId = this.$refs.overlayTree.getNode(data.depId).data.cityId
     },
     handleApply () { // 新增账号
       this.accountForm = {
@@ -448,7 +451,8 @@ export default {
     goAssionRoom () { // 新增成功后 去分配房源吧
       let param = deepClone(this.goRoomData)
       param.depName = this.$refs.overlayTree.getNode(this.goRoomData.depId).data.depName
-      param.cityId = ' ' // 需要从组织架构中获取
+      param.cityId = this.cityId // 需要从组织架构中获取
+
       this.$router.push({path: '/organization/allotroom', query: param})
     },
     cancelAddAccount () {

@@ -65,7 +65,7 @@
                 size="mini"
                 @click="assignHouse(scope.row)">分配房源</el-button>
               <el-button
-                type="danger"
+                type="success"
                 size="mini"
                 @click="editOrg(scope.row)">编辑</el-button>
             </el-row>
@@ -368,7 +368,7 @@ export default {
                 this.layer_addOrg = false
               }).catch(() => {
                 console.log('取消')
-                // this.layer_addOrg = true
+                this.layer_addOrg = true
               })
             } else {
               this.editSubmitSure(param)

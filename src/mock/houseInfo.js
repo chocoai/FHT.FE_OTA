@@ -202,12 +202,14 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': {
-      'depName': '华东地区', // 组织名
+      'depName': '杭州来去自如房产管理有限公司', // 组织名
       'depId': 1, // 上级组织
+      'cityId': 111,
       'children': [{// 组织架构层级
         'depName': '上海分部', // 部门名
         'parentId': 'aaaa', // 上级部门
         'depId': 2, // 部门ID
+        'cityId': '444',
         'gmtCreate': '2018-08-08 11:11:11', // 创建时间
         'managedHouse': 100, // 管理的房源数量
         'children': [
@@ -215,6 +217,7 @@ const houseManage_info = {
             'depName': '徐东地区', // 部门名
             'parentId': 'child1', // 上级部门
             'depId': 3, // 部门ID
+            'cityId': '222',
             'gmt_create': '2018-08-08 11:11:11', // 创建时间
             'managedHouse': 100// 管理的房源数量
           }
