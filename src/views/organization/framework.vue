@@ -319,20 +319,20 @@ export default {
     editOrg (data) { // 编辑部门
       console.log('编辑部门', data)
       this.isEditOrg = true
-      let param = {
-        depId: data.depId
+      // let param = {
+      //   depId: data.depId
+      // }
+      // getDepartmentInfo.queryOneDepartmentApi(param).then((res) => { // 获取单个部门信息
+      // let prevDepName = this.$refs.overlayTree.getNode(data.parentId).data.depName // 通过id 查上级部门名称
+      this.orgForm = { // 添加部门 编辑部门 表单字段
+        depName: data.depName, // 当前部门
+        depId: data.depId,
+        superiorName: data.parent, // 上级部门  根据id去查
+        parentDepId: data.parentDepId,
+        areaCode: [data.provinceId, data.cityId, data.districtId]
       }
-      getDepartmentInfo.queryOneDepartmentApi(param).then((res) => { // 获取单个部门信息
-        let prevDepName = this.$refs.overlayTree.getNode(res.data.parentDepId).data.depName // 通过id 查上级部门名称
-        this.orgForm = { // 添加部门 编辑部门 表单字段
-          depName: data.depName, // 当前部门
-          depId: res.data.depId,
-          superiorName: prevDepName, // 上级部门  根据id去查
-          parentDepId: res.data.parentDepId,
-          areaCode: [res.data.provinceId, res.data.cityId, res.data.districtId]
-        }
-        this.currentPreDepName = prevDepName
-      })
+      this.currentPreDepName = data.parent
+      // })
       this.layer_addOrg = true
     },
     layerClose () { // 部门弹框关闭

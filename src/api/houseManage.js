@@ -138,6 +138,6 @@ export function queryHostingHouseByOuterHouseUuidApi (params) {
   return fetch('/fangyuan/queryHostingHouseByOuterHouseUuid', {
     params
   }, {
-    isMock: false
+    isMock: true
   })
 }

@@ -66,7 +66,7 @@
       :visible.sync="modifyPassLayer"
       :before-close="handleClose"
       title="修改初始密码"
-      width="30%">
+      width="50%">
       <el-form
         ref="modifyPassForm"
         :model="modifyPassData"
@@ -93,6 +93,7 @@
             <el-button
               v-show="!sendAuthCode"
               ref="sendVerifyRef"
+              :disabled="true"
               type="primary"
               @click="sendVerifyCode">{{ auth_time }}后重新发送</el-button></el-row>
         </el-form-item>
@@ -229,7 +230,7 @@ export default {
     },
     getAuthCode: function () { // 倒计时
       this.sendAuthCode = false
-      this.auth_time = 6
+      this.auth_time = 60
       var auth_timetimer = setInterval(() => {
         this.auth_time--
         if (this.auth_time <= 0) {

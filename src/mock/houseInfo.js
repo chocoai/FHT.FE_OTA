@@ -230,10 +230,13 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': [{
-      'depName': '杭州总部', // 部门名
-      'parent': '中国总部', // 上级部门
-      'depId': '部门ID2222', // 部门ID
-      'cityId': 444, // 市id
+      'depName': '上海分部', // 部门名
+      'parent': '上海分部', // 上级部门
+      'depId': 1, // 部门ID
+      'provinceId': 150000,
+      'cityId': 150500,
+      'districtId': 150522,
+      'parentId': '2',
       'gmtCreate': '2018-08-08 11:11:11', // 创建时间
       'managedHouse': 100 // 管理的房源数量
     }]

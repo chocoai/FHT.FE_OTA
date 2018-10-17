@@ -12,7 +12,7 @@ const mockData_user = {
     'message': 'bolin',
     'data': {
       'sessionId': 'MTM2MA==',
-      'firstLogin': false // true 首登 需要去修改密码
+      'firstLogin': true // true 首登 需要去修改密码
     }
   },
   userInfo: {
