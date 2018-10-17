@@ -16,6 +16,14 @@ export const staffManageInfo = {
     }, {
       isMock: true
     })
+  },
+  editAccountApi (params) {
+    return fetch(this.requestPath, {
+      method: 'edit',
+      params
+    }, {
+      isMock: true
+    })
   }
 }
 // 分配房源

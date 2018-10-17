@@ -418,23 +418,19 @@ export default {
     submitAccount () {
       this.accountForm.role = this.roleChecked || 2
       let param = deepClone(this.accountForm)
-      if (this.isEditAccount) {
-        param.id = this.userId // 用户id
-      }
-      if (!this.userDetails) {
+      if (!this.userDetails && this.isEditAccount) { // 编辑下为主账号的额时候
         param.role = 3
       }
       this.goRoomData = deepClone(param)// 去分配吧
       console.log('新增账户的参数', param)
       this.$refs['accountForm'].validate((valid) => {
         if (valid) {
-          staffManageInfo.addAccountAPi(param).then((res) => {
-            if (param.hasAllRoomAuth === 0) {
-              this.closeAddAccountTips_layer = true
-            } else {
+          if (this.isEditAccount) { // 编辑账户
+            param.id = this.userId // 用户id
+            staffManageInfo.editAccountApi(param).then((res) => {
               if (res.code * 1 === 0) {
                 this.$message({
-                  message: '新增账户成功',
+                  message: '编辑成功',
                   type: 'success'
                 })
                 this.layer_account = false
@@ -444,8 +440,27 @@ export default {
                   type: 'success'
                 })
               }
-            }
-          })
+            })
+          } else {
+            staffManageInfo.addAccountAPi(param).then((res) => {
+              if (param.hasAllRoomAuth === 0) {
+                this.closeAddAccountTips_layer = true
+              } else {
+                if (res.code * 1 === 0) {
+                  this.$message({
+                    message: '新增账户成功',
+                    type: 'success'
+                  })
+                  this.layer_account = false
+                } else {
+                  this.$message({
+                    message: res.message,
+                    type: 'success'
+                  })
+                }
+              }
+            })
+          }
         }
       })
     },
@@ -453,7 +468,6 @@ export default {
       let param = deepClone(this.goRoomData)
       param.depName = this.$refs.overlayTree.getNode(this.goRoomData.depId).data.depName
       param.cityId = this.cityId // 需要从组织架构中获取
-
       this.$router.push({path: '/organization/allotroom', query: param})
     },
     cancelAddAccount () {
@@ -488,7 +502,6 @@ export default {
       this.userId = data.id // 用户id
       this.accountForm.depId = data.depId // 部门ID
       this.accountForm.role = data.role
-
       console.log(data)
     }
   }
