@@ -428,7 +428,7 @@ export default {
             if (param.hasAllRoomAuth === 0) {
               this.closeAddAccountTips_layer = true
             } else {
-              if (res.code === 0) {
+              if (res.code * 1 === 0) {
                 this.$message({
                   message: '新增账户成功',
                   type: 'success'

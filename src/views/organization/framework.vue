@@ -275,10 +275,11 @@ export default {
     },
     searchParam (type) { // 表格数据
       if (type === 'clear') { // 清空就是查询总部数据
-        this.formData.depId = this.orgName
-        this.formData.depName = this.orgId
+        // this.formData.depId = this.orgName
+        this.formData.depName = ''
         this.searchDepartment = ''
       }
+      console.log('this.formData', this.formData)
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
       })
@@ -286,7 +287,7 @@ export default {
     searchformData () { // 查询
       this.formData = {
         depName: this.searchDepartment,
-        depId: this.nowOrgObj.depId
+        depId: ''
       }
       console.log('查询的数据', this.formData)
       this.searchParam()
@@ -295,7 +296,7 @@ export default {
       this.nowOrgObj = deepClone(data.data)
       this.parentOrg = data.parent.data instanceof Array ? deepClone(data.parent.data[0]) : deepClone(data.parent.data)
       this.formData.depId = this.nowOrgObj.depId
-      this.formData.depName = this.nowOrgObj.depName
+      this.formData.depName = ''
       this.$nextTick(() => {
         this.searchParam()
       })
@@ -379,12 +380,13 @@ export default {
           } else { // 创建部门的接口
             console.log('添加部门参数', param)
             getDepartmentInfo.createDepartmentApi(param).then((res) => {
-              if (res.code === 0) {
+              if (res.code * 1 === 0) {
                 this.$message({
                   message: '创建成功',
                   type: 'success'
                 })
                 this.layer_addOrg = false
+                console.log(111111)
                 this.searchParam()// 增加成功后 刷新当前页面
               } else {
                 this.$message({
@@ -399,7 +401,7 @@ export default {
     },
     editSubmitSure (param) { // 编辑确定上传
       getDepartmentInfo.editDepartmentApi(param).then((res) => {
-        if (res.code === 0) {
+        if (res.code * 1 === 0) {
           this.$message({
             message: '编辑成功',
             type: 'success'

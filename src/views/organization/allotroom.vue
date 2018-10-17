@@ -255,7 +255,7 @@ export default {
       if (this.distributeHouse) {
         param.userId = this.orgData.userId
         distributeHouseToUserApi(param).then((response) => {
-          if (response.code === 0) {
+          if (response.code * 1 === 0) {
             this.$message({
               message: '员工房源分配成功',
               type: 'success'
@@ -271,7 +271,7 @@ export default {
       } else {
         param.depId = this.orgData.depId
         distributeHouseToDepApi(param).then((response) => {
-          if (response.code === 0) {
+          if (response.code * 1 === 0) {
             this.$message({
               message: '部门房源分配成功',
               type: 'success'
