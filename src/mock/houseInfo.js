@@ -257,8 +257,8 @@ const houseManage_info = {
   },
   editDepartment: {
     'reqId': null,
-    'code': '6002',
-    'message': '您无权限操作',
+    'code': '0',
+    'message': '操作成功',
     'data': {
     }
   },

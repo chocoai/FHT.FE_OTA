@@ -242,21 +242,16 @@ export default {
     this.getTree()
   },
   methods: {
-    getTree (id, fn) { // 获取组织架构名称并且默认表格数据
+    getTree () { // 获取组织架构名称并且默认表格数据
       getDepartmentInfo.queryDepartmentApi().then(res => {
         if (res.data) {
-          this.$refs.trees.setCurrentKey(id)
+          // this.$refs.trees.setCurrentKey(id)
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
           // 初始化表格数据
           this.formData.depId = res.data.orgId
           this.formData.depName = res.data.orgName
-          let nowId = id || this.treeData[0].depId
+          let nowId = this.treeData[0].depId
           this.getFirstNode(nowId)
-          if (fn) {
-            this.$nextTick(() => {
-              fn()
-            })
-          }
         }
       }).catch(rej => {})
     },
@@ -268,9 +263,7 @@ export default {
         this.nowOrgObj = deepClone(obj.data)
         this.parentOrg = obj.parent.data instanceof Array ? deepClone(obj.parent.data[0]) : deepClone(obj.parent.data)
         this.formData.depId = this.nowOrgObj.depId
-        this.$nextTick(() => {
-          this.searchParam()
-        })
+        // this.searchParam()
       })
     },
     searchParam (type) { // 表格数据
@@ -371,8 +364,11 @@ export default {
                 type: 'warning'
               }).then(() => {
                 this.editSubmitSure(param)
-              }).then(() => {
-                this.layer_addOrg = true
+                console.log('确定')
+                this.layer_addOrg = false
+              }).catch(() => {
+                console.log('取消')
+                // this.layer_addOrg = true
               })
             } else {
               this.editSubmitSure(param)
