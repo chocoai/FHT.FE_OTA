@@ -68,6 +68,7 @@ export const constantRouterMap = [{
   component: Layout,
   redirect: '/allotroom',
   noDropdown: true,
+  hidden: true,
   icon: 'house_manage',
   children: [{
     name: '部门分配房源',
@@ -76,7 +77,7 @@ export const constantRouterMap = [{
     meta: {
       isHomePage: true
     }
-  }]
+  } ]
 }, {
   path: '/staffManages',
   name: '主页',

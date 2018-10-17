@@ -55,7 +55,6 @@
           :url="url"
           :is-mock="isMock"
           :columns="colModels"
-          :auto-load="false"
           list-field="data">
           <template
             slot="operateHosting"
