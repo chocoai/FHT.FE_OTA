@@ -190,6 +190,9 @@ export default {
       let param = {
         'resource': areaResource
       }
+      if (this.distributeHouse) {
+        param.userId = this.orgData.id
+      }
       queryCityAreaPlotApi(param).then((res) => {
         this.nowAreaName = deepClone(res.data.subdistrictList)
         for (let i = 0; i < res.data.cityList.length; i++) {
