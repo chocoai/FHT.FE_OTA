@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-25 21:20:43
+ * @Last Modified time: 2018-10-17 10:29:46
  */
 
 import Vue from 'vue'
@@ -42,53 +42,6 @@ export const constantRouterMap = [{
     name: '房源管理',
     path: 'houseManage',
     component: _import('houseManage/houseSync'),
-    meta: {
-      isHomePage: true
-    }
-  }]
-},
-{
-  path: '/organization',
-  name: '主页',
-  component: Layout,
-  redirect: '/framework',
-  noDropdown: true,
-  icon: 'house_manage',
-  children: [{
-    name: '组织架构',
-    path: 'framework',
-    component: _import('organization/framework'),
-    meta: {
-      isHomePage: true
-    }
-  }]
-}, {
-  path: '/organization',
-  name: '主页',
-  component: Layout,
-  redirect: '/allotroom',
-  noDropdown: true,
-  hidden: true,
-  icon: 'house_manage',
-  children: [{
-    name: '部门分配房源',
-    path: 'allotroom',
-    component: _import('organization/allotroom'),
-    meta: {
-      isHomePage: true
-    }
-  } ]
-}, {
-  path: '/staffManages',
-  name: '主页',
-  component: Layout,
-  redirect: '/staffManages',
-  noDropdown: true,
-  icon: 'house_manage',
-  children: [{
-    name: '人员管理',
-    path: 'staffManage',
-    component: _import('staffManages/staffManage'),
     meta: {
       isHomePage: true
     }
@@ -154,6 +107,42 @@ export const asyncRouterMap = [
       name: '分散合租录入',
       path: 'hostingJointRentPage',
       component: _import('hostingEntryHouse/jointRent')
+    }]
+  },
+  {
+    path: '/organization',
+    name: '组织',
+    component: Layout,
+    redirect: '/framework',
+    noDropdown: true,
+    icon: 'org_structure',
+    children: [{
+      name: '组织架构',
+      path: 'framework',
+      component: _import('organization/framework')
+    }]
+  }, {
+    path: '/organization',
+    name: '分配房源',
+    component: Layout,
+    redirect: '/allotroom',
+    noDropdown: true,
+    hidden: true,
+    children: [{
+      name: '部门分配房源',
+      path: 'allotroom',
+      component: _import('organization/allotroom')
+    }]
+  }, {
+    path: '/staffManages',
+    name: '人员',
+    component: Layout,
+    noDropdown: true,
+    icon: 'personal_mange',
+    children: [{
+      name: '人员管理',
+      path: 'staffManage',
+      component: _import('staffManages/staffManage')
     }]
   },
   {
