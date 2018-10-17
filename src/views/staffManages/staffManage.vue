@@ -434,6 +434,7 @@ export default {
                   type: 'success'
                 })
                 this.layer_account = false
+                this.searchParam()
               } else {
                 this.$message({
                   message: res.message,
@@ -451,6 +452,7 @@ export default {
                     message: '新增账户成功',
                     type: 'success'
                   })
+                  this.searchParam()
                   this.layer_account = false
                 } else {
                   this.$message({
