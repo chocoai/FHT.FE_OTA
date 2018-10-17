@@ -379,26 +379,40 @@ export default {
           } else { // 创建部门的接口
             console.log('添加部门参数', param)
             getDepartmentInfo.createDepartmentApi(param).then((res) => {
-              this.$message({
-                message: '创建成功',
-                type: 'success'
-              })
-              this.layer_addOrg = false
+              if (res.code === 0) {
+                this.$message({
+                  message: '创建成功',
+                  type: 'success'
+                })
+                this.layer_addOrg = false
+                this.searchParam()// 增加成功后 刷新当前页面
+              } else {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+              }
             })
           }
         }
       })
-      this.searchParam()// 增加成功后 刷新当前页面
     },
     editSubmitSure (param) { // 编辑确定上传
       getDepartmentInfo.editDepartmentApi(param).then((res) => {
-        this.$message({
-          message: '编辑成功',
-          type: 'success'
-        })
-        this.layer_addOrg = false
+        if (res.code === 0) {
+          this.$message({
+            message: '编辑成功',
+            type: 'success'
+          })
+          this.layer_addOrg = false
+          this.searchParam()// 编辑成功后 刷新当前页面
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'success'
+          })
+        }
       })
-      this.searchParam()// 编辑成功后 刷新当前页面
     },
     searchZoneList () { // 区域
 

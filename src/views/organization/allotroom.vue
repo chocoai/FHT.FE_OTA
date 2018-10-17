@@ -255,18 +255,34 @@ export default {
       if (this.distributeHouse) {
         param.userId = this.orgData.userId
         distributeHouseToUserApi(param).then((response) => {
-          this.$message({
-            message: '员工房源分配成功',
-            type: 'success'
-          })
+          if (response.code === 0) {
+            this.$message({
+              message: '员工房源分配成功',
+              type: 'success'
+            })
+            this.searchParam()
+          } else {
+            this.$message({
+              message: response.message,
+              type: 'success'
+            })
+          }
         })
       } else {
         param.depId = this.orgData.depId
         distributeHouseToDepApi(param).then((response) => {
-          this.$message({
-            message: '部门房源分部成功',
-            type: 'success'
-          })
+          if (response.code === 0) {
+            this.$message({
+              message: '部门房源分配成功',
+              type: 'success'
+            })
+            this.searchParam()
+          } else {
+            this.$message({
+              message: response.message,
+              type: 'success'
+            })
+          }
         })
       }
     },
