@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-17 10:29:46
+ * @Last Modified time: 2018-10-17 11:01:49
  */
 
 import Vue from 'vue'
@@ -120,18 +120,16 @@ export const asyncRouterMap = [
       name: '组织架构',
       path: 'framework',
       component: _import('organization/framework')
-    }]
-  }, {
-    path: '/organization',
-    name: '分配房源',
-    component: Layout,
-    redirect: '/allotroom',
-    noDropdown: true,
-    hidden: true,
-    children: [{
-      name: '部门分配房源',
+    }, {
       path: 'allotroom',
-      component: _import('organization/allotroom')
+      name: '部门分配房源',
+      component: _import('organization/allotroom'),
+      meta: {
+        noTags: true,
+        parentPath: '/organization/framework',
+        parentName: '组织架构',
+        meta: {}
+      }
     }]
   }, {
     path: '/staffManages',
