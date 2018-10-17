@@ -233,7 +233,7 @@
         <el-button
           type="primary"
           @click="goAssionRoom">去分配房源</el-button>
-        <el-button @click="closeAddAccountTips_layer = false">取消</el-button>
+        <el-button @click="closeAddAccountTips">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -471,6 +471,11 @@ export default {
       param.depName = this.$refs.overlayTree.getNode(this.goRoomData.depId).data.depName
       param.cityId = this.cityId // 需要从组织架构中获取
       this.$router.push({path: '/organization/allotroom', query: param})
+    },
+    closeAddAccountTips () {
+      this.closeAddAccountTips_layer = false
+      this.searchParam()
+      this.layer_account = false
     },
     cancelAddAccount () {
       this.layer_account = false
