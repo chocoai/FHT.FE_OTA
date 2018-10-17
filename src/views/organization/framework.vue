@@ -44,7 +44,7 @@
           <el-button
             type="primary"
             size="small"
-            icon="el-icon-search"
+            icon="el-icon-circle-plus-outline"
             class="filter-item"
             @click.native="addOrg">添加部门</el-button>
         </div>
@@ -55,6 +55,7 @@
           :url="url"
           :is-mock="isMock"
           :columns="colModels"
+          :show-pagination="false"
           list-field="data">
           <template
             slot="operateHosting"

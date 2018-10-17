@@ -111,9 +111,6 @@
           type="primary"
           size="small"
           @click="submitOrgRoom">确定分配</el-button>
-        <el-button
-          size="small"
-          @click="layer_addOrg = false">取消</el-button>
       </div>
     </div>
   </div>
@@ -138,7 +135,7 @@ export default {
         depId: '',
         resource: '分散式', // 1，集中式  2,分散式
         pageNo: '1',
-        pageSize: '3',
+        pageSize: '20',
         regionId: '',
         subdistrictId: '', // 小区名称
         subdistrictName: '' // 小区名称（模糊查询）
