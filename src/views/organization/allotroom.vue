@@ -1,113 +1,120 @@
 <template>
-  <div class="layout-container">
-    <h5
-      class=" allotTitle">房源分配管理</h5>
-    <p
-      v-if="!distributeHouse"
-      class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
-    <p
-      v-if="distributeHouse"
-      class="allotaddr">给部门&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
-    <el-form class="model-search clearfix">
-      <div class="item-flex">
-        <el-form-item>
-          <el-select
-            v-model="formData.resource"
-            size="small"
-            class="item-select">
-            <el-option
-              :value="1"
-              label="集中式"></el-option>
-            <el-option
-              :value="2"
-              label="分散式"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="formData.regionId"
-            size="small"
-            filterable
-            clearable
-            placeholder="请选择区域"
-            class="item-select"
-            @change="handleChange">
-            <el-option
-              v-for="item in areaPotions"
-              :key="item.areaId"
-              :label="item.areaName"
-              :value="item.areaId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="formData.subdistrictId"
-            clearable
-            filterable
-            size="small"
-            class="item-select"
-            placeholder="请选择公寓小区">
-            <el-option
-              v-for="item in subdistrictNames"
-              :key="item.regionAddressId"
-              :label="item.name"
-              :value="item.regionAddressId">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-input
-            v-model="formData.subdistrictName"
-            clearable
-            placeholder="请输入公寓/小区"
-            size="small"
-            level="1"
-            class="item-select"
-            filterable
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            style="margin-left:10px;"
-            type="primary"
-            size="small"
-            @click="searchParam">查询</el-button>
-          <el-button
-            size="small"
-            icon="el-icon-remove-outline"
-            style="margin-left:10px"
-            @click="searchParam('clear')"
-          >清空</el-button>
-        </el-form-item>
-      </div>
-    </el-form>
-    <GridUnit
-      ref="refGridUnit"
-      :form-options="formData"
-      :data-method="method"
-      :url="url"
-      :is-mock="isMock"
-      :columns="colModels"
-      :show-selection="true"
-      :selection-key="`fangyuanCodes`"
-      total-field="data.record"
-      list-field="data.houseList"
-      @selection-change="handleSelectionChange">
-    </GridUnit>
-    <div class="btnpos">
-      <el-row
-        type="flex"
-        justify="end">
+  <div>
+    <div class="layout_pageHeader">
+      <h5 class="allotTitle">房源分配管理</h5>
+      <p
+        v-if="!distributeHouse"
+        class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
+      <p
+        v-if="distributeHouse"
+        class="allotaddr">给部门&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
+      <el-form class="model-search clearfix">
+        <div class="item-flex">
+          <el-form-item>
+            <el-select
+              v-model="formData.resource"
+              size="small"
+              class="item-select">
+              <el-option
+                :value="1"
+                label="集中式"></el-option>
+              <el-option
+                :value="2"
+                label="分散式"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select
+              v-model="formData.regionId"
+              size="small"
+              filterable
+              clearable
+              placeholder="请选择区域"
+              class="item-select"
+              @change="handleChange">
+              <el-option
+                v-for="item in areaPotions"
+                :key="item.areaId"
+                :label="item.areaName"
+                :value="item.areaId"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select
+              v-model="formData.subdistrictId"
+              clearable
+              filterable
+              size="small"
+              class="item-select"
+              placeholder="请选择公寓小区">
+              <el-option
+                v-for="item in subdistrictNames"
+                :key="item.regionAddressId"
+                :label="item.name"
+                :value="item.regionAddressId">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="formData.subdistrictName"
+              clearable
+              placeholder="请输入公寓/小区"
+              size="small"
+              level="1"
+              class="item-select"
+              filterable
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              style="margin-left:10px;"
+              type="primary"
+              size="small"
+              icon="el-icon-search"
+              @click="searchParam">查询</el-button>
+            <el-button
+              size="small"
+              icon="el-icon-remove-outline"
+              style="margin-left:10px"
+              @click="searchParam('clear')"
+            >清空</el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
+    <div class="layout-container">
+      <GridUnit
+        ref="refGridUnit"
+        :form-options="formData"
+        :data-method="method"
+        :url="url"
+        :is-mock="isMock"
+        :columns="colModels"
+        :show-selection="true"
+        :selection-key="`fangyuanCodes`"
+        total-field="data.record"
+        list-field="data.houseList"
+        @selection-change="handleSelectionChange">
+      </GridUnit>
+      <div
+        :class="{hideSidebar:!sidebar.opened}"
+        class="btnpos">
         <el-button
           type="primary"
           size="small"
-          @click="submitOrgRoom">确定</el-button>
+          icon="el-icon-arrow-left"
+          @click="$router.push({name: '组织架构'})">返回</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="submitOrgRoom">确定分配</el-button>
         <el-button
           size="small"
           @click="layer_addOrg = false">取消</el-button>
-      </el-row>
+      </div>
     </div>
   </div>
 </template>
@@ -159,6 +166,11 @@ export default {
       url: queryDistributeToDepListApi.requestPath,
       method: queryDistributeToDepListApi.queryMethod,
       isMock: queryDistributeToDepListApi.isMock
+    }
+  },
+  computed: {
+    sidebar () {
+      return this.$store.state.app.sidebar
     }
   },
   created () {
@@ -271,7 +283,7 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
   .allotTitle {
-    font-size: 14px;
+    font-size: 18px;
     padding-bottom: 20px;
     margin-top:10px;
     font-weight: normal;
@@ -290,8 +302,20 @@ export default {
   }
  .item-select {
     margin-right:10px;
- }
+  }
   .btnpos {
-    margin-top:20px;
+    padding: 10px 0;
+    box-shadow:0 -1px 4px rgba(0, 0, 0, .08);
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    right: 0;
+    left: 100px;
+    background: #fff;
+    z-index: 200;
+    &.hideSidebar {
+      left: 50px;
+    }
   }
 </style>
