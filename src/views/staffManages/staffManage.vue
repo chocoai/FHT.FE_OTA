@@ -428,12 +428,19 @@ export default {
             if (param.hasAllRoomAuth === 0) {
               this.closeAddAccountTips_layer = true
             } else {
-              this.$message({
-                message: '新增账户成功',
-                type: 'success'
-              })
+              if (res.code === 0) {
+                this.$message({
+                  message: '新增账户成功',
+                  type: 'success'
+                })
+                this.layer_account = false
+              } else {
+                this.$message({
+                  message: res.message,
+                  type: 'success'
+                })
+              }
             }
-            this.layer_account = false
           })
         }
       })
