@@ -278,7 +278,6 @@
           :visible.sync="roomDetailModelVisible"
           :width="roomDetailWidth"
           :show-close="false"
-          title="编辑房间"
           top="0">
           <hosting-room-detail
             ref="hostingRoomDetail"
