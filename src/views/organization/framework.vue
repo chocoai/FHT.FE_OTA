@@ -219,7 +219,7 @@ export default {
                 callback()
               }
             },
-            trigger: 'change'
+            trigger: 'blur'
           }
         ]
       },
@@ -310,13 +310,14 @@ export default {
         this.searchParam()
       })
     },
-    editNodeclick (node, data) { // 编辑部门  增加部门   tree被点击时候的回调
-      this.orgForm.depId = data.data.depId
-      this.parentOrg.depName = data.data.depName
-      this.editParentId = data.data.parentId
+    editNodeclick (data) { // 编辑部门  增加部门   tree被点击时候的回调
+      console.log('编辑部门切换的时候', data)
+      this.orgForm.depId = data.depId
+      this.parentOrg.depName = data.depName
+      this.editParentId = data.depId
       // this.superiorName = this.parentOrg.depName // 上级部门
       this.orgForm.superiorName = this.parentOrg.depName // 这里的上级部门 到底是什么
-      // 点编辑切换上级部门的时候
+      console.log(this.editParentId)
     },
     editChangeclick (data, node) { //  节点改变时候变化
       if (this.isEditOrg && this.currentPreDepName !== data.depName) {
@@ -330,6 +331,7 @@ export default {
       this.layer_addOrg = true
       this.orgForm.superiorName = this.nowOrgObj.depName // 上级部门
       this.editParentId = this.nowOrgObj.depId
+      this.orgForm.areaCode = []
     },
     editOrg (data) { // 编辑部门
       this.isEditOrg = true
@@ -340,6 +342,7 @@ export default {
         parentDepId: data.parentId,
         areaCode: [data.provinceId, data.cityId, data.distinctId]
       }
+      this.editParentId = data.parentId
       this.currentPreDepName = data.parent
       this.layer_addOrg = true
     },
