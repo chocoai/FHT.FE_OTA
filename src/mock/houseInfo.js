@@ -375,7 +375,7 @@ const houseManage_info = {
     'fangyuanCode': '2000023087',
     'orgId': 79,
     'adminUserId': 143,
-    'houseRentType': 2,
+    'houseRentType': 1,
     'provinceId': 430000,
     'provinceName': null,
     'cityId': 430100,

@@ -228,7 +228,7 @@ export default {
       colModels: [ // 表格数据
         {prop: 'depName', label: '部门名称', width: 300},
         {prop: 'parent', label: '上级部门', width: 150},
-        {prop: 'gmtCreate', label: '创建时间', width: 150},
+        {prop: 'createTimeStr', label: '创建时间', width: 150},
         {prop: 'managedHouse', label: '管理房源数量'},
         {
           prop: 'operate',

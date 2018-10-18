@@ -96,7 +96,7 @@
       :title="isEditAccount ? '编辑账号' : '新增账号'"
       :visible="layer_account"
       :close-on-click-modal="false"
-      width="800px"
+      width="500px"
       @close="cancelAddAccount">
 
       <el-form
@@ -105,21 +105,9 @@
         :rules="rules"
         size="small"
         label-position="right"
-        label-width="100px">
-
+        label-width="90px">
         <el-row>
-          <el-col :span="8">
-            <el-form-item
-              label="手机号码"
-              prop="mobile">
-              <el-input
-                v-model="accountForm.mobile"
-                placeholder="请输入手机号码"
-                filterable
-                clearable></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item
               label="姓名"
               prop="name">
@@ -135,6 +123,7 @@
           <el-col :span="8">
             <el-form-item
               label="性别"
+              label-width="60px"
               prop="gender">
               <el-select
                 v-model="accountForm.gender"
@@ -152,7 +141,20 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="20">
+            <el-form-item
+              label="手机号码"
+              prop="mobile">
+              <el-input
+                v-model="accountForm.mobile"
+                placeholder="请输入手机号码"
+                filterable
+                clearable></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="20">
             <el-form-item
               label="所属部门"
               prop="depId">
@@ -179,7 +181,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="20">
             <el-form-item
               label="房源管理"
               prop="hasAllRoomAuth">
