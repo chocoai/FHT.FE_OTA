@@ -29,7 +29,7 @@
             v-model="searchDepartment"
             placeholder="请输入部门名称"
             size="small"
-            maxlength="20"
+            max-length="20"
             class="item-select"></el-input>
           <el-button
             type="primary"
@@ -97,8 +97,8 @@
             <el-input
               v-model="orgForm.depName"
               :disabled="depLevel"
+              :maxlength="20"
               placeholder="请输入部门名称"
-              max-length="20"
               clearable
             >
             </el-input>
@@ -332,6 +332,7 @@ export default {
       }
     },
     addOrg () { // 添加部门
+      this.depLevel = false
       this.isEditOrg = false
       this.layer_addOrg = true
       this.orgForm.superiorName = this.nowOrgObj.depName // 上级部门
@@ -426,6 +427,7 @@ export default {
           })
           this.layer_addOrg = false
           this.sureLoading = false
+          console.log()
           this.searchParam()// 编辑成功后 刷新当前页面
         } else {
           this.$message({
