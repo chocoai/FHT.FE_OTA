@@ -277,7 +277,7 @@ export default {
     },
     searchParam (type) { // 表格数据
       if (type === 'clear') { // 清空就是查询总部数据
-        // this.formData.depId = this.orgName
+        this.formData.depId = this.nowOrgObj.depId
         this.formData.depName = ''
         this.searchDepartment = ''
       }
