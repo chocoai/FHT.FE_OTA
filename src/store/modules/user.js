@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-18 11:41:45
+ * @Last Modified time: 2018-10-18 16:28:24
  */
 
 import { loginApi } from '@/api/user'
@@ -14,7 +14,7 @@ import Session from '@/utils/session'
 const user = {
   state: {
     sessionId: getSessionId(),
-    roles: '',
+    roles: null,
     avatar: '',
     userInfo: {
       authed: false,
@@ -34,13 +34,7 @@ const user = {
       state.avatar = avatar
     },
     SET_ROLES: (state, roles) => {
-      // const rolesMap = {
-      //   '1': 'admin',
-      //   '99': 'service',
-      //   '0': 'global'
-      // }
-      // state.roles = rolesMap[roles.toString()] || 'global'
-      state.roles = 'admin'
+      state.roles = roles
     }
   },
 
@@ -72,7 +66,7 @@ const user = {
           sessionId: state.sessionId
         }).then(response => {
           const data = response.data || {}
-          commit('SET_ROLES', 'admin')
+          commit('SET_ROLES', data.role)
           commit('SET_AVATAR', defaultAvatar)
           commit('SET_USERINFO', data)
           resolve(response)
@@ -90,7 +84,7 @@ const user = {
         }).then(() => {
           removeSessionId()
           commit('SET_SESSIONID', '')
-          commit('SET_ROLES', '')
+          commit('SET_ROLES', null)
           Session.set('visitedViews', [])
           Session.set('cachedViews', [])
           resolve()

@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-17 11:01:49
+ * @Last Modified time: 2018-10-18 16:26:38
  */
 
 import Vue from 'vue'
@@ -60,8 +60,6 @@ export default new Router({
   routes: constantRouterMap
 })
 
-console.log(__dirname)
-
 export const asyncRouterMap = [
   {
     path: '/example',
@@ -70,9 +68,7 @@ export const asyncRouterMap = [
     name: '示例',
     icon: 'example',
     hidden: true,
-    meta: {
-      role: ['admin', 'global']
-    },
+    meta: {},
     children: [{
       path: 'image',
       component: _import('example/image'),
@@ -116,6 +112,9 @@ export const asyncRouterMap = [
     redirect: '/framework',
     noDropdown: true,
     icon: 'org_structure',
+    meta: {
+      role: [1, 3]
+    },
     children: [{
       name: '组织架构',
       path: 'framework',
@@ -128,7 +127,9 @@ export const asyncRouterMap = [
         noTags: true,
         parentPath: '/organization/framework',
         parentName: '组织架构',
-        meta: {}
+        meta: {
+          role: [1, 3]
+        }
       }
     }]
   }, {
@@ -137,6 +138,9 @@ export const asyncRouterMap = [
     component: Layout,
     noDropdown: true,
     icon: 'personal_mange',
+    meta: {
+      role: [1, 3]
+    },
     children: [{
       name: '人员管理',
       path: 'staffManage',

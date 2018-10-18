@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:24:18
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 15:51:18
+ * @Last Modified time: 2018-10-18 16:52:10
  */
 
 import Vue from 'vue'
@@ -20,8 +20,6 @@ import lazyLoadPic from '@/assets/lazyLoad.png'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'nprogress/nprogress.css'
 import 'normalize.css/normalize.css'
-
-console.log(router)
 
 Vue.config.productionTip = false
 
@@ -46,15 +44,9 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      if (store.getters.roles.length === 0) {
+      if (store.getters.roles === null) {
         store.dispatch('GetInfo').then(res => {
-          // const rolesMap = {
-          //   '1': 'admin',
-          //   '99': 'service',
-          //   '0': 'global'
-          // }
-          // const roles = [(rolesMap[res.data.isAdmin.toString()] || 'global')]
-          const roles = ['admin']
+          const roles = res.data.role
           store.dispatch('GenerateRoutes', { roles }).then(() => {
             router.addRoutes(store.getters.addRouters)
             next({ ...to })
