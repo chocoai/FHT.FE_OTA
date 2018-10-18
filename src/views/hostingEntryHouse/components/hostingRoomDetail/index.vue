@@ -7,7 +7,6 @@
           v-model="outerHouseUuid"
           size="small"
           clearable
-          type="number"
           placeholder="请输入外部编码"
           style="width:250px;">
         </el-input>
