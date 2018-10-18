@@ -133,7 +133,7 @@ export default {
       formData: {
         userId: '',
         depId: '',
-        resource: '分散式', // 1，集中式  2,分散式
+        resource: 2, // 1，集中式  2,分散式
         pageNo: '1',
         pageSize: '20',
         regionId: '',
