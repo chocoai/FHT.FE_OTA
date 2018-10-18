@@ -330,27 +330,19 @@ export default {
       this.editParentId = this.nowOrgObj.depId
     },
     editOrg (data) { // 编辑部门
-      console.log('编辑部门', data)
       this.isEditOrg = true
-      // let param = {
-      //   depId: data.depId
-      // }
-      // getDepartmentInfo.queryOneDepartmentApi(param).then((res) => { // 获取单个部门信息
-      // let prevDepName = this.$refs.overlayTree.getNode(data.parentId).data.depName // 通过id 查上级部门名称
       this.orgForm = { // 添加部门 编辑部门 表单字段
         depName: data.depName, // 当前部门
         depId: data.depId,
         superiorName: data.parent, // 上级部门  根据id去查
-        parentDepId: data.parentDepId,
-        areaCode: [data.provinceId, data.cityId, data.districtId]
+        parentDepId: data.parentId,
+        areaCode: [data.provinceId, data.cityId, data.distinctId]
       }
       this.currentPreDepName = data.parent
-      // })
       this.layer_addOrg = true
     },
     layerClose () { // 部门弹框关闭
       this.$refs['orgForm'].resetFields() // 对表单进行重置
-      // this.$refs['orgForm'].clearValidate()
       this.orgForm.depName = ''
     },
     assignHouse (data) { // 分配房源
