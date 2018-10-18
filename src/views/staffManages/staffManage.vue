@@ -105,6 +105,7 @@
         :rules="rules"
         size="small"
         label-position="right"
+        loading=""
         label-width="90px">
         <el-row>
           <el-col :span="12">
@@ -217,6 +218,7 @@
         style="margin-top:-30px;"
         class="dialog-footer">
         <el-button
+          :loading="sureLoading"
           type="primary"
           @click="submitAccount">确定</el-button>
         <el-button @click="cancelAddAccount">取消</el-button>
@@ -275,6 +277,7 @@ export default {
       }
     }
     return {
+      sureLoading: false,
       closeAddAccountTips_layer: false,
       treeData: [],
       defaultProps: {
@@ -429,6 +432,7 @@ export default {
         if (valid) {
           if (this.isEditAccount) { // 编辑账户
             param.id = this.userId // 用户id
+            this.sureLoading = true
             staffManageInfo.editAccountApi(param).then((res) => {
               if (res.code * 1 === 0) {
                 this.$message({
@@ -437,6 +441,7 @@ export default {
                 })
                 this.layer_account = false
                 this.searchParam()
+                this.sureLoading = false
               } else {
                 this.$message({
                   message: res.message,

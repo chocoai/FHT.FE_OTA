@@ -141,6 +141,7 @@
           slot="footer"
           class="dialog-footer">
           <el-button
+            :loading="sureLoading"
             type="primary"
             size="small"
             @click="submitOrg">确定</el-button>
@@ -169,6 +170,7 @@ export default {
   },
   data () {
     return {
+      sureLoading: false,
       treeData: [],
       defaultProps: {
         children: 'children',
@@ -369,11 +371,10 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
+                this.sureLoading = true
                 this.editSubmitSure(param)
-                console.log('确定')
                 this.layer_addOrg = false
               }).catch(() => {
-                console.log('取消')
                 this.layer_addOrg = true
               })
             } else {
@@ -381,6 +382,7 @@ export default {
             }
           } else { // 创建部门的接口
             console.log('添加部门参数', param)
+            this.sureLoading = true
             getDepartmentInfo.createDepartmentApi(param).then((res) => {
               if (res.code * 1 === 0) {
                 this.$message({
@@ -388,7 +390,7 @@ export default {
                   type: 'success'
                 })
                 this.layer_addOrg = false
-                console.log(111111)
+                this.sureLoading = false
                 this.searchParam()// 增加成功后 刷新当前页面
               } else {
                 this.$message({
@@ -409,6 +411,7 @@ export default {
             type: 'success'
           })
           this.layer_addOrg = false
+          this.sureLoading = false
           this.searchParam()// 编辑成功后 刷新当前页面
         } else {
           this.$message({
