@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-09-17 14:01:13
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-17 17:02:09
+ * @Last Modified time: 2018-10-18 10:42:28
  */
 
 const mockData_user = {
@@ -12,7 +12,7 @@ const mockData_user = {
     'message': 'bolin',
     'data': {
       'sessionId': 'MTM2MA==',
-      'firstLogin': false // true 首登 需要去修改密码
+      'firstLogin': true // true 首登 需要去修改密码
     }
   },
   userInfo: {

@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:09:27
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 16:07:42
+ * @Last Modified time: 2018-10-18 11:41:45
  */
 
 import { loginApi } from '@/api/user'
@@ -54,9 +54,11 @@ const user = {
           password: SHA2(userInfo.password)
         }).then(response => {
           const data = response.data
-          setSessionId(data.sessionId)
+          if (!data.firstLogin) {
+            setSessionId(data.sessionId)
+          }
           commit('SET_SESSIONID', data.sessionId)
-          resolve(response)
+          resolve(data)
         }).catch(error => {
           reject(error)
         })

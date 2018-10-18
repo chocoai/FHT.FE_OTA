@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:52
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-28 16:21:25
+ * @Last Modified time: 2018-10-18 12:35:44
  */
 
 <template>
@@ -64,9 +64,12 @@
     </section>
     <el-dialog
       :visible.sync="modifyPassLayer"
-      :before-close="handleClose"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       title="修改初始密码"
-      width="50%">
+      width="500px"
+      @close="handleClose">
       <el-form
         ref="modifyPassForm"
         :model="modifyPassData"
@@ -81,21 +84,22 @@
         <el-form-item
           label="验证码"
           prop="verifyCode">
-          <el-row> <el-input
-            v-model="modifyPassData.verifyCode"
-            style="width:50%"
-            placeholder="请输入的验证码"></el-input>
-            <el-button
-              v-show="sendAuthCode"
-              ref="sendVerifyRef"
-              type="primary"
-              @click="sendVerifyCode">发送验证码</el-button>
-            <el-button
-              v-show="!sendAuthCode"
-              ref="sendVerifyRef"
-              :disabled="true"
-              type="primary"
-              @click="sendVerifyCode">{{ auth_time }}后重新发送</el-button></el-row>
+          <el-row>
+            <el-input
+              v-model="modifyPassData.verifyCode"
+              placeholder="请输入的验证码">
+              <el-button
+                v-if="sendAuthCode"
+                ref="sendVerifyRef"
+                slot="append"
+                class="sendCode"
+                @click="sendVerifyCode">发送验证码</el-button>
+              <span
+                v-else
+                slot="append"
+                class="disabled">{{ auth_time }}s后重新发送</span>
+            </el-input>
+          </el-row>
         </el-form-item>
         <el-form-item
           label="新密码"
@@ -103,7 +107,7 @@
           <el-input
             v-model="modifyPassData.modifyPassword"
             type="password"
-            placeholder=" 请输入6-12位密码"></el-input>
+            placeholder="请输入6-12位密码"></el-input>
         </el-form-item>
       </el-form>
       <span
@@ -121,6 +125,7 @@
 </template>
 <script>
 import { loginApi, sendVerifyCodeApi } from '@/api/user'
+import { SHA2 } from '@/utils/sha'
 
 export default {
   name: 'Login',
@@ -178,83 +183,82 @@ export default {
       modifyPassData: {
         'account': '',
         'modifyPassword': '',
-        'verifyCode': '', // 验证码
+        'verifyCode': '',
         'mobile': ''
       },
-      sendAuthCode: true, /* 布尔值，通过v-show控制显示‘获取按钮’还是‘倒计时’ */
-      auth_time: 0
+      sendAuthCode: true,
+      auth_time: 0,
+      auth_timetimer: null
     }
   },
   methods: {
     handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then((res) => {
-            this.loading = false
-            this.modifyPassData.account = this.loginForm.mobile
-            if (res.data.firstLogin) {
-              this.modifyPassLayer = true
-            } else {
-              this.$router.push({ path: '/' })
-            }
-          }).catch(() => {
-            this.loading = false
-          })
+          this.doLogin(this.loginForm.password)
         } else {
           return false
         }
       })
     },
+    doLogin (password) {
+      this.loading = true
+      this.$store.dispatch('Login', {
+        mobile: this.loginForm.mobile,
+        password
+      }).then((res) => {
+        this.loading = false
+        this.modifyPassData.account = this.loginForm.mobile
+        if (res.firstLogin) {
+          this.modifyPassLayer = true
+        } else {
+          this.$router.push({ path: '/' })
+        }
+      }).catch(() => {
+        this.loading = false
+      })
+    },
     handleClose () {
-      this.modifyPassLayer = false
+      this.modifyPassData = {}
+      this.$refs.modifyPassForm.clearValidate()
+      this.sendAuthCode = true
+      clearInterval(this.auth_timetimer)
     },
     sureModifyPass () { // 确认提交修改密码
       let param = {
         'account': this.modifyPassData.account,
-        'password': this.modifyPassData.modifyPassword,
+        'newPassword': this.modifyPassData.modifyPassword,
         'verifyCode': this.modifyPassData.verifyCode
       }
-      console.log('param', param)
       this.$refs.modifyPassForm.validate(valid => {
         if (valid) {
-          loginApi.modifyPassword(param).then(() => {
-            this.$message({
-              message: '密码修改成功',
-              type: 'success'
-            })
-            this.$router.push({ path: '/' })
+          loginApi.modifyPassword({
+            ...param,
+            newPassword: SHA2(param.newPassword)
+          }).then(() => {
+            this.$message.success('密码修改成功')
+            this.doLogin(param.newPassword)
           })
         }
       })
     },
-    getAuthCode: function () { // 倒计时
+    getAuthCode () { // 倒计时
       this.sendAuthCode = false
       this.auth_time = 60
-      var auth_timetimer = setInterval(() => {
+      this.auth_timetimer = setInterval(() => {
         this.auth_time--
         if (this.auth_time <= 0) {
           this.sendAuthCode = true
-          clearInterval(auth_timetimer)
+          clearInterval(this.auth_timetimer)
         }
       }, 1000)
     },
     sendVerifyCode () { // 发送验证码
-      if (!this.sendAuthCode) {
-        this.$message({
-          message: '请' + this.auth_time + '秒后再发',
-          type: 'warning'
-        })
-        return false
-      }
-      this.getAuthCode()
       sendVerifyCodeApi({
         'mobile': this.modifyPassData.account
       }).then((res) => {
-        this.$message({
-          message: '验证码发送成功',
-          type: 'success'
-        })
+        this.$message.success('验证码发送成功')
+        this.getAuthCode()
       })
     }
   }
@@ -347,6 +351,18 @@ export default {
     img {
       width: 100%;
       height: 100%;
+    }
+  }
+
+  .el-input-group__append {
+    .sendCode{
+      background: #66b1ff;
+      border-color: #66b1ff;
+      border-radius: 0;
+      color: #fff;
+    }
+    .disabled {
+      cursor: not-allowed;
     }
   }
 }

@@ -2,13 +2,12 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:10:13
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-20 16:23:55
+ * @Last Modified time: 2018-10-18 11:43:07
  */
 
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import store from '../store'
-import { getSessionId } from '@/utils/auth'
 
 /* 防止重复提交，利用axios的cancelToken */
 let cancelPromise
@@ -45,14 +44,14 @@ service.interceptors.request.use(config => {
   /* post请求 */
   if (config.method.toUpperCase() === 'POST') {
     if (store.getters.sessionId) {
-      config.data['sessionId'] = getSessionId()
+      config.data['sessionId'] = store.getters.sessionId
     }
     if (!config.noAssign) {
       config.data = Object.assign(config.data, defaultConfig)
     }
   } else {
     if (store.getters.sessionId) {
-      config.params['sessionId'] = getSessionId()
+      config.params['sessionId'] = store.getters.sessionId
     }
     if (!config.noAssign) {
       config.params = Object.assign(config.params, defaultConfig)
