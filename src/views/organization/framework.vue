@@ -270,7 +270,7 @@ export default {
         this.parentOrg = obj.parent.data instanceof Array ? deepClone(obj.parent.data[0]) : deepClone(obj.parent.data)
         this.formData.depId = this.nowOrgObj.depId
         this.formData.depName = '' // 表格开始加载时候 只能传depId
-        // this.searchParam()
+        this.searchParam()
       })
     },
     searchParam (type) { // 表格数据
