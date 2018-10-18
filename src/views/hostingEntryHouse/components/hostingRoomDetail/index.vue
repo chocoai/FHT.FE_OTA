@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="codeFlex entry-house-container">
-      <el-row class="codeLabelStyle">外部编码：</el-row>
+      <el-row class="codeLabelStyle">外部编码 </el-row>
       <el-row style="margin-right:10px;">
         <el-input
           v-model="outerHouseUuid"
