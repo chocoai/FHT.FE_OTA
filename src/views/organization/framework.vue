@@ -174,6 +174,7 @@ export default {
   },
   data () {
     return {
+      closeTree: false,
       depLevel: false,
       sureLoading: false,
       treeData: [],
@@ -407,6 +408,7 @@ export default {
                 this.layer_addOrg = false
                 this.sureLoading = false
                 this.searchParam()// 增加成功后 刷新当前页面
+                this.getTree()
               } else {
                 this.$message({
                   message: res.message,
@@ -429,6 +431,7 @@ export default {
           this.sureLoading = false
           console.log()
           this.searchParam()// 编辑成功后 刷新当前页面
+          this.getTree()
         } else {
           this.$message({
             message: res.message,
