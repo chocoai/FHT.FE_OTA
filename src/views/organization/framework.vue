@@ -29,6 +29,7 @@
             v-model="searchDepartment"
             placeholder="请输入部门名称"
             size="small"
+            maxlength="20"
             class="item-select"></el-input>
           <el-button
             type="primary"
@@ -95,6 +96,7 @@
             class="item-select2">
             <el-input
               v-model="orgForm.depName"
+              :disabled="depLevel"
               placeholder="请输入部门名称"
               max-length="20"
               clearable
@@ -106,6 +108,7 @@
             prop="superiorName">
             <el-select
               v-model="orgForm.superiorName"
+              :disabled="depLevel"
               clearable
               placeholder="请选择上级部门"
               class="item-select2">
@@ -132,6 +135,7 @@
           >
             <area-select
               ref="areaSelect"
+              :disabled="depLevel"
               v-model="orgForm.areaCode"
               :level="1"
               @input="searchZoneList(false)" />
@@ -170,6 +174,7 @@ export default {
   },
   data () {
     return {
+      depLevel: false,
       sureLoading: false,
       treeData: [],
       defaultProps: {
@@ -312,7 +317,7 @@ export default {
     },
     editNodeclick (data) { // 编辑部门  增加部门   tree被点击时候的回调
       console.log('编辑部门切换的时候', data)
-      this.orgForm.depId = data.depId
+      // this.orgForm.depId = data.depId
       this.parentOrg.depName = data.depName
       this.editParentId = data.depId
       // this.superiorName = this.parentOrg.depName // 上级部门
@@ -345,6 +350,12 @@ export default {
       this.editParentId = data.parentId
       this.currentPreDepName = data.parent
       this.layer_addOrg = true
+      if (data.depLevel === 0) {
+        this.depLevel = true
+      } else {
+        this.depLevel = false
+      }
+      console.log('表格数据', data)
     },
     layerClose () { // 部门弹框关闭
       this.$refs['orgForm'].resetFields() // 对表单进行重置
