@@ -245,6 +245,7 @@ export default {
   },
   created () {
     this.getTree()
+    console.log('this.formData', this.formData)
   },
   methods: {
     getTree () { // 获取组织架构名称并且默认表格数据
@@ -268,6 +269,7 @@ export default {
         this.nowOrgObj = deepClone(obj.data)
         this.parentOrg = obj.parent.data instanceof Array ? deepClone(obj.parent.data[0]) : deepClone(obj.parent.data)
         this.formData.depId = this.nowOrgObj.depId
+        this.formData.depName = '' // 表格开始加载时候 只能传depId
         // this.searchParam()
       })
     },
@@ -282,10 +284,17 @@ export default {
         this.$refs.refGridUnit.searchHandler()
       })
     },
-    searchformData () { // 查询
-      this.formData = {
-        depName: this.searchDepartment,
-        depId: ''
+    searchformData () { // 查询  查询的时候 传depName
+      if (this.searchDepartment) {
+        this.formData = {
+          depName: this.searchDepartment,
+          depId: ''
+        }
+      } else {
+        this.formData = {
+          depName: '',
+          depId: this.nowOrgObj.depId
+        }
       }
       console.log('查询的数据', this.formData)
       this.searchParam()

@@ -1243,7 +1243,8 @@ export default {
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
         val.depName = this.$refs.overlayTree.getNode(val.depId).data.depName // tree 赋值
-        this.parentOrg.id = val.depId // 默认部门的数组
+        this.parentOrg.depId = val.depId // 默认部门的数组
+        console.log(this.parentOrg.depId)
         parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')
         val.zoneId = val.zoneId === 0 ? '' : val.zoneId
         if (this.houseRentType === 1) {
