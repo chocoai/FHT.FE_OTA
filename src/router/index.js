@@ -125,8 +125,8 @@ export const asyncRouterMap = [
       component: _import('organization/allotroom'),
       meta: {
         noTags: true,
-        // parentPath: '/organization/framework',
-        // parentName: '组织架构',
+        parentPath: '/organization/framework',
+        parentName: '组织架构',
         meta: {
           role: [1, 3]
         }

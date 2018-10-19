@@ -64,6 +64,18 @@ export const queryDistributeToDepListApi = { // 编辑部门
     })
   }
 }
+// 获取分配人员房源
+export const queryDistributeToUserListApi = {
+  requestPath: '/fangyuanDistribute/queryDistributeToUserList',
+  isMock: true,
+  queryDistributeToDep (params = {}) {
+    return fetch(this.requestPath, {
+      params
+    }, {
+      isMock: this.isMock
+    })
+  }
+}
 // 分配房源
 export function distributeHouseToDepApi (params = {}) {
   return fetch('/fangyuanDistribute/distributeHouseToDep', {

@@ -117,7 +117,7 @@
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
-import { queryDistributeToDepListApi, distributeHouseToDepApi } from '@/api/organization'
+import { queryDistributeToDepListApi, distributeHouseToDepApi, queryDistributeToUserListApi } from '@/api/organization'
 import { distributeHouseToUserApi } from '@/api/staffManage'
 import { queryCityAreaPlotApi } from '@/api/houseManage'
 import { deepClone } from '@/utils'
@@ -175,9 +175,13 @@ export default {
     this.colModels = deepClone(this.colModelsFs)
     this.formData.depId = this.orgData.depId
     this.formData.userId = this.orgData.id
+
     console.log('分配房源带过来的数据', this.orgData)
     if (this.orgData.role) {
       this.distributeHouse = true
+      this.url = queryDistributeToUserListApi.requestPath
+    } else {
+      this.url = queryDistributeToDepListApi.requestPath
     }
     console.log('this.distributeHouse ', this.distributeHouse)
   },
