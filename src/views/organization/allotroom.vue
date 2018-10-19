@@ -106,7 +106,7 @@
           type="primary"
           size="small"
           icon="el-icon-arrow-left"
-          @click="$router.push({name: '组织架构'})">返回</el-button>
+          @click="backPre">返回</el-button>
         <el-button
           type="primary"
           size="small"
@@ -183,6 +183,12 @@ export default {
   },
   mounted () {
     this.getAreaName()
+    if (this.distributeHouse && (this.orgData.role === 1 || this.orgData.role === 3)) {
+      this.$message({
+        message: '主账号自动拥有所有房源,无需设置',
+        type: 'warning'
+      })
+    }
   },
   methods: {
     getAreaName () { // 获取市的区域
@@ -293,6 +299,13 @@ export default {
       })
       console.log('multipleSelectionAll', this.$refs.refGridUnit.multipleSelection)
       console.log(this.selectFangyuanCodes)
+    },
+    backPre () {
+      if (this.distributeHouse) {
+        this.$router.push({name: '人员管理'})
+      } else {
+        this.$router.push({name: '组织架构'})
+      }
     }
   }
 }
