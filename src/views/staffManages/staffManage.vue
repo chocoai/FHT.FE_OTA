@@ -412,6 +412,7 @@ export default {
 
       this.userDetails = false
       this.isEditAccount = false
+      this.userOrg = false
       // this.isTry = false
 
       this.accountForm.depId = this.parentOrg.depId

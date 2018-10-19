@@ -1,7 +1,9 @@
 <template>
   <div>
-    <div class="layout_pageHeader">
-      <div class="entry-house-title">
+    <div :class="{layout_pageHeader:!editFlag}">
+      <div
+        v-if="!editFlag"
+        class="entry-house-title">
         {{ editFlag ? '编辑' : '新建' + `分散式${houseRentType === 1 ? '整租' : '合租'}` }}
       </div>
       <div
@@ -1087,10 +1089,15 @@ export default {
     // window.addEventListener('resize', changeMainHeight)
   },
   methods: {
-    getTree () { // 获取组织架构名称并且默认表格数据
+    getTree (id) { // 获取组织架构名称并且默认表格数据
       getDepartmentInfo.queryDepartmentApi().then(res => {
         if (res.data) {
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+          if (id) {
+            this.treeData.fiter((item) => {
+              console.log('item', item)
+            })
+          }
         }
       }).catch(rej => {})
     },
@@ -1265,6 +1272,8 @@ export default {
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
         // val.depName = that.$refs.overlayTree.getNode(val.depId).data.depName // tree 赋值
+        // val.depName = this.tree(val.depId)
+        this.getTree(val.depId)
         val.depId = val.depId
         this.parentOrg.depId = val.depId // 默认部门的数组
         parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')
