@@ -514,6 +514,10 @@ export default {
         this.orgRoleEdit = true
       }
       this.roleChecked = data.role
+      if (data.role === 1) {
+        this.accountForm.hasAllRoomAuth = 1
+        this.userOrgRoom = true
+      }
       this.accountForm = {
         mobile: data.mobile,
         name: data.name,
@@ -527,7 +531,6 @@ export default {
       this.userId = data.id // 用户id
       this.accountForm.depId = data.depId // 部门ID
       this.accountForm.role = data.role
-      console.log(data)
     }
   }
 
