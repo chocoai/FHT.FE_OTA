@@ -228,7 +228,7 @@
       :visible="closeAddAccountTips_layer"
       title="新增账号成功"
       width="30%"
-      @close="closeAddAccountTips_layer = false">
+      @close="closeAddAccountTips">
       <p style="margin-bottom:40px;text-align:center">新增账号成功，记得给账号分配房源</p>
       <div
         slot="footer"
@@ -423,9 +423,6 @@ export default {
     submitAccount () {
       this.accountForm.role = this.roleChecked || 2
       let param = deepClone(this.accountForm)
-      if (!this.userDetails && this.isEditAccount) { // 编辑下为主账号的额时候
-        param.role = 3
-      }
       this.goRoomData = deepClone(param)// 去分配吧
       console.log('编辑的参数', param)
       this.$refs['accountForm'].validate((valid) => {
@@ -445,13 +442,13 @@ export default {
               } else {
                 this.$message({
                   message: res.message,
-                  type: 'success'
+                  type: 'warning'
                 })
               }
             })
           } else {
             staffManageInfo.addAccountAPi(param).then((res) => {
-              if (param.hasAllRoomAuth === 0) {
+              if (param.hasAllRoomAuth === 0 && !this.isEditAccount) {
                 this.closeAddAccountTips_layer = true
               } else {
                 if (res.code * 1 === 0) {
@@ -464,7 +461,7 @@ export default {
                 } else {
                   this.$message({
                     message: res.message,
-                    type: 'success'
+                    type: 'warning'
                   })
                 }
               }
@@ -504,6 +501,7 @@ export default {
     editAccount (data) {
       console.log('表格数据', data)
       this.isEditAccount = true // 确定是点击的编辑
+      this.userDetails = true
       if (data.role === 3) {
         this.userOrg = true
         this.userOrgRoom = true
