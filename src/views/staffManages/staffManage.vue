@@ -188,7 +188,7 @@
               prop="hasAllRoomAuth">
               <el-select
                 v-model="accountForm.hasAllRoomAuth"
-                :disabled="userOrg"
+                :disabled="userOrgRoom"
                 style="width: 100%"
                 filterable
                 clearable>
@@ -202,7 +202,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="!isEditAccount">
+        <el-row v-if="orgRoleEdit">
           <el-form-item
             label="部门负责人"
             prop="orgRole">
@@ -285,6 +285,7 @@ export default {
         label: 'depName',
         id: 'depId'
       },
+      userOrgRoom: false,
       addDeName: '',
       roleChecked: '',
       selectDepName: '',
@@ -292,10 +293,11 @@ export default {
       isEditAccount: false,
       layer_account: false,
       userId: '', // 用户ID
-      userRole: '',
+      orgRoleEdit: true,
       cityId: '', // 组织架构中获取城市ID
       // orgRoomRole: '', // 房源管理
       addAcountDepName: '', // 新增账户所属部门
+      editRole: false,
       accountForm: {
         mobile: '',
         name: '',
@@ -409,17 +411,14 @@ export default {
         role: ''
       }
       this.layer_account = true
-
+      this.orgRoleEdit = true
       this.userDetails = false
       this.isEditAccount = false
       this.userOrg = false
-      // this.isTry = false
-
+      this.userOrgRoom = false
       this.accountForm.depId = this.parentOrg.depId
       this.addAcountDepName = this.parentOrg.depName
-      // this.$nextTick(() => {
-      //   this.$refs.overlayTree.setCurrentKey(this.nowOrgObj.id)
-      // })
+      this.roleChecked = ''
     },
     submitAccount () {
       this.accountForm.role = this.roleChecked || 2
@@ -428,7 +427,7 @@ export default {
         param.role = 3
       }
       this.goRoomData = deepClone(param)// 去分配吧
-      console.log('新增账户的参数', param)
+      console.log('编辑的参数', param)
       this.$refs['accountForm'].validate((valid) => {
         if (valid) {
           if (this.isEditAccount) { // 编辑账户
@@ -493,17 +492,28 @@ export default {
       this.$router.push({path: '/organization/allotroom', query: data})
     },
     roleClick (data) {
+      if (this.roleChecked === 1) {
+        this.userOrgRoom = true
+        this.accountForm.hasAllRoomAuth = 1
+      } else {
+        this.userOrgRoom = false
+        // this.accountForm.hasAllRoomAuth = 0
+      }
       this.accountForm.role = this.roleChecked
     },
     editAccount (data) {
+      console.log('表格数据', data)
       this.isEditAccount = true // 确定是点击的编辑
       if (data.role === 3) {
-        this.userDetails = false
         this.userOrg = true
+        this.userOrgRoom = true
+        this.orgRoleEdit = false
       } else {
-        this.userDetails = true
         this.userOrg = false
+        this.userOrgRoom = false
+        this.orgRoleEdit = true
       }
+      this.roleChecked = data.role
       this.accountForm = {
         mobile: data.mobile,
         name: data.name,
