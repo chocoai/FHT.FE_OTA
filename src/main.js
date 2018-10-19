@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:24:18
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-18 16:52:10
+ * @Last Modified time: 2018-10-19 19:56:35
  */
 
 import Vue from 'vue'
@@ -40,6 +40,10 @@ Object.keys(filters).forEach(key => {
 const whiteList = ['/login']
 router.beforeEach((to, from, next) => {
   NProgress.start()
+  // 记录路由来源信息
+  if (from.name) {
+    store.dispatch('GetRouterInfo', { to, from })
+  }
   if (getSessionId()) {
     if (to.path === '/login') {
       next({ path: '/' })

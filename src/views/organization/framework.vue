@@ -1,8 +1,8 @@
 /*
  * @Author: dengdongming
  * @Date: 2018-10-10 17:04:57
- * @Last Modified by:dengdongming
- * @Last Modified time: 2018-10-10 17:04:57
+ * @Last Modified by: FT.FE.Bolin
+ * @Last Modified time: 2018-10-19 17:20:47
  */
 <template>
   <div class="orgStyle">
@@ -373,7 +373,7 @@ export default {
       this.orgForm.depName = ''
     },
     assignHouse (data) { // 分配房源
-      this.$router.push({path: '/organization/allotroom', query: data})
+      this.$router.push({path: '/houseSource/allotroom', query: data})
     },
     submitOrg () { // 提交添加部门 或者编辑部门
       this.$refs['orgForm'].validate((valid) => {

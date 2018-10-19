@@ -2,13 +2,13 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:31
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-17 11:10:06
+ * @Last Modified time: 2018-10-19 20:19:28
  */
 
 <template>
   <div class="layout-side">
     <el-menu
-      :default-active="$route.meta.parentPath || $route.path"
+      :default-active="$route.meta.noTags ? ($store.state.routerInfo.from.fullPath || $route.path) : $route.path"
       mode="vertical"
       background-color="#423C6E"
       text-color="#fff"

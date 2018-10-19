@@ -95,7 +95,6 @@
     <el-dialog
       :title="isEditAccount ? '编辑账号' : '新增账号'"
       :visible="layer_account"
-      :close-on-click-modal="false"
       width="500px"
       @close="cancelAddAccount">
 
@@ -474,7 +473,7 @@ export default {
       let param = deepClone(this.goRoomData)
       param.depName = this.$refs.overlayTree.getNode(this.goRoomData.depId).data.depName
       param.cityId = this.cityId // 需要从组织架构中获取
-      this.$router.push({path: '/organization/allotroom', query: param})
+      this.$router.push({path: '/houseSource/allotroom', query: param})
     },
     closeAddAccountTips () {
       this.closeAddAccountTips_layer = false
@@ -486,12 +485,12 @@ export default {
       this.$refs['accountForm'].clearValidate()
     },
     assignHouse (data) { // 房源管理
-      this.$router.push({path: '/organization/allotroom', query: data})
+      this.$router.push({path: '/houseSource/allotroom', query: data})
     },
     roleClick (data) {
       if (this.roleChecked === 1) {
         this.userOrgRoom = true
-        this.accountForm.hasAllRoomAuth = 1
+        this.$set(this.accountForm, 'hasAllRoomAuth', 1)
       } else {
         this.userOrgRoom = false
         // this.accountForm.hasAllRoomAuth = 0

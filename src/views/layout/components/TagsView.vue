@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:33
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-17 11:06:28
+ * @Last Modified time: 2018-10-19 19:55:48
  */
 
 <template>
@@ -48,7 +48,10 @@ export default {
       visible: false,
       top: 0,
       left: 0,
-      selectedTag: {}
+      selectedTag: {},
+      parentPath: null,
+      parentName: null,
+      parentMeta: null
     }
   },
   computed: {
@@ -77,17 +80,28 @@ export default {
   },
   methods: {
     isActive (route) {
-      return route.path === this.$route.path || route.name === this.$route.name || route.path === this.$route.meta.parentPath
+      return route.path === this.$route.path || route.name === this.$route.name || route.path === this.parentPath
     },
     addViewTags () {
       if (!this.$route.name) {
         return false
       }
-      let parentRoute = this.$route.meta.noTags ? {
-        meta: this.$route.meta.meta || {},
-        name: this.$route.meta.parentName,
-        path: this.$route.meta.parentPath
-      } : null
+      let parentRoute = null
+      if (this.$route.meta.noTags) {
+        this.parentPath = this.$store.state.routerInfo.from.fullPath || ''
+        this.parentName = this.$store.state.routerInfo.from.name || ''
+        this.parentMeta = this.$store.state.routerInfo.from.meta || {}
+        parentRoute = {
+          meta: this.parentMeta,
+          path: this.parentPath,
+          name: this.parentName
+        }
+      } else {
+        this.parentPath = null
+        this.parentName = null
+        this.parentMeta = null
+        parentRoute = null
+      }
       this.$store.dispatch('addVisitedViews', parentRoute || this.$route)
     },
     moveToCurrentTag () {

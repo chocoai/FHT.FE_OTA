@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-18 16:26:38
+ * @Last Modified time: 2018-10-19 18:36:03
  */
 
 import Vue from 'vue'
@@ -112,24 +112,27 @@ export const asyncRouterMap = [
     redirect: '/framework',
     noDropdown: true,
     icon: 'org_structure',
-    meta: {
-      role: [1, 3]
-    },
     children: [{
       name: '组织架构',
       path: 'framework',
-      component: _import('organization/framework')
-    }, {
-      path: 'allotroom',
+      component: _import('organization/framework'),
+      meta: {
+        role: [1, 3]
+      }
+    }]
+  },
+  {
+    path: '/houseSource',
+    name: '分配房源',
+    component: Layout,
+    noDropdown: true,
+    hidden: true,
+    children: [{
       name: '部门分配房源',
+      path: 'allotroom',
       component: _import('organization/allotroom'),
       meta: {
-        noTags: true,
-        // parentPath: '/organization/framework',
-        // parentName: '组织架构',
-        meta: {
-          role: [1, 3]
-        }
+        noTags: true
       }
     }]
   },
@@ -139,13 +142,13 @@ export const asyncRouterMap = [
     component: Layout,
     noDropdown: true,
     icon: 'personal_mange',
-    meta: {
-      role: [1, 3]
-    },
     children: [{
       name: '人员管理',
       path: 'staffManage',
-      component: _import('staffManages/staffManage')
+      component: _import('staffManages/staffManage'),
+      meta: {
+        role: [1, 3]
+      }
     }]
   },
   {
