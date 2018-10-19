@@ -7,7 +7,7 @@
         class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
       <p
         v-if="distributeHouse"
-        class="allotaddr">给部门&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
+        class="allotaddr">给&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
       <el-form class="model-search clearfix">
         <div class="item-flex">
           <el-form-item>

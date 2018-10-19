@@ -1080,24 +1080,11 @@ export default {
   created () {
     this.getTree()
   },
-  mounted () {
-
-    // let changeMainHeight = debounce(() => {
-    //   this.mainHeight = Math.max(document.body.clientHeight - (this.editFlag ? 150 : 240), 250)
-    // }, 100)
-    // changeMainHeight()
-    // window.addEventListener('resize', changeMainHeight)
-  },
   methods: {
-    getTree (id) { // 获取组织架构名称并且默认表格数据
+    getTree () { // 获取组织架构名称并且默认表格数据
       getDepartmentInfo.queryDepartmentApi().then(res => {
         if (res.data) {
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
-          if (id) {
-            this.treeData.fiter((item) => {
-              console.log('item', item)
-            })
-          }
         }
       }).catch(rej => {})
     },
@@ -1272,8 +1259,8 @@ export default {
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
         // val.depName = that.$refs.overlayTree.getNode(val.depId).data.depName // tree 赋值
-        // val.depName = this.tree(val.depId)
-        this.getTree(val.depId)
+        val.depName = val.depName
+        // this.getTree(val.depId)
         val.depId = val.depId
         this.parentOrg.depId = val.depId // 默认部门的数组
         parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')
