@@ -2,12 +2,20 @@
   <div>
     <div class="layout_pageHeader">
       <h5 class="allotTitle">房源分配管理</h5>
-      <p
-        v-if="!distributeHouse"
-        class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
-      <p
-        v-if="distributeHouse"
-        class="allotaddr">给账号&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
+      <div class="orgDataRoom">
+        <p
+          v-if="!distributeHouse"
+          class="allotaddr">给部门&nbsp;<span>{{ orgData.depName }}&nbsp;</span>分配房源</p>
+        <p
+          v-if="distributeHouse"
+          class="allotaddr">给账号&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
+        <el-checkbox
+          v-model="allRoom"
+          :true-label="1"
+          :false-label="0">
+          部门旗下所有房源
+        </el-checkbox>
+      </div>
       <el-form class="model-search clearfix">
         <div class="item-flex">
           <el-form-item>
@@ -117,7 +125,7 @@
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
-import { queryDistributeToDepListApi, distributeHouseToDepApi } from '@/api/organization'
+import { queryDistributeToDepListApi, distributeHouseToDepApi, queryDistributeToUserListApi } from '@/api/organization'
 import { distributeHouseToUserApi } from '@/api/staffManage'
 import { queryCityAreaPlotApi } from '@/api/houseManage'
 import { deepClone } from '@/utils'
@@ -129,6 +137,7 @@ export default {
   },
   data () {
     return {
+      allRoom: '',
       orgData: [],
       formData: {
         userId: '',
@@ -175,20 +184,22 @@ export default {
     this.colModels = deepClone(this.colModelsFs)
     this.formData.depId = this.orgData.depId
     this.formData.userId = this.orgData.id
+
     console.log('分配房源带过来的数据', this.orgData)
     if (this.orgData.role) {
       this.distributeHouse = true
+      this.url = queryDistributeToUserListApi.requestPath
+    } else {
+      this.url = queryDistributeToDepListApi.requestPath
     }
-    console.log('this.distributeHouse ', this.distributeHouse)
+    if (this.orgData.hasAllRoomAuth === 1) { // 如果是所有房源  表格为空
+      if (this.orgData.role === 2) {
+        this.allRoom = 1
+      }
+    }
   },
   mounted () {
     this.getAreaName()
-    if (this.distributeHouse && (this.orgData.role === 1 || this.orgData.role === 3)) {
-      this.$message({
-        message: '主账号自动拥有所有房源,无需设置',
-        type: 'warning'
-      })
-    }
   },
   methods: {
     getAreaName () { // 获取市的区域
@@ -259,7 +270,7 @@ export default {
         return false
       }
       if (this.distributeHouse) {
-        param.userId = this.orgData.userId
+        param.userId = this.orgData.id
         distributeHouseToUserApi(param).then((response) => {
           if (response.code * 1 === 0) {
             this.$message({
@@ -346,5 +357,9 @@ export default {
     &.hideSidebar {
       left: 50px;
     }
+  }
+  .orgDataRoom {
+    display: flex;
+    justify-content: space-between
   }
 </style>

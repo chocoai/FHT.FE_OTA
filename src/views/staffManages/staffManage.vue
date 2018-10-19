@@ -97,7 +97,6 @@
       :visible="layer_account"
       width="500px"
       @close="cancelAddAccount">
-
       <el-form
         ref="accountForm"
         :model="accountForm"
@@ -189,7 +188,6 @@
                 v-model="accountForm.hasAllRoomAuth"
                 :disabled="userOrgRoom"
                 style="width: 100%"
-                filterable
                 clearable>
                 <el-option
                   :value="0"
@@ -275,6 +273,14 @@ export default {
         callback()
       }
     }
+    const validateRoom = (rule, value, callback) => {
+      console.log('ccccc', value)
+      if (value === '') {
+        callback(new Error('请选择房源管理'))
+      } else {
+        callback()
+      }
+    }
     return {
       sureLoading: false,
       closeAddAccountTips_layer: false,
@@ -319,7 +325,7 @@ export default {
           { required: true, message: '请选择性别', trigger: 'blur' }
         ],
         hasAllRoomAuth: [
-          { required: true, message: '请选择房源管理', trigger: 'blur' }
+          { required: true, trigger: 'blur', validator: validateRoom }
         ]
       },
       userDetails: true,
@@ -423,7 +429,6 @@ export default {
       this.accountForm.role = this.roleChecked || 2
       let param = deepClone(this.accountForm)
       this.goRoomData = deepClone(param)// 去分配吧
-      console.log('编辑的参数', param)
       this.$refs['accountForm'].validate((valid) => {
         if (valid) {
           if (this.isEditAccount) { // 编辑账户
@@ -485,7 +490,15 @@ export default {
       this.$refs['accountForm'].clearValidate()
     },
     assignHouse (data) { // 房源管理
-      this.$router.push({path: '/houseSource/allotroom', query: data})
+      if (data.role === 1 || data.role === 3) {
+        this.$message({
+          message: '该账号拥有所有房源,无需设置',
+          type: 'warning'
+        })
+        return false
+      } else {
+        this.$router.push({path: '/houseSource/allotroom', query: data})
+      }
     },
     roleClick (data) {
       if (this.roleChecked === 1) {
@@ -493,7 +506,6 @@ export default {
         this.$set(this.accountForm, 'hasAllRoomAuth', 1)
       } else {
         this.userOrgRoom = false
-        // this.accountForm.hasAllRoomAuth = 0
       }
       this.accountForm.role = this.roleChecked
     },
@@ -510,19 +522,18 @@ export default {
         this.userOrgRoom = false
         this.orgRoleEdit = true
       }
-      this.roleChecked = data.role
+      this.$set(this, 'roleChecked', data.role)
       if (data.role === 1) {
-        this.accountForm.hasAllRoomAuth = 1
+        this.$set(this.accountForm, 'hasAllRoomAuth', 1)
         this.userOrgRoom = true
       }
       this.accountForm = {
         mobile: data.mobile,
         name: data.name,
         gender: data.gender,
-        // depId: this.parentOrg.depId,
-        role: data.role,
-        hasAllRoomAuth: data.hasAllRoomAuth
+        role: data.role
       }
+      this.$set(this.accountForm, 'hasAllRoomAuth', data.hasAllRoomAuth)
       this.layer_account = true
       this.addAcountDepName = data.depName // 部门名称
       this.userId = data.id // 用户id
