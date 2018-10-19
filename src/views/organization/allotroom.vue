@@ -189,7 +189,7 @@ export default {
     this.getAreaName()
     if (this.distributeHouse && (this.orgData.role === 1 || this.orgData.role === 3)) {
       this.$message({
-        message: '主账号自动拥有所有房源,无需设置',
+        message: '该账号拥有所有房源,无需设置',
         type: 'warning'
       })
     }
