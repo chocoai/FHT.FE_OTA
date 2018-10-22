@@ -180,6 +180,7 @@ export default {
   },
   data () {
     return {
+      userDepId: '',
       closeTree: false,
       depLevel: false,
       sureLoading: false,
@@ -212,8 +213,6 @@ export default {
         areaCode: []
       },
       editParentId: '', // 上一级别ID
-      // superiorName: '', // 添加部门上级部门
-      // depNameArea: '', // 添加部门所在区域
       rules: { // 添加部门验证
         depName: [
           { required: true, message: '请输入部门名称', trigger: 'blur' }
@@ -268,13 +267,12 @@ export default {
     getTree () { // 获取组织架构名称并且默认表格数据
       getDepartmentInfo.queryDepartmentApi().then(res => {
         if (res.data) {
-          // this.$refs.trees.setCurrentKey(id)
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
           // 初始化表格数据
-          this.formData.depId = res.data.orgId
+          this.formData.depId = res.data.depId
           this.formData.depName = res.data.orgName
-          let nowId = this.treeData[0].depId
-          this.getFirstNode(nowId)
+          this.userDepId = this.treeData[0].depId
+          this.getFirstNode(this.userDepId)
         }
       }).catch(rej => {})
     },
@@ -282,7 +280,6 @@ export default {
       this.$nextTick(() => { // 设置tree的默认选中节点 0是node-key设置的参数对应的值
         this.$refs.trees.setCurrentKey(id) // 设置当前选中装填
         const obj = this.$refs.trees.getNode(id)
-        console.log('obj', obj)
         this.nowOrgObj = deepClone(obj.data)
         this.parentOrg = obj.parent.data instanceof Array ? deepClone(obj.parent.data[0]) : deepClone(obj.parent.data)
         this.formData.depId = this.nowOrgObj.depId
@@ -318,7 +315,7 @@ export default {
     },
     handleNodeClick (node, data) { // 点击tree节点函数
       this.nowOrgObj = deepClone(data.data)
-      this.parentOrg = data.parent.data instanceof Array ? deepClone(data.parent.data[0]) : deepClone(data.parent.data)
+      // this.parentOrg = data.parent.data instanceof Array ? deepClone(data.parent.data[0]) : deepClone(data.parent.data)
       this.formData.depId = this.nowOrgObj.depId
       this.formData.depName = ''
       this.$nextTick(() => {
@@ -327,11 +324,9 @@ export default {
     },
     editNodeclick (data) { // 编辑部门  增加部门   tree被点击时候的回调
       console.log('编辑部门切换的时候', data)
-      // this.orgForm.depId = data.depId
       this.parentOrg.depName = data.depName
       this.editParentId = data.depId
-      // this.superiorName = this.parentOrg.depName // 上级部门
-      this.orgForm.superiorName = this.parentOrg.depName // 这里的上级部门 到底是什么
+      this.orgForm.superiorName = data.depName
       console.log(this.editParentId)
     },
     editChangeclick (data, node) { //  节点改变时候变化
@@ -366,14 +361,22 @@ export default {
       } else {
         this.depLevel = false
       }
-      console.log('表格数据', data)
     },
     layerClose () { // 部门弹框关闭
       this.$refs['orgForm'].resetFields() // 对表单进行重置
       this.orgForm.depName = ''
     },
     assignHouse (data) { // 分配房源
-      this.$router.push({path: '/houseSource/allotroom', query: data})
+      console.log('adasds', data)
+      if (data.depId === this.userDepId) {
+        this.$message({
+          message: '该账号拥有所有房源,无需设置',
+          type: 'warning'
+        })
+        return false
+      } else {
+        this.$router.push({path: '/houseSource/allotroom', query: data})
+      }
     },
     submitOrg () { // 提交添加部门 或者编辑部门
       this.$refs['orgForm'].validate((valid) => {
