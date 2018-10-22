@@ -102,10 +102,9 @@
         :is-mock="isMock"
         :columns="colModels"
         :show-selection="true"
-        :selection-key="`fangyuanCodes`"
+        :selection-key="`fangyuanCode`"
         total-field="data.record"
-        list-field="data.houseList"
-        @selection-change="handleSelectionChange">
+        list-field="data.houseList">
       </GridUnit>
       <div
         :class="{hideSidebar:!sidebar.opened}"
@@ -249,14 +248,13 @@ export default {
         }
       }
       this.formData.depId = this.orgData.depId
-
       this.$nextTick(() => {
-        this.$refs.refGridUnit.searchHandler()
+        this.$refs.refGridUnit.searchHandler({
+          type: 'refresh'
+        })
       })
     },
-    handleSelectionChange () { // 单选
 
-    },
     submitOrgRoom () { // 确定分配的房源
       this.getMultipleSelectionAll()// 获取房源fangyuanCodes
       let param = {
@@ -278,6 +276,7 @@ export default {
               type: 'success'
             })
             this.searchParam()
+            this.selectFangyuanCodes = []
           } else {
             this.$message({
               message: response.message,
@@ -294,6 +293,7 @@ export default {
               type: 'success'
             })
             this.searchParam()
+            this.selectFangyuanCodes = []
           } else {
             this.$message({
               message: response.message,
@@ -308,7 +308,7 @@ export default {
       multipleSelectionAll.forEach((item) => {
         this.selectFangyuanCodes.push(item.fangyuanCode)
       })
-      console.log('multipleSelectionAll', this.$refs.refGridUnit.multipleSelection)
+      console.log('multipleSelectionAll', this.$refs.refGridUnit.multipleSelectionAll)
       console.log(this.selectFangyuanCodes)
     },
     backPre () {

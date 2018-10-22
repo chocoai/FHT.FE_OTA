@@ -247,10 +247,11 @@ export default {
       if (options && options.type === 'clear') {
         this.searchParams = options.data
       }
-      this.fetchHandler()
+      this.fetchHandler(options)
     },
     // 请求数据
-    fetchHandler () {
+    fetchHandler (options = {}) {
+      const fetchType = options.type || ''
       this.loading = true
       let params
       const {
@@ -312,9 +313,14 @@ export default {
         }
         this.total = totalValue
         this.loading = false
-        setTimeout(() => {
-          this.setSelectRow()
-        }, 0)
+        if (fetchType !== 'refresh') {
+          setTimeout(() => {
+            this.setSelectRow()
+          }, 0)
+        } else {
+          this.multipleSelection = []
+          this.multipleSelectionAll = []
+        }
       }).catch(error => {
         console.log(error)
         this.loading = false
