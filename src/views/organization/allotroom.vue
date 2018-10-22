@@ -10,7 +10,7 @@
           v-if="distributeHouse"
           class="allotaddr">给账号&nbsp;<span>{{ orgData.name }}&nbsp;|&nbsp;{{ orgData.mobile }}&nbsp;|&nbsp;{{ orgData.depName }}&nbsp;</span>分配房源</p>
         <el-checkbox
-          v-if="distributeHouse"
+          v-if="false"
           v-model="allRoom"
           :true-label="1"
           :false-label="0">
