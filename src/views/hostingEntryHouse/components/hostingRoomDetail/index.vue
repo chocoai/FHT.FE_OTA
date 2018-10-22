@@ -47,6 +47,7 @@
             prop="depId">
             <el-select
               v-model="hostingRoomDetail.depName"
+              :disabled="editFlag"
               clearable
               placeholder="请选择归属部门"
               class="room-detail-select">
@@ -1248,7 +1249,6 @@ export default {
     },
     // 初始化房间信息
     setRoomDetailData (val, editRoomInfo) {
-      // let that = this
       if (editRoomInfo) {
         this.outerHouseShow = false
       }
