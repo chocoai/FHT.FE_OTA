@@ -1100,9 +1100,10 @@ export default {
         'outerHouseUuid': this.outerHouseUuid
       }).then((res) => {
         console.log(this.houseRentType)
+        console.log(res)
         if (res.data) {
-          if (this.houseRentType === res.houseRentType) {
-            this.setRoomDetailData(res) // 调用编辑的
+          if (this.houseRentType === res.data.houseRentType) {
+            this.setRoomDetailData(res.data) // 调用编辑的
           } else {
             this.$message({
               message: '请输入' + this.houseRentName + '房源的外部编码',
@@ -1258,8 +1259,10 @@ export default {
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
         val.depName = val.depName
-        val.depId = val.depId
-        this.parentOrg.depId = val.depId // 默认部门的数组
+        if (val.depId) { // 编辑会传入depId 外部编码不会
+          val.depId = val.depId
+          this.parentOrg.depId = val.depId // 默认部门的数组
+        }
         parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')
         val.zoneId = val.zoneId === 0 ? '' : val.zoneId
         if (this.houseRentType === 1) {
