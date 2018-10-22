@@ -773,7 +773,6 @@ export default {
     },
     // 添加修改房间信息
     openRoomDetail (params) {
-      console.log(params)
       hostingHouseInfoApi({
         fangyuanCode: params.fangyuanCode
       }).then((res) => {
@@ -787,7 +786,6 @@ export default {
     handleSetting () {
       this.authorizeShow = true
     },
-
     // 移除校验结果
     clearValidate (ref) {
       this.$refs[ref].clearValidate()

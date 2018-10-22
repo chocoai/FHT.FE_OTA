@@ -60,10 +60,7 @@ export default {
     this.getTree()
   },
   mounted () {
-    this.$nextTick(() => {
-      console.log(this.$refs.selectTreeRef)
-      console.log('asdfasf', this.nowOrgObj)
-    })
+
   },
   methods: {
     filterNode (value, data) {

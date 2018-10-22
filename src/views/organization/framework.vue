@@ -258,12 +258,8 @@ export default {
   },
   created () {
     this.getTree()
-    console.log('this.formData', this.formData)
   },
   methods: {
-    nodeClick (data) {
-      console.log('222222', data)
-    },
     getTree () { // 获取组织架构名称并且默认表格数据
       getDepartmentInfo.queryDepartmentApi().then(res => {
         if (res.data) {
@@ -293,7 +289,6 @@ export default {
         this.formData.depName = ''
         this.searchDepartment = ''
       }
-      console.log('this.formData', this.formData)
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
       })
@@ -310,7 +305,6 @@ export default {
           depId: this.nowOrgObj.depId
         }
       }
-      console.log('查询的数据', this.formData)
       this.searchParam()
     },
     handleNodeClick (node, data) { // 点击tree节点函数
@@ -323,11 +317,9 @@ export default {
       })
     },
     editNodeclick (data) { // 编辑部门  增加部门   tree被点击时候的回调
-      console.log('编辑部门切换的时候', data)
       this.parentOrg.depName = data.depName
       this.editParentId = data.depId
       this.orgForm.superiorName = data.depName
-      console.log(this.editParentId)
     },
     editChangeclick (data, node) { //  节点改变时候变化
       if (this.isEditOrg && this.currentPreDepName !== data.depName) {
@@ -367,10 +359,9 @@ export default {
       this.orgForm.depName = ''
     },
     assignHouse (data) { // 分配房源
-      console.log('adasds', data)
       if (data.depId === this.userDepId) {
         this.$message({
-          message: '该账号拥有所有房源,无需设置',
+          message: '该部门拥有本部门所有房源,无需设置',
           type: 'warning'
         })
         return false
@@ -388,10 +379,8 @@ export default {
             'cityId': this.orgForm.areaCode[1],
             'districtId': this.orgForm.areaCode[2]
           }
-          console.log('param', param)
           if (this.isEditOrg) { // 编辑部门
             param.depId = this.orgForm.depId // 编辑部门比新建部门多个字段
-            console.log('编辑的部门参数', param)
             // 判断是否更改了上级部门
             if (this.treeChangeStatus) {
               this.$confirm('确定更换上级部门吗?上级部门变动后，当前部门旗下的所有部门都会迁移，包括旗下的人员', '更换部门提醒', {
@@ -409,7 +398,6 @@ export default {
               this.editSubmitSure(param)
             }
           } else { // 创建部门的接口
-            console.log('添加部门参数', param)
             this.sureLoading = true
             getDepartmentInfo.createDepartmentApi(param).then((res) => {
               if (res.code * 1 === 0) {
@@ -441,7 +429,6 @@ export default {
           })
           this.layer_addOrg = false
           this.sureLoading = false
-          console.log()
           this.searchParam()// 编辑成功后 刷新当前页面
           this.getTree()
         } else {

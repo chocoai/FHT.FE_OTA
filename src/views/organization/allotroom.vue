@@ -185,7 +185,6 @@ export default {
     this.formData.depId = this.orgData.depId
     this.formData.userId = this.orgData.id
 
-    console.log('分配房源带过来的数据', this.orgData)
     if (this.orgData.role) {
       this.distributeHouse = true
       this.url = queryDistributeToUserListApi.requestPath
@@ -214,7 +213,6 @@ export default {
         this.nowAreaName = deepClone(res.data.subdistrictList)
         for (let i = 0; i < res.data.cityList.length; i++) {
           if (res.data.cityList[i].cityId === this.orgData.cityId * 1) {
-            console.log('城市数据', res.data.cityList[i].regionList)
             this.areaPotions = deepClone(res.data.cityList[i].regionList)
           }
         }
@@ -309,8 +307,6 @@ export default {
       multipleSelectionAll.forEach((item) => {
         this.selectFangyuanCodes.push(item.fangyuanCode)
       })
-      console.log('multipleSelectionAll', this.$refs.refGridUnit.multipleSelectionAll)
-      console.log(this.selectFangyuanCodes)
     },
     backPre () {
       if (this.distributeHouse) {

@@ -1101,7 +1101,6 @@ export default {
         console.log(this.houseRentType)
         if (res.data) {
           if (this.houseRentType === res.houseRentType) {
-            console.log(res)
             this.setRoomDetailData(res) // 调用编辑的
           } else {
             this.$message({
@@ -1258,9 +1257,7 @@ export default {
         val.address = val.subdistrictName ? (val.subdistrictName + ' - ' + val.subdistrictAddress) : ''
         val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
         val.houseDesc = val.houseDesc || ''
-        // val.depName = that.$refs.overlayTree.getNode(val.depId).data.depName // tree 赋值
         val.depName = val.depName
-        // this.getTree(val.depId)
         val.depId = val.depId
         this.parentOrg.depId = val.depId // 默认部门的数组
         parseInt(val.houseArea) === val.houseArea && (val.houseArea = val.houseArea + '.00')

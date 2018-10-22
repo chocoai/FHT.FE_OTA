@@ -274,7 +274,6 @@ export default {
       }
     }
     const validateRoom = (rule, value, callback) => {
-      console.log('ccccc', value)
       if (value === '') {
         callback(new Error('请选择房源管理'))
       } else {
@@ -379,7 +378,6 @@ export default {
         }
         this.selectDepName = ''
       }
-      console.log('this.formData', this.formData)
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
       })
@@ -392,12 +390,10 @@ export default {
           this.parentOrg.depName = res.data.depName
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
           this.cityId = this.$refs.overlayTree.getNode(res.data.depId).data.cityId
-          console.log('tree', this.parentOrg.depId)
         }
       }).catch(rej => {})
     },
     editNodeclick (data) {
-      console.log(data)
       this.formData.depId = data.depId
       this.selectDepName = data.depName
       this.accountForm.depName = data.depName
@@ -510,7 +506,6 @@ export default {
       this.accountForm.role = this.roleChecked
     },
     editAccount (data) {
-      console.log('表格数据', data)
       this.isEditAccount = true // 确定是点击的编辑
       this.userDetails = true
       if (data.role === 3) {
