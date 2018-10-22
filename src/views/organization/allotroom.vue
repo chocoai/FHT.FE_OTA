@@ -236,7 +236,7 @@ export default {
       }
       if (type === 'clear') {
         this.formData = {
-          userId: '',
+          userId: this.orgData.id,
           depId: '',
           resource: this.formData.resource, // 1，集中式  2,分散式
           pageNo: '1',
