@@ -6,6 +6,7 @@
   "author": "bolin",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "build:dev": "cross-env NODE_ENV=development env_config=dev node build/build.js",
     "build:sit": "cross-env NODE_ENV=production env_config=sit node build/build.js",
     "build:sit-preview": "cross-env NODE_ENV=production env_config=sit npm_config_report=true node build/build.js",
     "build:prod": "cross-env NODE_ENV=production env_config=prod node build/build.js",
@@ -58,6 +59,8 @@
     "file-loader": "1.1.11",
     "friendly-errors-webpack-plugin": "1.7.0",
     "html-webpack-plugin": "4.0.0-alpha",
+    "husky": "^1.1.1",
+    "lint-staged": "^7.3.0",
     "mini-css-extract-plugin": "0.4.1",
     "mockjs": "^1.0.1-beta3",
     "node-notifier": "5.2.1",
@@ -94,5 +97,19 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "src/**/*.{js,vue}": [
+        "eslint --fix",
+        "git add"
+      ]
+    },
+    "ignore": []
+  }
 }

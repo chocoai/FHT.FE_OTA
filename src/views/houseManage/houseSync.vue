@@ -515,13 +515,15 @@ export default {
   watch: {
 
   },
+  created () {
+    if (this.$route.params.curTab) {
+      this.activeName = this.$route.params.curTab === 1 ? '分散式整租' : '分散式合租'
+      this.searchParam()
+    }
+  },
   mounted () {
     this.authorizeStatus = this.$store.getters.idlefished // 判断是否授权的参数
     this.userAuthentication = this.$store.getters.authed // 判断实名认证的参数
-    if (this.$route.params.curTab) {
-      this.activeName = this.$route.params.curTab === 1 ? '分散式整租' : '分散式合租'
-      this.searchParam('clear')
-    }
     this.getCityName(this.searchParams.houseRentType)
   },
   methods: {
@@ -572,21 +574,25 @@ export default {
       }
       var cityData = []
       queryCityAreaPlotApi(params).then(res => {
-        this.residential = res.data.subdistrictList
-        cityData = res.data.cityList
-        if (cityData.length > 0) {
-          cityData.forEach((backData, index) => {
-            cityData[index].value = backData.cityId
-            cityData[index].label = backData.cityName
+        if (res.data.subdistrictList) {
+          this.residential = res.data.subdistrictList
+        }
+        if (res.data.cityList) {
+          cityData = res.data.cityList
+          if (cityData.length > 0) {
+            cityData.forEach((backData, index) => {
+              cityData[index].value = backData.cityId
+              cityData[index].label = backData.cityName
 
-            if (cityData[index].regionList.length > 0) {
-              cityData[index].regionList.forEach((cityArea, item) => {
-                cityArea.value = cityArea.areaId
-                cityArea.label = cityArea.areaName
-              })
-            }
-          })
-          this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
+              if (cityData[index].regionList.length > 0) {
+                cityData[index].regionList.forEach((cityArea, item) => {
+                  cityArea.value = cityArea.areaId
+                  cityArea.label = cityArea.areaName
+                })
+              }
+            })
+            this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
+          }
         }
       })
     },
