@@ -424,12 +424,11 @@ export default {
     submitAccount () {
       this.accountForm.role = this.roleChecked || 2
       let param = deepClone(this.accountForm)
-      this.goRoomData = deepClone(param)// 去分配吧
       this.$refs['accountForm'].validate((valid) => {
         if (valid) {
+          this.sureLoading = true
           if (this.isEditAccount) { // 编辑账户
             param.id = this.userId // 用户id
-            this.sureLoading = true
             staffManageInfo.editAccountApi(param).then((res) => {
               if (res.code * 1 === 0) {
                 this.$message({
@@ -445,17 +444,24 @@ export default {
                   type: 'warning'
                 })
               }
+            }).catch(() => {
+              setTimeout(() => {
+                this.sureLoading = false
+              }, 2000)
             })
           } else {
             staffManageInfo.addAccountAPi(param).then((res) => {
               if (param.hasAllRoomAuth === 0 && !this.isEditAccount) {
                 this.closeAddAccountTips_layer = true
+                this.goRoomData = deepClone(param)// 去分配吧
+                this.goRoomData.id = res.data
               } else {
                 if (res.code * 1 === 0) {
                   this.$message({
                     message: '新增账户成功',
                     type: 'success'
                   })
+                  this.layer_account = false
                   this.searchParam()
                   this.layer_account = false
                 } else {
@@ -463,8 +469,13 @@ export default {
                     message: res.message,
                     type: 'warning'
                   })
+                  this.layer_account = false
                 }
               }
+            }).catch(() => {
+              setTimeout(() => {
+                this.sureLoading = false
+              }, 2000)
             })
           }
         }
@@ -483,12 +494,13 @@ export default {
     },
     cancelAddAccount () {
       this.layer_account = false
+      this.sureLoading = false
       this.$refs['accountForm'].clearValidate()
     },
     assignHouse (data) { // 房源管理
-      if (data.role === 1 || data.role === 3) {
+      if (data.role === 1 || data.role === 3 || data.hasAllRoomAuth === 1) {
         this.$message({
-          message: '该账号拥有所有房源,无需设置',
+          message: '该账号拥有该部门下所有房源,无需设置',
           type: 'warning'
         })
         return false
