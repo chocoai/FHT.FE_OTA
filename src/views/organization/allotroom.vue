@@ -248,9 +248,7 @@ export default {
       }
       this.formData.depId = this.orgData.depId
       this.$nextTick(() => {
-        this.$refs.refGridUnit.searchHandler({
-          type: 'refresh'
-        })
+        this.$refs.refGridUnit.searchHandler()
       })
     },
 
