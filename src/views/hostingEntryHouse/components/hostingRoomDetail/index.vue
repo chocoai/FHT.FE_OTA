@@ -1099,12 +1099,19 @@ export default {
       queryHostingHouseByOuterHouseUuidApi({
         'outerHouseUuid': this.outerHouseUuid
       }).then((res) => {
-        console.log(this.houseRentType)
-        console.log(res)
         if (res.data) {
           if (this.houseRentType === res.data.houseRentType) {
             if (!res.data.decorationDegree) {
               res.data.decorationDegree = 3
+            }
+            if (!res.data.contactGender) {
+              res.data.contactGender = 1
+            }
+            if (!res.data.boardCount) {
+              res.data.boardCount = 0
+            }
+            if (!res.data.toiletCount) {
+              res.data.toiletCount = 0
             }
             this.setRoomDetailData(res.data) // 调用编辑的
           } else {
