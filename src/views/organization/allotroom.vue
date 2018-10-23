@@ -94,7 +94,10 @@
         </div>
       </el-form>
     </div>
-    <div class="layout-container">
+    <div
+      style="margin-bottom:40px;"
+      class="layout-container"
+    >
       <GridUnit
         ref="refGridUnit"
         :form-options="formData"
