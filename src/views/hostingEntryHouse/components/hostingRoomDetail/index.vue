@@ -1103,6 +1103,9 @@ export default {
         console.log(res)
         if (res.data) {
           if (this.houseRentType === res.data.houseRentType) {
+            if (!res.data.decorationDegree) {
+              res.data.decorationDegree = 3
+            }
             this.setRoomDetailData(res.data) // 调用编辑的
           } else {
             this.$message({
