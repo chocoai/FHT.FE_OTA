@@ -52,20 +52,6 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
-              size="small"
-              type="primary"
-              icon="el-icon-search"
-              @click="searchParam">查询</el-button>
-            <el-button
-              size="small"
-              icon="el-icon-remove-outline"
-              style="margin-left:10px"
-              @click="searchParam('clear')">清空</el-button>
-          </el-form-item>
-        </div>
-        <div class="item-flex">
-          <el-form-item>
             <el-select
               v-model="searchParams.roomStatus"
               size="small"
@@ -81,6 +67,20 @@
                 label="未出租"/>
             </el-select>
           </el-form-item>
+          <el-form-item>
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-search"
+              @click="searchParam">查询</el-button>
+            <el-button
+              size="small"
+              icon="el-icon-remove-outline"
+              style="margin-left:10px"
+              @click="searchParam('clear')">清空</el-button>
+          </el-form-item>
+        </div>
+        <div class="item-flex">
           <el-form-item>
             <el-select
               v-model="searchParams.mailinStatus"
@@ -128,6 +128,14 @@
                 label="闲鱼下架失败"/>
 
             </el-select>
+          </el-form-item>
+          <el-form-item style="width:260px;margin-right:40px;">
+            <SelectTree
+              :expanded-keys="expendedKeys"
+              node-key = "depId"
+              @treeNodeClick="clickTreeNode"
+              @getParentDep = "getParentDep"
+            ></SelectTree>
           </el-form-item>
           <el-form-item>
             <el-button
@@ -230,17 +238,6 @@
         <template
           slot="slot_mailinStatus"
           slot-scope="scope">
-          <!-- <el-popover
-            v-if="scope.row.mailinStatus === 9"
-            trigger="hover"
-            placement="top">
-            <p>发布失败原因: {{ scope.row.mailinfailMessage }}</p>
-            <div slot="reference">
-              <el-tag :type="(scope.row.mailinStatus) | renderStatusType">
-                {{ (scope.row.mailinStatus) | renderStatusValue }}
-              </el-tag>
-            </div>
-          </el-popover> -->
           <el-tag
             :type="( scope.row.mailinStatus) | renderStatusType">
             {{ scope.row.mailinStatus | renderStatusValue }}
@@ -360,6 +357,7 @@ import { deepClone } from '@/utils'
 import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/components/Authorize'
+import SelectTree from '@/components/SelectTree/'
 import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
 import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi, certificationFromApi } from '@/api/houseManage'
 export default {
@@ -368,7 +366,8 @@ export default {
     GridUnit,
     areaSelect,
     authorize,
-    hostingRoomDetail
+    hostingRoomDetail,
+    SelectTree
   },
   filters: {
     // 麦邻 闲鱼发布状态
@@ -405,6 +404,10 @@ export default {
       }
     }
     return {
+      expendedKeys: {
+        depId: Number,
+        depName: 'ddd'
+      },
       roomDetailWidth: '60%', // 房间信息弹窗宽度
       certificationFrom: {
         userName: '',
@@ -789,6 +792,15 @@ export default {
     // 移除校验结果
     clearValidate (ref) {
       this.$refs[ref].clearValidate()
+    },
+    // 点击树的结构
+    clickTreeNode (data) {
+      console.log(data)
+    },
+    // 获取组织架构最顶级部门的ID
+    getParentDep (data) {
+      this.expendedKeys = deepClone(data)
+      console.log('顶级部门ID', data)
     }
   }
 }

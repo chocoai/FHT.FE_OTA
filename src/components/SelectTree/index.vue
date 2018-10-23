@@ -4,6 +4,7 @@
       ref="treeInput"
       v-model="filterText"
       placeholder="输入关键字进行过滤"
+      size="small"
       @blur="treeInputBlur"
       @focus="treeInputFocus">
     </el-input>
@@ -15,7 +16,7 @@
         :data="treeData"
         :props="defaultProps"
         :filter-node-method="filterNode"
-        :default-expanded-keys="[defaultExpandedKeys.depId]"
+        :default-expanded-keys="[expandedKeys.depId]"
         :indent="8"
         :node-key="nodeKey"
         class="filter-tree"
@@ -32,7 +33,7 @@ export default {
   components: {
   },
   props: {
-    defaultExpandedKeys: { // 默认展开部门
+    expandedKeys: { // 默认展开部门
       type: Object,
       default: () => {
         return {}
@@ -47,6 +48,7 @@ export default {
   },
   data () {
     return {
+      parentOrg: {},
       showClick: false,
       treeShow: false,
       filterText: '',
@@ -68,9 +70,7 @@ export default {
     this.getTree()
   },
   mounted () {
-    // setTimeout(() => {
-    //   console.log('zi组件mounted', this.defaultExpandedKeys)
-    // }, 2000)
+    this.filterText = this.expandedKeys.depName
   },
   methods: {
     filterNode (value, data) {
@@ -82,13 +82,15 @@ export default {
         if (res.data) {
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
         }
-        this.currentTreeData = res.data.depName
+        this.parentOrg = {
+          'depId': res.data.depId,
+          'depName': res.data.depName
+        }
+        this.$emit('getParentDep', this.parentOrg)
       }).catch(rej => {})
     },
     treeInputBlur () {
-      // setTimeout(() => {
-      //   this.treeShow = false
-      // }, 10)
+
     },
     treeInputFocus () {
       this.treeShow = true
@@ -106,7 +108,7 @@ export default {
 <style>
 .selectTree{
   position: relative;
-  width:50%;
+  width:100%;
   }
 .treeShow{
   position: absolute;
