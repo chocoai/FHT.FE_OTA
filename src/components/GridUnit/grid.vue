@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:47:22
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-22 16:47:41
+ * @Last Modified time: 2018-10-23 15:19:58
  */
 <template>
   <div class="model-table-pagenation">
@@ -331,9 +331,11 @@ export default {
         this.multipleSelection = [...Array.from(arguments).slice(1)][0]
         setTimeout(() => {
           this.changePageHoldSelection()
+          this.$emit(event, ...Array.from(arguments).slice(1))
         }, 0)
+      } else {
+        this.$emit(event, ...Array.from(arguments).slice(1))
       }
-      this.$emit(event, ...Array.from(arguments).slice(1))
     },
     // 切换表格selection
     setSelectRow () {
