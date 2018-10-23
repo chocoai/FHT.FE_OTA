@@ -1,6 +1,7 @@
 <template>
   <div class="selectTree">
     <el-input
+      ref="treeInput"
       v-model="filterText"
       placeholder="输入关键字进行过滤"
       @blur="treeInputBlur"
@@ -14,11 +15,12 @@
         :data="treeData"
         :props="defaultProps"
         :filter-node-method="filterNode"
-        :default-expanded-keys="[nowOrgObj.depId]"
-        node-key="depId"
+        :default-expanded-keys="[defaultExpandedKeys.depId]"
+        :indent="8"
+        :node-key="nodeKey"
         class="filter-tree"
-        default-expand-all
-        @node-click="handleNodeClick">
+        @node-click="handleNodeClick"
+      >
       </el-tree>
     </div>
   </div>
@@ -30,10 +32,16 @@ export default {
   components: {
   },
   props: {
-    nowOrgObj: {
+    defaultExpandedKeys: { // 默认展开部门
       type: Object,
       default: () => {
         return {}
+      }
+    },
+    nodeKey: {
+      type: String,
+      default: () => {
+        return ''
       }
     }
   },
@@ -47,20 +55,22 @@ export default {
         children: 'children',
         label: 'depName',
         id: 'depId'
-      }
+      },
+      currentTreeData: ''
     }
   },
-
   watch: {
     filterText (val) {
-      this.$refs.selectTreeRef.filter(val)
+      this.$refs.selectTreeRef.filter(val) // 文本框搜索
     }
   },
   created () {
     this.getTree()
   },
   mounted () {
-
+    // setTimeout(() => {
+    //   console.log('zi组件mounted', this.defaultExpandedKeys)
+    // }, 2000)
   },
   methods: {
     filterNode (value, data) {
@@ -72,12 +82,13 @@ export default {
         if (res.data) {
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
         }
+        this.currentTreeData = res.data.depName
       }).catch(rej => {})
     },
     treeInputBlur () {
-      // if (this.showClick) {
+      // setTimeout(() => {
       //   this.treeShow = false
-      // }
+      // }, 10)
     },
     treeInputFocus () {
       this.treeShow = true
@@ -85,9 +96,8 @@ export default {
     },
     handleNodeClick (data) {
       this.showClick = false
-      this.filterText = data.depName
-      this.$emit('nodeClick', data)
-      console.log('子组件数据', data)
+      this.$set(this, 'filterText', data.depName)
+      this.$emit('treeNodeClick', data)
       this.treeShow = false
     }
   }

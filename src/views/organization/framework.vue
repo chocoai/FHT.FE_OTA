@@ -6,15 +6,12 @@
  */
 <template>
   <div class="orgStyle">
-    <!-- <SelectTree
-      :now-org-obj = "nowOrgObj"
-      @nodeClick="nodeClick"
-    ></SelectTree> -->
+    <div style="width:30%;margin-left:300px;">
+    </div>
     <el-container>
       <el-aside
         width="260px"
         class="asideBox">
-        <!-- <div class="currentOr">当前架构</div> -->
         <el-tree
           ref="trees"
           :data="treeData"
@@ -165,8 +162,6 @@
 
 <script>
 import GridUnit from '@/components/GridUnit/grid'
-import SelectTree from '@/components/SelectTree/'
-// import { validateMobile, validateisCard } from '@/utils/validate'
 import areaSelect from '@/components/AreaSelect'
 import { deepClone } from '@/utils'
 import { getDepartmentInfo } from '@/api/organization'
@@ -175,11 +170,11 @@ export default {
   name: 'FrameWork',
   components: {
     GridUnit,
-    areaSelect,
-    SelectTree
+    areaSelect
   },
   data () {
     return {
+      // nodeKey: 'depId',
       userDepId: '',
       closeTree: false,
       depLevel: false,
@@ -258,6 +253,9 @@ export default {
   },
   created () {
     this.getTree()
+  },
+  mounted () {
+
   },
   methods: {
     getTree () { // 获取组织架构名称并且默认表格数据
