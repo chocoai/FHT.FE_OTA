@@ -469,7 +469,6 @@ export default {
         },
         { prop: 'idlefishStatus',
           label: '闲鱼租房',
-          width: 100,
           type: 'status',
           slotName: 'slot_idlefishStatus'
         },
@@ -569,30 +568,26 @@ export default {
     },
     // 城市区域
     getCityName (houseRentType) {
-      var params = {
+      let params = {
         'resource': houseRentType
       }
-      var cityData = []
+      let cityData = []
       queryCityAreaPlotApi(params).then(res => {
-        if (res.data.subdistrictList) {
-          this.residential = res.data.subdistrictList
-        }
-        if (res.data.cityList) {
-          cityData = res.data.cityList
-          if (cityData.length > 0) {
-            cityData.forEach((backData, index) => {
-              cityData[index].value = backData.cityId
-              cityData[index].label = backData.cityName
+        this.residential = res.data.subdistrictList || []
+        cityData = res.data.cityList || []
+        if (cityData.length > 0) {
+          cityData.forEach((backData, index) => {
+            cityData[index].value = backData.cityId
+            cityData[index].label = backData.cityName
 
-              if (cityData[index].regionList.length > 0) {
-                cityData[index].regionList.forEach((cityArea, item) => {
-                  cityArea.value = cityArea.areaId
-                  cityArea.label = cityArea.areaName
-                })
-              }
-            })
-            this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
-          }
+            if (cityData[index].regionList.length > 0) {
+              cityData[index].regionList.forEach((cityArea, item) => {
+                cityArea.value = cityArea.areaId
+                cityArea.label = cityArea.areaName
+              })
+            }
+          })
+          this.options = deepClone(JSON.parse(JSON.stringify(cityData).replace(/regionList/g, 'children')))
         }
       })
     },
@@ -777,7 +772,6 @@ export default {
     },
     // 添加修改房间信息
     openRoomDetail (params) {
-      console.log(params)
       hostingHouseInfoApi({
         fangyuanCode: params.fangyuanCode
       }).then((res) => {
@@ -791,7 +785,6 @@ export default {
     handleSetting () {
       this.authorizeShow = true
     },
-
     // 移除校验结果
     clearValidate (ref) {
       this.$refs[ref].clearValidate()

@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:11:36
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-28 16:35:53
+ * @Last Modified time: 2018-10-17 11:14:37
  */
 
 <template>
@@ -124,13 +124,11 @@ export default {
   }
   display: inline-block;
   width: 100%;
-  &.router-link-active {
+  .is-active {
+    background-color:rgba(41, 44, 207, 1) !important;
     .activeBlock {
       opacity: 1;
       transition: 300ms;
-    }
-    .is-active {
-      background-color:rgba(41, 44, 207, 1) !important;
     }
   }
 }

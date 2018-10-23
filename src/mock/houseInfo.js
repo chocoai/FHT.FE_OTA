@@ -159,7 +159,7 @@ const houseManage_info = {
       },
       {
         'regionAddressId': 3567,
-        'areaId': 555,
+        'areaId': 14000,
         'cityId': 444,
         'name': '北京高档小区'
       }, {
@@ -196,6 +196,282 @@ const houseManage_info = {
     'code': '0',
     'message': '操作成功',
     'data': null
+  },
+  queryDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'depName': '杭州来去自如房产管理有限公司', // 组织名
+      'depId': 1, // 上级组织
+      'cityId': 111,
+      'children': [{// 组织架构层级
+        'depName': '上海分部', // 部门名
+        'parentId': 'aaaa', // 上级部门
+        'depId': 2, // 部门ID
+        'cityId': '444',
+        'gmtCreate': '2018-08-08 11:11:11', // 创建时间
+        'managedHouse': 100, // 管理的房源数量
+        'children': [
+          {
+            'depName': '徐东地区', // 部门名
+            'parentId': 'child1', // 上级部门
+            'depId': 3, // 部门ID
+            'cityId': '222',
+            'gmt_create': '2018-08-08 11:11:11', // 创建时间
+            'managedHouse': 100// 管理的房源数量
+          }
+        ]
+      }]
+    }
+  },
+  getDepartmentInfo: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': [{
+      'depName': '上海分部', // 部门名
+      'parent': '上海分部', // 上级部门
+      'depId': 1, // 部门ID
+      'provinceId': 150000,
+      'cityId': 150500,
+      'districtId': 150522,
+      'parentId': '2',
+      'gmtCreate': '2018-08-08 11:11:11', // 创建时间
+      'managedHouse': 100 // 管理的房源数量
+    }]
+  },
+  addDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
+  },
+  queryOneDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'depId': 1,
+      'depName': '上海总部',
+      'provinceId': 150000,
+      'cityId': 150500,
+      'districtId': 150522,
+      'parentDepId': 3
+    }
+  },
+  editDepartment: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
+  },
+  queryDistributeToDepList: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'record': 1,
+      'houseList': [{
+        'fangyuanCode': '130000',
+        'subdistrictName': '余杭区-xx苑',
+        'roomNo': '302',
+        'boardCount': 1,
+        'chamberCount': 1,
+        'toiletCount': 1,
+        'roomCount': 99
+      }, {
+        'fangyuanCode': '14000',
+        'subdistrictName': '西湖小区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      },
+      {
+        'fangyuanCode': '140010',
+        'subdistrictName': '美丽小区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      }, {
+        'fangyuanCode': '140004',
+        'subdistrictName': '拱墅区',
+        'roomNo': '303',
+        'boardCount': 1,
+        'chamberCount': 2,
+        'toiletCount': 3,
+        'roomCount': 1000
+      }]
+    }
+  },
+  distributeHouseToDep: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
+  },
+  depMembers:
+    {
+      'reqId': null,
+      'code': '0',
+      'message': '操作成功',
+      'data': [{
+        'cityId': 111,
+        'id': 1,
+        'name': '张三',
+        'role': 3,
+        'depId': 3,
+        'depName': '上海分部',
+        'gender': 1,
+        'mobile': 13089887656,
+        'hasAllRoomAuth': 1
+      },
+      {
+        'cityId': 111,
+        'id': 2,
+        'name': '李四',
+        'role': 1,
+        'depName': '徐东地区',
+        'gender': 2,
+        'depId': 2,
+        'mobile': 15078667898,
+        'hasAllRoomAuth': 0
+      },
+      {
+        'id': 2,
+        'name': '李四',
+        'role': 2,
+        'depName': '徐东地区',
+        'gender': 2,
+        'depId': 2,
+        'mobile': 15078667898,
+        'hasAllRoomAuth': 0
+      }]
+
+    },
+  addAccount: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+    }
+  },
+  distributeHouseToUser: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': null
+  },
+  queryHostingHouseByOuterHouseUuid: { // 外部编码
+    'code': '0',
+    'depId': 1,
+    'outerHouseUuid': 'outerHouseUuid',
+    'fangyuanCode': '2000023087',
+    'orgId': 79,
+    'adminUserId': 143,
+    'houseRentType': 1,
+    'provinceId': 430000,
+    'provinceName': null,
+    'cityId': 430100,
+    'cityName': null,
+    'regionId': 430121,
+    'regionName': null,
+    'zoneId': 0,
+    'zoneName': null,
+    'subdistrictId': 10784,
+    'subdistrictName': '物贸路',
+    'subdistrictAddress': '物贸路',
+    'buildingName': '2',
+    'unitCode': '2',
+    'roomNo': '201',
+    'chamberCount': 2,
+    'boardCount': 2,
+    'toiletCount': 2,
+    'houseArea': 222,
+    'floorName': '2',
+    'floorAmount': 2,
+    'houseDirection': 1,
+    'decorationDegree': 1,
+    'facilityItems': '',
+    'houseDesc': '',
+    'contactName': 'yj',
+    'contactGender': 1,
+    'contactMobile': '13685772564',
+    'tag': null,
+    'sourceInfo': null,
+    'pictures': null,
+    'payOfPayment': 1,
+    'depositOfPayment': 1,
+    'rent': 1700.0,
+    'deposit': 1700.0,
+    'hostingRooms': [
+      {
+        'roomCode': '200061909',
+        'fangyuanCode': null,
+        'roomName': '房间A',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'payOfPayment': 1,
+        'depositOfPayment': 1,
+        'rent': 1700.0,
+        'deposit': 1700.0,
+        'facilityItems': '',
+        'pictures': [
+          {
+            'imageName': '1.png',
+            'src': 'src',
+            'isBase64': 0
+          }
+        ]
+      },
+      {
+        'roomCode': '200061910',
+        'fangyuanCode': null,
+        'roomName': '房间B',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      },
+      {
+        'roomCode': '200061911',
+        'fangyuanCode': null,
+        'roomName': '房间C',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      },
+      {
+        'roomCode': '200061912',
+        'fangyuanCode': null,
+        'roomName': '房间D',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      },
+      {
+        'roomCode': '200061913',
+        'fangyuanCode': null,
+        'roomName': '房间E',
+        'roomArea': 22,
+        'roomDirection': 1,
+        'roomAttributes': '',
+        'facilityItems': '',
+        'pictures': null
+      }
+    ]
   }
 }
 
@@ -229,6 +505,38 @@ export default {
   },
   certificationFrom: () => {
     return houseManage_info.certificationFrom
+  },
+  queryDepartment: () => {
+    return houseManage_info.queryDepartment
+  },
+  getDepartmentInfo: () => {
+    return houseManage_info.getDepartmentInfo
+  },
+  addDepartment: () => {
+    return houseManage_info.addDepartment
+  },
+  queryOneDepartment: () => {
+    return houseManage_info.queryOneDepartment
+  },
+  editDepartment: () => {
+    return houseManage_info.editDepartment
+  },
+  queryDistributeToDepList: () => {
+    return houseManage_info.queryDistributeToDepList
+  },
+  distributeHouseToDep: () => {
+    return houseManage_info.distributeHouseToDep
+  },
+  depMembers: () => {
+    return houseManage_info.depMembers
+  },
+  addAccount: () => {
+    return houseManage_info.addAccount
+  },
+  distributeHouseToUser: () => {
+    return houseManage_info.distributeHouseToUser
+  },
+  queryHostingHouseByOuterHouseUuid: () => {
+    return houseManage_info.queryHostingHouseByOuterHouseUuid
   }
-
 }

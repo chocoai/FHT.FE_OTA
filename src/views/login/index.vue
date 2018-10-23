@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:52
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-28 16:21:25
+ * @Last Modified time: 2018-10-18 12:35:44
  */
 
 <template>
@@ -62,10 +62,70 @@
         </el-form-item>
       </el-form>
     </section>
+    <el-dialog
+      :visible.sync="modifyPassLayer"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      title="修改初始密码"
+      width="500px"
+      @close="handleClose">
+      <el-form
+        ref="modifyPassForm"
+        :model="modifyPassData"
+        :rules="modifyPassRules"
+        label-width="80px">
+        <el-form-item label="手机">
+          <el-input
+            v-model="modifyPassData.account"
+            :disabled="true">
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          label="验证码"
+          prop="verifyCode">
+          <el-row>
+            <el-input
+              v-model="modifyPassData.verifyCode"
+              placeholder="请输入的验证码">
+              <el-button
+                v-if="sendAuthCode"
+                ref="sendVerifyRef"
+                slot="append"
+                class="sendCode"
+                @click="sendVerifyCode">发送验证码</el-button>
+              <span
+                v-else
+                slot="append"
+                class="disabled">{{ auth_time }}s后重新发送</span>
+            </el-input>
+          </el-row>
+        </el-form-item>
+        <el-form-item
+          label="新密码"
+          prop="modifyPassword">
+          <el-input
+            v-model="modifyPassData.modifyPassword"
+            type="password"
+            placeholder="请输入6-12位密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer">
+        <el-button
+          type="primary"
+          @click="sureModifyPass">确 定</el-button>
+        <el-button
+          @click="modifyPassLayer = false">取 消</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
-// import { validateMobile } from '@/utils/validate'
+import { loginApi, sendVerifyCodeApi } from '@/api/user'
+import { SHA2 } from '@/utils/sha'
 
 export default {
   name: 'Login',
@@ -84,6 +144,19 @@ export default {
         callback()
       }
     }
+    const modifyValidatePass = (rule, value, callback) => {
+      console.log(value)
+      if (!value) {
+        callback(new Error('请输入密码'))
+      }
+      setTimeout(() => {
+        if (value.length < 6 || value.lenght > 12) {
+          callback(new Error('请输入6-12位密码'))
+        } else {
+          callback()
+        }
+      }, 1000)
+    }
     return {
       loginForm: {
         mobile: '',
@@ -97,23 +170,95 @@ export default {
           { required: true, trigger: 'blur', validator: validatePass }
         ]
       },
-      loading: false
+      modifyPassRules: {
+        modifyPassword: [
+          { required: true, trigger: 'blur', validator: modifyValidatePass }
+        ],
+        verifyCode: [
+          { required: true, trigger: 'blur', message: '请输入验证码' }
+        ]
+      },
+      loading: false,
+      modifyPassLayer: false,
+      modifyPassData: {
+        'account': '',
+        'modifyPassword': '',
+        'verifyCode': '',
+        'mobile': ''
+      },
+      sendAuthCode: true,
+      auth_time: 0,
+      auth_timetimer: null
     }
   },
   methods: {
     handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
-            this.loading = false
-            this.$router.push({ path: '/' })
-          }).catch(() => {
-            this.loading = false
-          })
+          this.doLogin(this.loginForm.password)
         } else {
           return false
         }
+      })
+    },
+    doLogin (password) {
+      this.loading = true
+      this.$store.dispatch('Login', {
+        mobile: this.loginForm.mobile,
+        password
+      }).then((res) => {
+        this.loading = false
+        this.modifyPassData.account = this.loginForm.mobile
+        if (res.firstLogin) {
+          this.modifyPassLayer = true
+        } else {
+          this.$router.push({ path: '/' })
+        }
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    handleClose () {
+      this.modifyPassData = {}
+      this.$refs.modifyPassForm.clearValidate()
+      this.sendAuthCode = true
+      clearInterval(this.auth_timetimer)
+    },
+    sureModifyPass () { // 确认提交修改密码
+      let param = {
+        'account': this.modifyPassData.account,
+        'newPassword': this.modifyPassData.modifyPassword,
+        'verifyCode': this.modifyPassData.verifyCode
+      }
+      this.$refs.modifyPassForm.validate(valid => {
+        if (valid) {
+          loginApi.modifyPassword({
+            ...param,
+            newPassword: SHA2(param.newPassword)
+          }).then(() => {
+            this.$message.success('密码修改成功')
+            this.doLogin(param.newPassword)
+          })
+        }
+      })
+    },
+    getAuthCode () { // 倒计时
+      this.sendAuthCode = false
+      this.auth_time = 60
+      this.auth_timetimer = setInterval(() => {
+        this.auth_time--
+        if (this.auth_time <= 0) {
+          this.sendAuthCode = true
+          clearInterval(this.auth_timetimer)
+        }
+      }, 1000)
+    },
+    sendVerifyCode () { // 发送验证码
+      sendVerifyCodeApi({
+        'mobile': this.modifyPassData.account
+      }).then((res) => {
+        this.$message.success('验证码发送成功')
+        this.getAuthCode()
       })
     }
   }
@@ -137,7 +282,7 @@ export default {
   //   -webkit-box-shadow: 0 0 0px 1000px rgb(255, 255, 255) inset !important;
   //   -webkit-text-fill-color: #fff !important;
   // }
-  input {
+  .login-form input {
     background: transparent;
     border: 0px;
     -webkit-appearance: none;
@@ -206,6 +351,18 @@ export default {
     img {
       width: 100%;
       height: 100%;
+    }
+  }
+
+  .el-input-group__append {
+    .sendCode{
+      background: #66b1ff;
+      border-color: #66b1ff;
+      border-radius: 0;
+      color: #fff;
+    }
+    .disabled {
+      cursor: not-allowed;
     }
   }
 }

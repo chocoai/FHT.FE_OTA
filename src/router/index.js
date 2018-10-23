@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:07:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-25 21:20:43
+ * @Last Modified time: 2018-10-19 18:36:03
  */
 
 import Vue from 'vue'
@@ -60,8 +60,6 @@ export default new Router({
   routes: constantRouterMap
 })
 
-console.log(__dirname)
-
 export const asyncRouterMap = [
   {
     path: '/example',
@@ -70,9 +68,7 @@ export const asyncRouterMap = [
     name: '示例',
     icon: 'example',
     hidden: true,
-    meta: {
-      role: ['admin', 'global']
-    },
+    meta: {},
     children: [{
       path: 'image',
       component: _import('example/image'),
@@ -107,6 +103,52 @@ export const asyncRouterMap = [
       name: '分散合租录入',
       path: 'hostingJointRentPage',
       component: _import('hostingEntryHouse/jointRent')
+    }]
+  },
+  {
+    path: '/organization',
+    name: '组织',
+    component: Layout,
+    redirect: '/framework',
+    noDropdown: true,
+    icon: 'org_structure',
+    children: [{
+      name: '组织架构',
+      path: 'framework',
+      component: _import('organization/framework'),
+      meta: {
+        role: [1, 3]
+      }
+    }]
+  },
+  {
+    path: '/houseSource',
+    name: '分配房源',
+    component: Layout,
+    noDropdown: true,
+    hidden: true,
+    children: [{
+      name: '部门分配房源',
+      path: 'allotroom',
+      component: _import('organization/allotroom'),
+      meta: {
+        noTags: true
+      }
+    }]
+  },
+  {
+    path: '/staffManages',
+    name: '人员',
+    component: Layout,
+    noDropdown: true,
+    icon: 'personal_mange',
+    children: [{
+      name: '人员管理',
+      path: 'staffManage',
+      component: _import('staffManages/staffManage'),
+      meta: {
+        role: [1, 3]
+      }
     }]
   },
   {

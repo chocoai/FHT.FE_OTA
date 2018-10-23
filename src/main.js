@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:24:18
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-09-21 15:51:18
+ * @Last Modified time: 2018-10-19 19:56:35
  */
 
 import Vue from 'vue'
@@ -20,8 +20,6 @@ import lazyLoadPic from '@/assets/lazyLoad.png'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'nprogress/nprogress.css'
 import 'normalize.css/normalize.css'
-
-console.log(router)
 
 Vue.config.productionTip = false
 
@@ -42,19 +40,17 @@ Object.keys(filters).forEach(key => {
 const whiteList = ['/login']
 router.beforeEach((to, from, next) => {
   NProgress.start()
+  // 记录路由来源信息
+  if (from.name) {
+    store.dispatch('GetRouterInfo', { to, from })
+  }
   if (getSessionId()) {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      if (store.getters.roles.length === 0) {
+      if (store.getters.roles === null) {
         store.dispatch('GetInfo').then(res => {
-          // const rolesMap = {
-          //   '1': 'admin',
-          //   '99': 'service',
-          //   '0': 'global'
-          // }
-          // const roles = [(rolesMap[res.data.isAdmin.toString()] || 'global')]
-          const roles = ['admin']
+          const roles = res.data.role
           store.dispatch('GenerateRoutes', { roles }).then(() => {
             router.addRoutes(store.getters.addRouters)
             next({ ...to })
