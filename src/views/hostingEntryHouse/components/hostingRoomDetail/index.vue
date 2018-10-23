@@ -1099,32 +1099,36 @@ export default {
       queryHostingHouseByOuterHouseUuidApi({
         'outerHouseUuid': this.outerHouseUuid
       }).then((res) => {
-        if (res.data) {
-          if (this.houseRentType === res.data.houseRentType) {
-            if (!res.data.decorationDegree) {
-              res.data.decorationDegree = 3
+        if (res.code * 1 === 0) {
+          if (res.data) {
+            if (this.houseRentType === res.data.houseRentType) {
+              if (!res.data.decorationDegree) {
+                res.data.decorationDegree = 3
+              }
+              if (!res.data.contactGender) {
+                res.data.contactGender = 1
+              }
+              if (!res.data.boardCount) {
+                res.data.boardCount = 0
+              }
+              if (!res.data.toiletCount) {
+                res.data.toiletCount = 0
+              }
+              this.setRoomDetailData(res.data) // 调用编辑的
+            } else {
+              this.$message({
+                message: '请输入' + this.houseRentName + '房源的外部编码',
+                type: 'warning'
+              })
             }
-            if (!res.data.contactGender) {
-              res.data.contactGender = 1
-            }
-            if (!res.data.boardCount) {
-              res.data.boardCount = 0
-            }
-            if (!res.data.toiletCount) {
-              res.data.toiletCount = 0
-            }
-            this.setRoomDetailData(res.data) // 调用编辑的
           } else {
             this.$message({
-              message: '请输入' + this.houseRentName + '房源的外部编码',
+              message: '没有找到相应的数据',
               type: 'warning'
             })
           }
         } else {
-          this.$message({
-            message: '未找到对应房源',
-            type: 'warning'
-          })
+          this.$message.error(res.message)
         }
       })
     },

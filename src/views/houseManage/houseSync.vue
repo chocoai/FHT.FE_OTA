@@ -472,7 +472,6 @@ export default {
         },
         { prop: 'idlefishStatus',
           label: '闲鱼租房',
-          width: 100,
           type: 'status',
           slotName: 'slot_idlefishStatus'
         },
