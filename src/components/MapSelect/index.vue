@@ -5,8 +5,7 @@
       :content="specificAddress"
       class="item"
       effect="dark"
-      placement="top-start"
-    >
+      placement="top-start">
       <el-select
         v-model="specificAddress"
         :clearable="true"
@@ -18,15 +17,13 @@
         remote
         placeholder="请输入关键词"
         @focus="checkAddressSelect"
-        @clear="clearAddress"
-      >
+        @clear="clearAddress">
         <el-option
           v-for="(item, index) in addressList"
           :key="index"
           :value="item.formatName"
           @click.native="setAddress(item)"
-          v-html="item.displayText"
-        >
+          v-html="item.displayText">
         </el-option>
       </el-select>
     </el-tooltip>
@@ -34,39 +31,33 @@
       :visible.sync="mapModelVisible"
       :append-to-body="true"
       title="地图选择小区"
-      width="700px"
-    >
+      width="700px">
       <el-card
         :body-style="{padding: '10px'}"
-        class="map-selected-tips"
-      >
+        class="map-selected-tips">
         <p>1. 如果搜索的内容在右侧列表中小区名称不对（例如：天天超市），点击后可以自定义小区名称、具体位置、所在区域。</p>
         <p>2. 如果搜索的内容在右侧列表中查询不到，请通过鼠标手动定位房源位置，自定义小区名称、具体位置、所在区域。</p>
       </el-card>
       <div class="map-selected-container">
         <div
           ref="bmContainer"
-          class="bm-container"
-        >
+          class="bm-container">
           <div
             id="bm-view"
-            class="bm-view"
-          >
+            class="bm-view">
 
           </div>
           <el-form-item
             class="search-input-form"
             label=""
-            label-width="0"
-          >
+            label-width="0">
             <el-input
               v-model="searchKeywords"
               class="search-input"
               placeholder="请输入公寓地址"
               clearable
               size="small"
-              @keyup.native="searchPositionByKeywords"
-            >
+              @keyup.native="searchPositionByKeywords">
             </el-input>
           </el-form-item>
           <el-popover
@@ -74,76 +65,64 @@
             popper-class="selected-house-position"
             placement="bottom"
             width="360"
-            trigger="manual"
-          >
+            trigger="manual">
             <el-form
               ref="mapSelectForm"
               :model="mapSelectForm"
               :rules="mapSelectFormRules"
               label-position="right"
               label-width="80px"
-              size="mini"
-            >
+              size="mini">
               <i
                 class="el-icon-close close-icon"
-                @click="$refs.popover.doClose()"
-              ></i>
+                @click="$refs.popover.doClose()"></i>
               <el-form-item class="form-item">
                 <div
                   slot="label"
-                  class="city-label"
-                >当前城市</div>
+                  class="city-label">当前城市</div>
                 <p class="city-name">{{ mapSelectForm.city }}</p>
               </el-form-item>
               <el-form-item
                 class="form-item"
                 label="所在区域"
-                prop="region"
-              >
+                prop="region">
                 <el-select
                   v-model="mapSelectForm.region"
-                  style="width: 100%"
-                >
+                  style="width: 100%">
                   <el-option
                     v-for="item in regionOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value"
-                  >
+                    :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item
                 class="form-item"
                 label="小区名称"
-                prop="name"
-              >
+                prop="name">
                 <el-input v-model="mapSelectForm.name"></el-input>
               </el-form-item>
               <el-form-item
                 class="form-item"
                 label="具体地址"
-                prop="address"
-              >
+                prop="address">
                 <el-input v-model="mapSelectForm.address"></el-input>
               </el-form-item>
             </el-form>
             <div
               slot="reference"
-              class="selected-point"
-            ></div>
+              class="selected-point"></div>
           </el-popover>
         </div>
         <el-card
           :body-style="{padding: '10px 0'}"
-          class="search-list"
-        >
+          class="search-list">
           <a
             v-for="(o, i) in searchResult"
             :key="i"
             class="search-list-item"
-            @click="setMapPosition(o.location, o)"
-          >
+            @click="setMapPosition(o.location, o)">
             <p class="title">{{ o.name }}</p>
             <p class="address">{{ o.address }}</p>
           </a>
@@ -152,13 +131,11 @@
       <div slot="footer">
         <el-button
           size="small"
-          @click="closeMapModel"
-        >取 消</el-button>
+          @click="closeMapModel">取 消</el-button>
         <el-button
           type="primary"
           size="small"
-          @click="closeMapModel('save')"
-        >确 定</el-button>
+          @click="closeMapModel('save')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -235,9 +212,6 @@ export default {
     }
   },
   mounted () {
-    this.setAddress({
-      cityId: '-1'
-    })
   },
   methods: {
     fetchAddressList (query) { // 模糊查询公寓/小区列表
@@ -322,6 +296,7 @@ export default {
       if (!this.geocoder) {
         this.geocoder = new AMap.Geocoder()
       }
+      console.log(selectAddr)
       this.geocoder.getLocation(selectAddr || '杭州市', (status, result) => {
         if (status === 'complete' && result.geocodes.length) {
           console.log(result)
@@ -347,7 +322,7 @@ export default {
       }
       AMap.plugin('AMap.PlaceSearch', () => {
         var autoOptions = {
-          city: '杭州市'
+          city: this.mapSelectForm.city || '杭州市'
         }
         var placeSearch = new AMap.PlaceSearch(autoOptions)
         placeSearch.search(this.searchKeywords, (status, result) => {
@@ -373,12 +348,12 @@ export default {
         if (status === 'complete' && result.regeocode) {
           console.log(result)
           const addressInfo = result.regeocode.addressComponent
-          if (addressInfo.city !== this.mapSelectForm.city) {
-            this.mapSelectForm.city = addressInfo.city
+          if ((addressInfo.city || addressInfo.province) !== this.mapSelectForm.city) {
+            this.mapSelectForm.city = (addressInfo.city || addressInfo.province)
             const provinceArr = cityData.filter((item) => item.label === addressInfo.province)
             if (provinceArr[0] && provinceArr[0].children) {
               this.tempAreaCode[0] = provinceArr[0].value
-              const cityArr = provinceArr[0].children.filter((n) => n.label === addressInfo.city)
+              const cityArr = provinceArr[0].children.filter((n) => n.label === (addressInfo.city || addressInfo.province))
               if (cityArr[0] && cityArr[0].children) {
                 this.tempAreaCode[1] = cityArr[0].value
                 this.regionOptions = cityArr[0].children
@@ -404,8 +379,8 @@ export default {
             longitude: point[0] + '',
             latitude: point[1] + ''
           }))
+          this.tempMapData = deepClone(this.mapSelectForm)
         }
-        this.tempMapData = deepClone(this.mapSelectForm)
       })
       this.$refs.popover.doShow()
     },
