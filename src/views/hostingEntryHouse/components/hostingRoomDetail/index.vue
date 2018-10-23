@@ -1099,7 +1099,7 @@ export default {
       queryHostingHouseByOuterHouseUuidApi({
         'outerHouseUuid': this.outerHouseUuid
       }).then((res) => {
-        if (res.data) {
+        if (res.code * 1 === 0 && res.data) {
           if (this.houseRentType === res.data.houseRentType) {
             if (!res.data.decorationDegree) {
               res.data.decorationDegree = 3
@@ -1122,7 +1122,7 @@ export default {
           }
         } else {
           this.$message({
-            message: '未找到对应房源',
+            message: res.message,
             type: 'warning'
           })
         }
