@@ -1,21 +1,25 @@
 <template>
-  <div class="selectTree">
+  <div
+    id="selectTree"
+    class="selectTree"
+  >
     <el-input
       ref="treeInput"
-      v-model="filterText"
+      v-model="depName"
       placeholder="输入关键字进行过滤"
-      @blur="treeInputBlur"
-      @focus="treeInputFocus">
+      size="small"
+      clearable>
     </el-input>
     <div
       v-if="treeShow"
+      ref="selectTreeRefShow"
       class="treeShow">
       <el-tree
         ref="selectTreeRef"
         :data="treeData"
         :props="defaultProps"
         :filter-node-method="filterNode"
-        :default-expanded-keys="[defaultExpandedKeys.depId]"
+        :default-expanded-keys="[expandedKeys.depId]"
         :indent="8"
         :node-key="nodeKey"
         class="filter-tree"
@@ -32,7 +36,7 @@ export default {
   components: {
   },
   props: {
-    defaultExpandedKeys: { // 默认展开部门
+    expandedKeys: { // 默认展开部门
       type: Object,
       default: () => {
         return {}
@@ -47,9 +51,9 @@ export default {
   },
   data () {
     return {
-      showClick: false,
+      parentOrg: {},
       treeShow: false,
-      filterText: '',
+      depName: '',
       treeData: [],
       defaultProps: {
         children: 'children',
@@ -60,17 +64,27 @@ export default {
     }
   },
   watch: {
-    filterText (val) {
-      this.$refs.selectTreeRef.filter(val) // 文本框搜索
+    depName (val) {
+      if (this.treeShow && this.depName !== '') {
+        this.$refs.selectTreeRef.filter(val) // 文本框搜索
+      }
     }
   },
   created () {
     this.getTree()
   },
   mounted () {
-    // setTimeout(() => {
-    //   console.log('zi组件mounted', this.defaultExpandedKeys)
-    // }, 2000)
+    let that = this
+    if (this.expandedKeys.depName !== '') { this.depName = this.expandedKeys.depName }
+    // 组织架构点击其他地方 tree消失  点击相应对象  tree 出现
+    let selectTreeID = document.getElementById('selectTree')
+    document.addEventListener('click', function (e) {
+      if (!selectTreeID.contains(e.target)) {
+        that.$set(that, 'treeShow', false)
+      } else {
+        that.$set(that, 'treeShow', true)
+      }
+    })
   },
   methods: {
     filterNode (value, data) {
@@ -82,21 +96,15 @@ export default {
         if (res.data) {
           this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
         }
-        this.currentTreeData = res.data.depName
+        this.parentOrg = {
+          'depId': res.data.depId,
+          'depName': res.data.depName
+        }
+        this.$emit('getParentDep', this.parentOrg)
       }).catch(rej => {})
     },
-    treeInputBlur () {
-      // setTimeout(() => {
-      //   this.treeShow = false
-      // }, 10)
-    },
-    treeInputFocus () {
-      this.treeShow = true
-      this.showClick = true
-    },
     handleNodeClick (data) {
-      this.showClick = false
-      this.$set(this, 'filterText', data.depName)
+      this.$set(this, 'depName', data.depName)
       this.$emit('treeNodeClick', data)
       this.treeShow = false
     }
@@ -106,7 +114,7 @@ export default {
 <style>
 .selectTree{
   position: relative;
-  width:50%;
+  width:100%;
   }
 .treeShow{
   position: absolute;
