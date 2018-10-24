@@ -406,7 +406,7 @@ export default {
     return {
       expendedKeys: {
         depId: Number,
-        depName: 'ddd'
+        depName: ''
       },
       roomDetailWidth: '60%', // 房间信息弹窗宽度
       certificationFrom: {
@@ -795,12 +795,12 @@ export default {
     // 点击树的结构
     clickTreeNode (data) {
       console.log(data)
-    },
-    // 获取组织架构最顶级部门的ID
-    getParentDep (data) {
-      this.expendedKeys = deepClone(data)
-      console.log('顶级部门ID', data)
     }
+    // 获取组织架构最顶级部门的ID
+    // getParentDep (data) {
+    //   this.expendedKeys = deepClone(data)
+    //   console.log('顶级部门ID', data)
+    // }
   }
 }
 </script>

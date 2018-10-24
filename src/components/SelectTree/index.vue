@@ -70,7 +70,8 @@ export default {
     this.getTree()
   },
   mounted () {
-    this.filterText = this.expandedKeys.depName
+    console.log(this.expandedKeys)
+    if (this.expandedKeys.depName !== '') { this.filterText = this.expandedKeys.depName }
   },
   methods: {
     filterNode (value, data) {
@@ -90,7 +91,7 @@ export default {
       }).catch(rej => {})
     },
     treeInputBlur () {
-
+    
     },
     treeInputFocus () {
       this.treeShow = true
