@@ -12,7 +12,6 @@
     </el-input>
     <div
       v-if="treeShow"
-      ref="selectTreeRefShow"
       class="treeShow">
       <el-tree
         ref="selectTreeRef"
@@ -47,6 +46,12 @@ export default {
       default: () => {
         return ''
       }
+    },
+    clearDepName: {
+      type: Boolean,
+      default: () => {
+        return false
+      }
     }
   },
   data () {
@@ -67,6 +72,11 @@ export default {
     depName (val) {
       if (this.treeShow && this.depName !== '') {
         this.$refs.selectTreeRef.filter(val) // 文本框搜索
+      }
+    },
+    clearDepName (val) {
+      if (this.clearDepName) {
+        this.depName = ''
       }
     }
   },

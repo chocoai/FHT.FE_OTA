@@ -132,6 +132,7 @@
           <el-form-item style="width:260px;margin-right:40px;">
             <SelectTree
               :expanded-keys="expendedKeys"
+              :clear-dep-name="clearDepName"
               node-key = "depId"
               @treeNodeClick="clickTreeNode"
               @getParentDep = "getParentDep"
@@ -413,6 +414,7 @@ export default {
         userName: '',
         userId: ''
       },
+      clearDepName: false,
       rzErrorTips: '',
       selectedOpthons: [],
       options: [],
@@ -506,7 +508,8 @@ export default {
         regionAddressId: '',
         roomNo: '',
         mailinStatus: '',
-        idlefishStatus: ''
+        idlefishStatus: '',
+        depId: ''
       },
       url: houseAsyncApi.requestPath,
       method: houseAsyncApi.queryMethod,
@@ -542,10 +545,11 @@ export default {
           regionAddressId: '',
           roomNo: '',
           mailinStatus: '', // 1-未发布，2-已发布，5：发布失败 ，9：处理中
-          idlefishStatus: ''
+          depId: ''
         }
         this.selectedOpthons = []
         this.selectedArea = []
+        this.clearDepName = true
       }
 
       console.log('查询数据', this.searchParams)
@@ -794,7 +798,7 @@ export default {
     },
     // 点击树的结构
     clickTreeNode (data) {
-      console.log(data)
+      this.searchParams.depId = data.depId
     },
     // 获取组织架构最顶级部门的ID
     getParentDep (data) {
