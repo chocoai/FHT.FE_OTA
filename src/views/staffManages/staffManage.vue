@@ -89,6 +89,17 @@
           slot-scope="scope">
           {{ scope.row.role | renderStatusValue }}
         </template>
+        <template
+          slot="accountStatusHosting"
+          slot-scope="scope">
+          <el-switch
+            v-model="scope.row.hasAllRoomAuth"
+            :active-value="1"
+            :inactive-value="0"
+            :active-text="accountStatusText(scope.row.hasAllRoomAuth)"
+            class="accountSelectStatus"
+            @change="changeAcountcStatus(scope.row)"/>
+        </template>
       </GridUnit>
     </div>
     <!-- 新增，编辑账号 -->
@@ -354,7 +365,14 @@ export default {
       colModels: [ // 表格数据
         {prop: 'name', label: '姓名', width: 300},
         {prop: 'role', label: '职位', width: 150, slotName: 'slot_role'},
-        {prop: 'depName', label: '部门'},
+        {prop: 'depName', label: '部门', width: 150},
+        {
+          prop: 'roomStatus',
+          label: '状态',
+          width: 150,
+          slotName: 'accountStatusHosting',
+          type: 'status'
+        },
         {
           prop: 'operate',
           label: '操作',
@@ -546,15 +564,50 @@ export default {
       this.userId = data.id // 用户id
       this.accountForm.depId = data.depId // 部门ID
       this.accountForm.role = data.role
+    },
+    // 更改员工状态
+    changeAcountcStatus (data) {
+      console.log('员工信息', data)
+      let statusText = data.hasAllRoomAuth === 0 ? '确认启用账号？' : '确定停用账号？该员工账号下所有房源将会解除绑定。'
+      this.$confirm(statusText, ' 提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '启用成功!'
+        })
+        // 需要更新数据
+      }).then(() => {
+        // this.$message({
+        //   type: 'info',
+        //   message: '!'
+        // })
+      })
+    },
+    accountStatusText (status) {
+      if (status === 9) {
+        return '启用'
+      } else if (status === 2) {
+        return '停用'
+      }
     }
   }
-
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .item-flex {
     display: flex;
-
   }
-  .item-select{margin-right:10px;}
+.item-select {
+  margin-right: 10px;
+  }
+.accountSelectStatus .el-switch__label *{
+  font-size: 12px;
+  color: #909399
+}
+.accountSelectStatus .el-switch__label.is-active span{
+  color: #409DFF
+}
 </style>

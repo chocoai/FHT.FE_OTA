@@ -25,6 +25,19 @@
               size="small"
               class="item-select">
               <el-option
+                :value="2"
+                label="未分配"></el-option>
+              <el-option
+                :value="1"
+                label="已分配"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select
+              v-model="formData.resource"
+              size="small"
+              class="item-select">
+              <el-option
                 :value="1"
                 label="集中式"></el-option>
               <el-option
@@ -340,6 +353,7 @@ export default {
   }
  .item-select {
     margin-right:10px;
+    width: 150px
   }
   .btnpos {
     padding: 10px 0;
