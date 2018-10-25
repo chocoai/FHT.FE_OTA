@@ -76,11 +76,3 @@ export const queryDistributeToUserListApi = {
     })
   }
 }
-// 分配房源
-export function distributeHouseToDepApi (params = {}) {
-  return fetch('/fangyuanDistribute/distributeHouseToDep', {
-    params
-  }, {
-    isMock: true
-  })
-}

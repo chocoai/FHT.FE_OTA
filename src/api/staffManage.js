@@ -26,9 +26,33 @@ export const staffManageInfo = {
     })
   }
 }
-// 分配房源
+// 员工分配房源
 export function distributeHouseToUserApi (params = {}) {
   return fetch('/fangyuanDistribute/distributeHouseToUser', {
+    params
+  }, {
+    isMock: true
+  })
+}
+// 部门分配房源
+export function distributeHouseToDepApi (params = {}) {
+  return fetch('/fangyuanDistribute/distributeHouseToDep', {
+    params
+  }, {
+    isMock: true
+  })
+}
+// 取消给部门分配房源
+export function cancleHouseToDepApi (params = {}) {
+  return fetch('/fangyuanDistribute/cancleHouseToDep', {
+    params
+  }, {
+    isMock: true
+  })
+}
+// 取消给员工分配房源
+export function cancleHouseToUserApi (params = {}) {
+  return fetch('/fangyuanDistribute/cancleHouseToUser', {
     params
   }, {
     isMock: true
