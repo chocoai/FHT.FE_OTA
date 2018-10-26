@@ -23,7 +23,8 @@
           :key="index"
           :value="item.formatName"
           @click.native="setAddress(item)"
-          v-html="item.displayText"/>
+          v-html="item.displayText">
+        </el-option>
       </el-select>
     </el-tooltip>
     <el-dialog
@@ -43,14 +44,22 @@
           class="bm-container">
           <div
             id="bm-view"
-            class="bm-view"/>
-          <el-input
-            v-model="searchKeywords"
-            class="search-input"
-            placeholder="请输入公寓地址"
-            clearable
-            size="small"
-            @keyup.native="searchPositionByKeywords"/>
+            class="bm-view">
+
+          </div>
+          <el-form-item
+            class="search-input-form"
+            label=""
+            label-width="0">
+            <el-input
+              v-model="searchKeywords"
+              class="search-input"
+              placeholder="请输入公寓地址"
+              clearable
+              size="small"
+              @keyup.native="searchPositionByKeywords">
+            </el-input>
+          </el-form-item>
           <el-popover
             ref="popover"
             popper-class="selected-house-position"
@@ -66,7 +75,7 @@
               size="mini">
               <i
                 class="el-icon-close close-icon"
-                @click="$refs.popover.doClose()"/>
+                @click="$refs.popover.doClose()"></i>
               <el-form-item class="form-item">
                 <div
                   slot="label"
@@ -84,25 +93,26 @@
                     v-for="item in regionOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value"/>
+                    :value="item.value">
+                  </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item
                 class="form-item"
                 label="小区名称"
                 prop="name">
-                <el-input v-model="mapSelectForm.name"/>
+                <el-input v-model="mapSelectForm.name"></el-input>
               </el-form-item>
               <el-form-item
                 class="form-item"
                 label="具体地址"
                 prop="address">
-                <el-input v-model="mapSelectForm.address"/>
+                <el-input v-model="mapSelectForm.address"></el-input>
               </el-form-item>
             </el-form>
             <div
               slot="reference"
-              class="selected-point"/>
+              class="selected-point"></div>
           </el-popover>
         </div>
         <el-card
@@ -112,8 +122,8 @@
             v-for="(o, i) in searchResult"
             :key="i"
             class="search-list-item"
-            @click="setMapPosition(o.point, o)">
-            <p class="title">{{ o.title }}</p>
+            @click="setMapPosition(o.location, o)">
+            <p class="title">{{ o.name }}</p>
             <p class="address">{{ o.address }}</p>
           </a>
         </el-card>
@@ -140,9 +150,7 @@ export default {
   props: {
     areaCode: {
       type: Array,
-      default () {
-        return []
-      }
+      default: () => []
     },
     value: {
       type: String,
@@ -173,7 +181,8 @@ export default {
       },
       tempAreaCode: [],
       tempMapData: {},
-      regionOptions: []
+      regionOptions: [],
+      geocoder: null
     }
   },
   watch: {
@@ -201,6 +210,8 @@ export default {
         this.tempAreaCode[2] = val
       }
     }
+  },
+  mounted () {
   },
   methods: {
     fetchAddressList (query) { // 模糊查询公寓/小区列表
@@ -265,92 +276,111 @@ export default {
       }
     },
     initBMap () { // 初始化百度地图
-      let self = this
+      /* global AMap */
+      const self = this
       let selectAddr = ''
-      let cityArr = cityData.filter((n) => n.value === this.tempAreaCode[0])
+      let marker
+      const cityArr = cityData.filter((n) => n.value === this.tempAreaCode[0])
       if (cityArr[0] && cityArr[0].children) {
         selectAddr = cityArr[0].label
         this.mapSelectForm.city = selectAddr
         this.regionOptions = cityArr[0].children.filter((n) => n.value === this.tempAreaCode[1])[0].children
       }
-      let selectRegion = this.regionOptions.filter((n) => n.value === this.tempAreaCode[2])
+      const selectRegion = this.regionOptions.filter((n) => n.value === this.tempAreaCode[2])
       if (selectRegion[0]) {
         selectAddr += selectRegion[0].label
       }
-      /* global BMap */
-      self.map = new BMap.Map('bm-view', { minZoom: 13, maxZoom: 19 }) // 创建地图实例
-      self.map.centerAndZoom(selectAddr || '杭州市', 15)
-      self.map.enableScrollWheelZoom(true)
 
-      self.map.addEventListener('click', function (e) {
-        self.setMapPosition(e.point)
-      })
-      let options = {
-        onSearchComplete: function (results) {
-          // 判断状态是否正确
-          /* global BMAP_STATUS_SUCCESS */
-          if (self.local.getStatus() === BMAP_STATUS_SUCCESS) {
-            self.searchResult = []
-            for (var i = 0; i < results.getCurrentNumPois(); i++) {
-              self.searchResult.push(results.getPoi(i))
-            }
-          }
-        }
+      self.map = new AMap.Map('bm-view', { zooms: [13, 19], resizeEnable: true }) // 创建地图实例
+
+      if (!this.geocoder) {
+        this.geocoder = new AMap.Geocoder()
       }
-      self.local = new BMap.LocalSearch(self.map, options)
+      console.log(selectAddr)
+      this.geocoder.getLocation(selectAddr || '杭州市', (status, result) => {
+        if (status === 'complete' && result.geocodes.length) {
+          console.log(result)
+          const lnglat = result.geocodes[0].location
+          if (!marker) {
+            marker = new AMap.Marker()
+            self.map.add(marker)
+          }
+          marker.setPosition(lnglat)
+          self.map.setZoomAndCenter(15, [lnglat.getLng(), lnglat.getLat()])
+        } else {
+          alert(JSON.stringify(result))
+        }
+      })
+
+      self.map.on('click', (e) => {
+        self.setMapPosition(e.lnglat)
+      })
     },
     searchPositionByKeywords () { // 关键字搜索小区列表
-      this.local.search(this.searchKeywords)
-    },
-    setMapPosition (position, o) { // 设置地图中心位置
-      if (o) {
-        this.$set(this, 'mapSelectForm', Object.assign(this.mapSelectForm, {
-          baiduUid: o.uid,
-          longitude: o.point.lng + '',
-          latitude: o.point.lat + '',
-          address: o.address
-        }))
+      if (!this.searchKeywords) {
+        return
       }
-
-      let point = new BMap.Point(position.lng, position.lat)
-      let marker = new BMap.Marker(point)
-      let geoc = new BMap.Geocoder()
-      this.map.clearOverlays()
-      this.map.addOverlay(marker)
-      this.map.panTo(point)
-      this.map.setZoom(15)
-      geoc.getLocation(point, rs => {
-        let addressInfo = rs.addressComponents
-        if (addressInfo.city !== this.mapSelectForm.city) {
-          this.mapSelectForm.city = addressInfo.city
-          let provinceArr = cityData.filter((item) => item.label === addressInfo.province)
-          if (provinceArr[0] && provinceArr[0].children) {
-            this.tempAreaCode[0] = provinceArr[0].value
-            let cityArr = provinceArr[0].children.filter((n) => n.label === addressInfo.city)
-
-            if (cityArr[0] && cityArr[0].children) {
-              this.tempAreaCode[1] = cityArr[0].value
-              this.regionOptions = cityArr[0].children
-            }
-          }
+      AMap.plugin('AMap.PlaceSearch', () => {
+        var autoOptions = {
+          city: this.mapSelectForm.city || '杭州市'
         }
-
-        if (o) {
-          this.mapSelectForm.name = o.title
-        } else {
-          this.$set(this, 'mapSelectForm', Object.assign(this.mapSelectForm, {
-            name: rs.surroundingPois[0] ? rs.surroundingPois[0].title : rs.address,
-            address: rs.address,
-            longitude: rs.point.lng + '',
-            latitude: rs.point.lat + ''
-          }))
-        }
-        this.regionOptions.forEach((item) => {
-          if (item.label === addressInfo.district) {
-            this.mapSelectForm.region = item.value
+        var placeSearch = new AMap.PlaceSearch(autoOptions)
+        placeSearch.search(this.searchKeywords, (status, result) => {
+          console.log(result)
+          if (status === 'complete' && result.poiList.pois) {
+            this.searchResult = result.poiList.pois
+          } else {
+            this.searchResult = []
           }
         })
-        this.tempMapData = deepClone(this.mapSelectForm)
+      })
+    },
+    setMapPosition (position, o) { // 设置地图中心位置
+      const point = [position.lng, position.lat]
+      const marker = new AMap.Marker({
+        icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
+        position: point
+      })
+      this.map.clearMap()
+      this.map.add(marker)
+      this.map.setZoomAndCenter(15, point)
+      this.geocoder.getAddress(point, (status, result) => {
+        if (status === 'complete' && result.regeocode) {
+          console.log(result)
+          const addressInfo = result.regeocode.addressComponent
+          if ((addressInfo.city || addressInfo.province) !== this.mapSelectForm.city) {
+            this.mapSelectForm.city = (addressInfo.city || addressInfo.province)
+            const provinceArr = cityData.filter((item) => item.label === addressInfo.province)
+            if (provinceArr[0] && provinceArr[0].children) {
+              this.tempAreaCode[0] = provinceArr[0].value
+              const cityArr = provinceArr[0].children.filter((n) => n.label === (addressInfo.city || addressInfo.province))
+              if (cityArr[0] && cityArr[0].children) {
+                this.tempAreaCode[1] = cityArr[0].value
+                this.regionOptions = cityArr[0].children
+              }
+            }
+          }
+          this.regionOptions.forEach((item) => {
+            if (item.label === addressInfo.district) {
+              this.mapSelectForm.region = item.value
+            }
+          })
+          if (!o) {
+            addressInfo.address = addressInfo.building || addressInfo.neighborhood
+            if (!addressInfo.address) {
+              addressInfo.address = addressInfo.township ? result.regeocode.formattedAddress.split(addressInfo.township)[1] : result.regeocode.formattedAddress
+            }
+          } else {
+            addressInfo.address = o.name
+          }
+          this.$set(this, 'mapSelectForm', Object.assign(this.mapSelectForm, {
+            name: addressInfo.address,
+            address: addressInfo.province + addressInfo.city + addressInfo.district + addressInfo.street + addressInfo.streetNumber,
+            longitude: point[0] + '',
+            latitude: point[1] + ''
+          }))
+          this.tempMapData = deepClone(this.mapSelectForm)
+        }
       })
       this.$refs.popover.doShow()
     },
@@ -371,7 +401,7 @@ export default {
     },
     addEstateSubdistrict (status) { // 新增小区
       status = status || 0
-      let source = 1
+      let source = 6
       if (status === 0) {
         Object.keys(this.mapSelectForm).forEach((key) => {
           if (this.mapSelectForm[key] !== this.tempMapData[key]) {
@@ -381,7 +411,7 @@ export default {
       } else {
         source = 5
       }
-      let formOptions = {
+      const formOptions = {
         provinceId: this.tempAreaCode[0],
         cityId: this.tempAreaCode[1],
         regionId: this.tempAreaCode[2],
@@ -450,13 +480,15 @@ export default {
     .bm-view {
       width: 400px;
       height: 400px;
-      background-color: #ff0000;
+      background-color: #fff;
     }
-    .search-input {
+    .search-input-form {
       position: absolute;
       top: 10px;
       left: 10px;
-      width: 340px;
+      .search-input {
+        width: 340px;
+      }
     }
   }
   .search-list {
