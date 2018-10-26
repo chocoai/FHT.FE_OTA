@@ -1,14 +1,14 @@
 <template>
   <div
     id="selectTree"
-    class="selectTree"
-  >
+    class="selectTree">
     <el-input
       ref="treeInput"
       v-model="depName"
-      placeholder="输入关键字进行过滤"
+      placeholder="请选择所属部门"
       size="small"
-      clearable>
+      clearable
+      @clear="clearClick">
     </el-input>
     <div
       v-if="treeShow"
@@ -22,8 +22,7 @@
         :indent="8"
         :node-key="nodeKey"
         class="filter-tree"
-        @node-click="handleNodeClick"
-      >
+        @node-click="handleNodeClick">
       </el-tree>
     </div>
   </div>
@@ -52,6 +51,10 @@ export default {
       default: () => {
         return false
       }
+    },
+    value: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -77,6 +80,12 @@ export default {
     clearDepName (val) {
       if (this.clearDepName) {
         this.depName = ''
+      }
+    },
+    value: {
+      immediate: true,
+      handler: function (val) {
+        // this.depName = val
       }
     }
   },
@@ -117,6 +126,9 @@ export default {
       this.$set(this, 'depName', data.depName)
       this.$emit('treeNodeClick', data)
       this.treeShow = false
+    },
+    clearClick () {
+      this.$emit('clearClick')
     }
   }
 }
@@ -128,7 +140,7 @@ export default {
   }
 .treeShow{
   position: absolute;
-  top:40px;
+  top:32px;
   left:0;
   z-index:300;
   width:100%;
