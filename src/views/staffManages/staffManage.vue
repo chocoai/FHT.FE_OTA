@@ -513,6 +513,12 @@ export default {
           type: 'warning'
         })
         return false
+      } else if (data.status * 1 === 2) {
+        this.$message({
+          message: '该账号已经停用，不能分配房源',
+          type: 'warning'
+        })
+        return false
       } else {
         this.$router.push({path: '/houseSource/allotroom', query: data})
       }
@@ -591,8 +597,9 @@ export default {
           this.stopAccount(param)
         }
         this.searchParam()
-      }).then(() => {
-
+      }).catch(() => {
+        console.log('取消')
+        this.searchParam()
       })
     },
     accountStatusText (status) {
