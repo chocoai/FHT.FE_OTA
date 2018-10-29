@@ -126,7 +126,7 @@
         <template
           slot="slot_hasDistribute"
           slot-scope="scope">
-          {{ scope.row.hasDistribute | renderStatusValue }}
+          {{ hasDistributeStatus | renderStatusValue }}
         </template>
       </GridUnit>
       <div
@@ -166,6 +166,7 @@ export default {
   },
   data () {
     return {
+      hasDistributeStatus: 2,
       allRoom: '',
       orgData: [],
       formData: {
@@ -279,6 +280,8 @@ export default {
           hasDistribute: 2 // 1已分配 2未分配  默认是为分配
         }
       }
+      console.log('查询数据', this.formData)
+      this.hasDistributeStatus = this.formData.hasDistribute
       this.formData.depId = this.orgData.depId
       this.assionButtonTitle = this.formData.hasDistribute === 2 ? '确认分配' : '取消分配'
       this.$nextTick(() => {
