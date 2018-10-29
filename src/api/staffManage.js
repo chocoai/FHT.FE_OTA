@@ -25,22 +25,15 @@ export const staffManageInfo = {
       isMock: true
     })
   },
-  stopAccountApi (params) { // 停用账号
+  changeAccountStatusApi (params) {
     return fetch(this.requestPath, {
-      method: 'stopAccount',
-      params
-    }, {
-      isMock: true
-    })
-  },
-  enableAccountApi (params) { // 启用账号
-    return fetch(this.requestPath, {
-      method: 'enableAccount',
+      method: 'changeAccountStatus',
       params
     }, {
       isMock: true
     })
   }
+
 }
 // 员工分配房源
 export function distributeHouseToUserApi (params = {}) {

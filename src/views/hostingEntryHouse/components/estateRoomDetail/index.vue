@@ -59,6 +59,53 @@
               v-model="estateRoomDetail.brandRoom"
               placeholder="请输入品牌公寓名称"/>
           </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item
+                prop="contactName"
+                label="看房电话">
+                <el-input
+                  v-model="estateRoomDetail.contactName"
+                  placeholder="联系人" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="3">
+              <el-form-item label-width="0">
+                <el-select v-model="estateRoomDetail.contactGender">
+                  <el-option
+                    :value="1"
+                    label="先生" />
+                  <el-option
+                    :value="2"
+                    label="女士" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item
+                prop="contactMobile"
+                label-width="0">
+                <el-input
+                  v-model="estateRoomDetail.contactMobile"
+                  type="number"
+                  placeholder="联系电话" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item
+                label="公寓简介"
+                prop="houseDesc">
+                <el-input
+                  v-model="estateRoomDetail.houseDesc"
+                  :rows="5"
+                  type="textarea"
+                  placeholder="请描述一下房源的交通、装饰、周边设施场所等等…" />
+                <span class="estate-iontro-length-tips">{{ estateRoomDetail.houseDesc.length }}/150</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
     </div>
@@ -116,7 +163,7 @@ export default {
           { required: true, message: '请输入公寓/小区', trigger: 'change' }
         ],
         brandRoom: [
-          { required: true, message: '请输入品牌公寓名称', trigger: 'blur' }
+          { required: true, message: '请输入品牌公寓', trigger: 'blur' }
         ],
         areaCode: [
           {
@@ -137,7 +184,10 @@ export default {
         depName: '',
         address: '',
         areaCode: [],
-        brandRoom: '' // 品牌公寓
+        brandRoom: '', // 品牌公寓
+        contactName: '', // 联系人
+        contactGender: 1, // 联系人性别
+        houseDesc: '' // 公寓简介
       },
       clearDepName: true, // 是否清空归属部门
       expendedKeys: { // 默认展开的部门
@@ -220,6 +270,17 @@ export default {
     z-index: 200;
   }
   .item-input{
-    width:25%
+    width:50%
+  }
+  .room-detail-container {
+  max-width: 800px;
+  min-width: 660px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  .estate-iontro-length-tips {
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+  }
   }
 </style>

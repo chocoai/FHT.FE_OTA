@@ -98,7 +98,7 @@
             :inactive-value="2"
             :active-text="accountStatusText(scope.row.status)"
             class="accountSelectStatus"
-            @change="changeAcountcStatus(scope.row)"/>
+            @change="changeAccountStatus(scope.row)"/>
         </template>
       </GridUnit>
     </div>
@@ -562,18 +562,8 @@ export default {
       this.accountForm.depId = data.depId // 部门ID
       this.accountForm.role = data.role
     },
-    // 停用员工账号
-    stopAccount (param) {
-      staffManageInfo.stopAccountApi(param).then(() => {
-        this.$message({
-          type: 'success',
-          message: '操作成功!'
-        })
-      })
-    },
-    // 员工账号启动
-    enableAccount (param) {
-      staffManageInfo.enableAccountApi(param).then(() => {
+    changeAccountStatusMethod (param) { // 员工启用 停用账号
+      staffManageInfo.changeAccountStatusApi(param).then(() => {
         this.$message({
           type: 'success',
           message: '操作成功!'
@@ -581,9 +571,10 @@ export default {
       })
     },
     // 更改员工状态
-    changeAcountcStatus (data) {
+    changeAccountStatus (data) {
       let param = {
-        'userId': data.id
+        'userId': data.id,
+        'status': data.status // 要改成的状态
       }
       let statusText = data.status === 1 ? '确认启用账号？' : '确定停用账号？该员工账号下所有房源将会解除绑定。'
       this.$confirm(statusText, ' 提示', {
@@ -591,11 +582,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if (data.status === 1) { // 1 启用 2 停用
-          this.enableAccount(param)
-        } else {
-          this.stopAccount(param)
-        }
+        // 1 启用 2 停用
+        this.changeAccountStatusMethod(param)
         this.searchParam()
       }).catch(() => {
         console.log('取消')
