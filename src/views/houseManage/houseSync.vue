@@ -135,6 +135,7 @@
               :clear-dep-name="clearDepName"
               node-key = "depId"
               @treeNodeClick="clickTreeNode"
+              @clearClick="clearClick"
               @getParentDep = "getParentDep"
             ></SelectTree>
           </el-form-item>
@@ -804,6 +805,9 @@ export default {
     getParentDep (data) {
       this.expendedKeys = deepClone(data)
       console.log('顶级部门ID', data)
+    },
+    clearClick () { // 清空树结构的ID
+      this.searchParams.depId = ''
     }
   }
 }
