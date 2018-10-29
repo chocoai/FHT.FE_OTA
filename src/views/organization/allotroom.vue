@@ -318,13 +318,13 @@ export default {
     },
     // 取消给员工分配房源
     cancelDistributionToUser (param) {
-      cancleHouseToDepApi(param).then((response) => {
+      cancleHouseToUserApi(param).then((response) => {
         this.messageTips(response, '员工房源取消分配，成功')
       })
     },
     // 取消给部门分配房源
     cancelDistributionToDep (param) {
-      cancleHouseToUserApi(param).then((response) => {
+      cancleHouseToDepApi(param).then((response) => {
         this.messageTips(response, '部门房源取消分配，成功')
       })
     },

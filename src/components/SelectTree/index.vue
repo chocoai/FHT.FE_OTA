@@ -55,6 +55,12 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    defaultKepId: { // 默认值
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   data () {
@@ -119,7 +125,14 @@ export default {
           'depId': res.data.depId,
           'depName': res.data.depName
         }
+        // 获取顶级部门
         this.$emit('getParentDep', this.parentOrg)
+
+        // 设置默认值
+        if (this.defaultKepId.depName) {
+          this.depName = this.defaultKepId.depName
+          // this.depName = this.$refs.selectTreeRef.getNode(this.defaultKepId).data.depName
+        }
       }).catch(rej => {})
     },
     handleNodeClick (data) {
