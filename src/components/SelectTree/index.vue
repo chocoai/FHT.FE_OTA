@@ -133,17 +133,36 @@ export default {
   }
 }
 </script>
-<style>
+<style scode>
 .selectTree{
   position: relative;
   width:100%;
+  padding:0;
+  margin:0;
   }
 .treeShow{
   position: absolute;
-  top:32px;
+  top:45px;
   left:0;
   z-index:300;
   width:100%;
   background:red;
+  border:thin solid #ddd;
+}
+.treeShow:after{
+  position:absolute;
+  content:'';
+  display:block;
+  top:-5px;
+  left:20px;
+  width:8px;
+  height:8px;
+  font-size:0;
+  line-height:0;
+  border-width:1px 0 0 1px;
+  border-style:solid;
+  border-color:#ddd;
+  background:#fff;
+  transform:rotate(45deg)
 }
 </style>

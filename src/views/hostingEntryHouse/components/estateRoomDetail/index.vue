@@ -19,6 +19,7 @@
           class="room-detail-container hosting-room-detail">
           <el-form-item
             label="归属部门"
+            class="item-input"
             prop="depName" >
             <SelectTree
               :expanded-keys = "expendedKeys"
@@ -31,8 +32,32 @@
             ></SelectTree>
           </el-form-item>
           <el-form-item
-            label="归属部门">
-
+            label="所在地区"
+            prop="areaCode"
+            class="item-input"
+          >
+            <area-select
+              ref="areaSelect"
+              v-model="estateRoomDetail.areaCode"
+              :level="1"
+              @input="searchZoneList(false)" />
+          </el-form-item>
+          <el-form-item
+            label="具体位置"
+            prop="address"
+            class="item-input">
+            <map-select
+              :area-code="estateRoomDetail.areaCode"
+              :value="estateRoomDetail.address"
+              @addressChange="addressChange" />
+          </el-form-item>
+          <el-form-item
+            label="品牌公寓"
+            prop="brandRoom"
+            class="item-input">
+            <el-input
+              v-model="estateRoomDetail.brandRoom"
+              placeholder="请输入品牌公寓名称"/>
           </el-form-item>
         </el-form>
       </div>
@@ -66,9 +91,12 @@
   </div>
 </template>
 <script>
+import { deepClone } from '@/utils'
 import areaSelect from '@/components/AreaSelect'
 import mapSelect from '@/components/MapSelect'
 import SelectTree from '@/components/SelectTree/'
+import { estateZoneListByAreaIdApi } from '@/api/houseManage'
+
 export default {
   name: 'EstateRoomDetail',
   components: {
@@ -82,12 +110,34 @@ export default {
       editFlag: false, // 是否是编辑
       estateRoomDetailRules: { // 表单验证
         depName: [
-          { required: true, trigger: ['change', 'blur'], message: '请选择归属部门' }
+          { required: true, trigger: ['change'], message: '请选择归属部门' }
+        ],
+        address: [
+          { required: true, message: '请输入公寓/小区', trigger: 'change' }
+        ],
+        brandRoom: [
+          { required: true, message: '请输入品牌公寓名称', trigger: 'blur' }
+        ],
+        areaCode: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (!value[0]) {
+                callback(new Error('请选择所在地区'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'change'
+          }
         ]
       },
       estateRoomDetail: { // form 数据
         depId: '',
-        depName: ''
+        depName: '',
+        address: '',
+        areaCode: [],
+        brandRoom: '' // 品牌公寓
       },
       clearDepName: true, // 是否清空归属部门
       expendedKeys: { // 默认展开的部门
@@ -108,11 +158,34 @@ export default {
       console.log('2', this.estateRoomDetail.depName)
     },
     // 获取树结构顶级元素
-    getParentDep () {
-
+    getParentDep (data) {
+      this.expendedKeys = deepClone(data)
     },
+    //  清除织架构
     clearClick () {
       this.$set(this.estateRoomDetail, 'depName', '')
+    },
+    searchZoneList (flag) { // 搜索板块列表
+      [this.estateRoomDetail.provinceId, this.estateRoomDetail.cityId, this.estateRoomDetail.regionId] = this.estateRoomDetail.areaCode
+      if (!flag) {
+        this.estateRoomDetail.address = ''
+        this.estateRoomDetail.zoneId = ''
+      }
+      if (this.estateRoomDetail.areaCode[2] !== undefined) {
+        estateZoneListByAreaIdApi({
+          regionId: this.estateRoomDetail.regionId
+        }).then((res) => {
+          this.zoneList = res.data.list
+        })
+      } else {
+        this.zoneList = []
+      }
+    },
+    addressChange (val) { // 选择具体位置
+      console.log(this.estateRoomDetail)
+      this.estateRoomDetail = Object.assign(this.estateRoomDetail, val)
+      this.$refs['estateRoomDetail'].validateField('address')
+      this.searchZoneList(true)
     },
     // 提交表达式
     saveRoomDetailData () {
@@ -129,9 +202,6 @@ export default {
 }
 </script>
 <style  lang="scss" scoped>
-.entry-house-container{
-  width: 25%
-}
   .entry-house-title {
     font-size: 18px;
     line-height: 25px;
@@ -149,5 +219,7 @@ export default {
     background: #fff;
     z-index: 200;
   }
-
+  .item-input{
+    width:25%
+  }
 </style>

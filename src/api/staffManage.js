@@ -24,6 +24,22 @@ export const staffManageInfo = {
     }, {
       isMock: true
     })
+  },
+  stopAccountApi (params) { // 停用账号
+    return fetch(this.requestPath, {
+      method: 'stopAccount',
+      params
+    }, {
+      isMock: true
+    })
+  },
+  enableAccountApi (params) { // 启用账号
+    return fetch(this.requestPath, {
+      method: 'enableAccount',
+      params
+    }, {
+      isMock: true
+    })
   }
 }
 // 员工分配房源

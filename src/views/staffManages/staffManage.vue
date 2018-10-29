@@ -93,10 +93,10 @@
           slot="accountStatusHosting"
           slot-scope="scope">
           <el-switch
-            v-model="scope.row.hasAllRoomAuth"
+            v-model="scope.row.status"
             :active-value="1"
-            :inactive-value="0"
-            :active-text="accountStatusText(scope.row.hasAllRoomAuth)"
+            :inactive-value="2"
+            :active-text="accountStatusText(scope.row.status)"
             class="accountSelectStatus"
             @change="changeAcountcStatus(scope.row)"/>
         </template>
@@ -262,15 +262,6 @@ export default {
     GridUnit
   },
   filters: {
-    // 麦邻 闲鱼发布状态
-    renderStatusType (status) {
-      const statusMap = {
-        '1': 'info', // 未发布
-        '2': 'success', // 已发布
-        '3': 'danger' // 申请中
-      }
-      return statusMap[status] || 'info'
-    },
     renderStatusValue (status) {
       const statusStrData = ['', '负责人', '员工', '负责人']
       return statusStrData[status] || '未知'
@@ -516,7 +507,7 @@ export default {
       this.$refs['accountForm'].clearValidate()
     },
     assignHouse (data) { // 房源管理
-      if (data.role === 1 || data.role === 3 || data.hasAllRoomAuth === 1) {
+      if (data.role === 1 || data.role === 3) { // 部门负责人和 主账号拥有所有房源
         this.$message({
           message: '该账号拥有该部门下所有房源,无需设置',
           type: 'warning'
@@ -565,29 +556,47 @@ export default {
       this.accountForm.depId = data.depId // 部门ID
       this.accountForm.role = data.role
     },
+    // 停用员工账号
+    stopAccount (param) {
+      staffManageInfo.stopAccountApi(param).then(() => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        })
+      })
+    },
+    // 员工账号启动
+    enableAccount (param) {
+      staffManageInfo.enableAccountApi(param).then(() => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        })
+      })
+    },
     // 更改员工状态
     changeAcountcStatus (data) {
-      console.log('员工信息', data)
-      let statusText = data.hasAllRoomAuth === 0 ? '确认启用账号？' : '确定停用账号？该员工账号下所有房源将会解除绑定。'
+      let param = {
+        'userId': data.id
+      }
+      let statusText = data.status === 1 ? '确认启用账号？' : '确定停用账号？该员工账号下所有房源将会解除绑定。'
       this.$confirm(statusText, ' 提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '启用成功!'
-        })
-        // 需要更新数据
+        if (data.status === 1) { // 1 启用 2 停用
+          this.enableAccount(param)
+        } else {
+          this.stopAccount(param)
+        }
+        this.searchParam()
       }).then(() => {
-        // this.$message({
-        //   type: 'info',
-        //   message: '!'
-        // })
+
       })
     },
     accountStatusText (status) {
-      if (status === 9) {
+      if (status === 1) {
         return '启用'
       } else if (status === 2) {
         return '停用'
@@ -610,4 +619,10 @@ export default {
 .accountSelectStatus .el-switch__label.is-active span{
   color: #409DFF
 }
+</style>
+<style>
+.model-table-pagenation .el-switch__label *{
+  font-size: 12px;
+  color: #606266;
+  }
 </style>
