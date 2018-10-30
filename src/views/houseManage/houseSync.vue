@@ -126,13 +126,13 @@
               <el-option
                 value="10"
                 label="闲鱼下架失败"/>
-
             </el-select>
           </el-form-item>
           <el-form-item style="width:260px;margin-right:40px;">
             <SelectTree
               :expanded-keys="expendedKeys"
               :clear-dep-name="clearDepName"
+              :assios-room="true"
               node-key = "depId"
               @treeNodeClick="clickTreeNode"
               @clearClick="clearClick"
@@ -465,6 +465,10 @@ export default {
           render (row) {
             return (row.rentPrice || 0) + '元'
           }
+        },
+        {prop: 'depName',
+          label: '部门',
+          width: 100
         },
         {
           prop: 'mailinStatus',

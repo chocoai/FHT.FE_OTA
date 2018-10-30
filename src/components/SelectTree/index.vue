@@ -34,6 +34,12 @@ export default {
   components: {
   },
   props: {
+    assiosRoom: {
+      type: Boolean,
+      default: () => {
+        return false
+      }
+    },
     expandedKeys: { // 默认展开部门
       type: Object,
       default: () => {
@@ -119,7 +125,11 @@ export default {
     getTree () { // 获取组织架构名称并且默认表格数据
       getDepartmentInfo.queryDepartmentApi().then(res => {
         if (res.data) {
-          this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+          if (this.assiosRoom) {
+            this.treeData = [{'depName': '未分配部门', 'depId': '0'}, {'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+          } else {
+            this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+          }
         }
         this.parentOrg = {
           'depId': res.data.depId,
