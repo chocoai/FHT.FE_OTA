@@ -123,6 +123,35 @@
               size="mini"
               @click="openPicModel(-1)">上传照片</el-button>
           </el-form-item>
+          <el-form-item
+            label="公寓楼层"
+            prop="apartmentFloor">
+            <el-input
+              v-model="estateRoomDetail.apartmentFloor"
+              style="width:200px"
+              placeholder="请输入内容">
+              <template slot="prepend">共</template>
+              <template slot="append">层</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            label="编辑楼层"
+            prop="apartmentFloor">
+            <el-select
+              v-model="estateRoomDetail.floors"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+              placeholder="请选择楼层">
+              <el-option
+                v-for="item in floorOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-dialog
             :visible.sync="uploadPicsModelVisible"
             append-to-body
@@ -164,6 +193,7 @@
                 @click="uploadPicsModelVisible = false">关 闭</el-button>
             </span>
           </el-dialog>
+          <roomType></roomType>
         </el-form>
       </div>
     </div>
@@ -203,6 +233,7 @@ import mapSelect from '@/components/MapSelect'
 import SelectTree from '@/components/SelectTree/'
 import { estateZoneListByAreaIdApi } from '@/api/houseManage'
 import ImageCropper from '@/components/ImageCropper/Cropper'
+import roomType from './roomType'
 
 export default {
   name: 'EstateRoomDetail',
@@ -211,7 +242,8 @@ export default {
     areaSelect,
     SelectTree,
     ImageCropper,
-    Preview
+    Preview,
+    roomType
   },
   data () {
     return {
@@ -236,6 +268,9 @@ export default {
         houseDesc: [
           { required: true, message: '请输入房源描述', trigger: 'blur' },
           { max: 150, message: '长度不能超过150个字符', trigger: 'change' }
+        ],
+        apartmentFloor: [
+          { required: true, message: '请输入公寓楼层', trigger: 'blur' }
         ],
         areaCode: [
           {
@@ -263,6 +298,16 @@ export default {
           }
         ]
       },
+      floorOptions: [ // 楼层编辑
+        {
+          value: 1,
+          label: '1层'
+        },
+        {
+          value: 2,
+          label: '2层'
+        }
+      ],
       estateRoomDetail: { // form 数据
         depId: '',
         depName: '',
@@ -274,7 +319,10 @@ export default {
         contactMobile: '', // 联系人电话
         houseDesc: '', // 公寓简介
         pictures: [], // 公寓照片
-        hostingRooms: ''
+        hostingRooms: '', // 房型
+        apartmentFloor: '', //  公寓楼层
+        floors: [] // 编辑楼层
+
       },
       clearDepName: true, // 是否清空归属部门
       expendedKeys: { // 默认展开的部门
