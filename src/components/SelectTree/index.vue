@@ -126,7 +126,8 @@ export default {
       getDepartmentInfo.queryDepartmentApi().then(res => {
         if (res.data) {
           if (this.assiosRoom) {
-            this.treeData = [{'depName': '未分配', 'depId': res.data.depId}, {'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
+            this.treeData = res.data.children
+            this.treeData.unshift({'depName': '未分配', 'depId': res.data.depId})
           } else {
             this.treeData = [{'depName': res.data.depName, 'depId': res.data.depId, children: res.data.children}]
           }

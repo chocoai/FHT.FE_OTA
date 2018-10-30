@@ -155,7 +155,7 @@
           <el-dialog
             :visible.sync="uploadPicsModelVisible"
             append-to-body
-            title="上传房间照片"
+            title="上传公寓照片"
             custom-class="upload-pics-model"
             width="600px"
             @close="uploadModelClose">
@@ -184,7 +184,6 @@
             <!-- 图片裁剪 -->
             <ImageCropper
               :cropper-list="cropperList"
-              @emitCropperList="emitCropperList"
               @emitCropperData="emitCropperData" />
             <span slot="footer">
               <el-button
@@ -379,6 +378,7 @@ export default {
     },
     // 提交form表单
     saveRoomDetailData () {
+      console.log(this.estateRoomDetail)
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
           alert('submit!')
@@ -389,7 +389,7 @@ export default {
       })
     },
     /* 选择图片 */
-    async uploadImg (e) {
+    async uploadImg (e) { // 点击input
       if (!e.target.value) {
         return false
       }
@@ -422,8 +422,6 @@ export default {
         // 转化为base64
         reader.readAsDataURL(file)
       })
-
-      console.log('e.target.files', e.target.files)
       const files = e.target.files
       let picList = this.currentPicList
       if (picList.length + files.length > 15) {
@@ -439,6 +437,7 @@ export default {
         }
         uploadList.push(await readFileAsync(files[i]))
       }
+      console.log('e.target.files', e.target.files)
 
       this.cropperList = uploadList.map((item, kindex) => {
         return {
@@ -458,12 +457,9 @@ export default {
     emitDelete (val) {
       this.currentPicList = val || []
     },
-    // 上传的图片列表
-    emitCropperList (list = []) {
-      this.cropperList = list
-    },
     // 裁剪后图片列表
     emitCropperData (list = []) {
+      console.log('list', list)
       list.forEach((v, i) => {
         v.type = 1
         v.imageName = v.title
@@ -474,13 +470,14 @@ export default {
       this.currentPicList = [...this.currentPicList, ...list]
     },
     uploadModelClose () { // 关闭上传图片列表
-      if (this.curPicListIndex === -1) {
+      if (this.curPicListIndex === -1) { // 公寓的照片
         this.estateRoomDetail.pictures = this.currentPicList
         this.$refs.estateRoomDetail.validateField('pictures')
       } else {
         this.estateRoomDetail.hostingRooms[this.curPicListIndex].pictures = this.currentPicList
         this.$refs.estateRoomDetail.validateField('hostingRooms.' + this.curPicListIndex + '.pictures')
       }
+      console.log(this.estateRoomDetail.pictures)
       this.currentPicList = []
     }
   }
@@ -518,4 +515,12 @@ export default {
     right: 10px;
   }
   }
+  .previewItems {
+  margin-bottom: 10px;
+  .el-upload--picture-card.uploadImage {
+    width: 122px;
+    height: 92px;
+    line-height: 98px;
+  }
+}
 </style>
