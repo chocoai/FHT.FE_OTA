@@ -192,7 +192,7 @@
                 @click="uploadPicsModelVisible = false">关 闭</el-button>
             </span>
           </el-dialog>
-          <roomType></roomType>
+          <roomType ref="roomTypeTabs"></roomType>
         </el-form>
       </div>
     </div>
@@ -378,7 +378,7 @@ export default {
     },
     // 提交form表单
     saveRoomDetailData () {
-      console.log(this.estateRoomDetail)
+      console.log(this.$refs.roomTypeTabs.estateRoomDetail)
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
           alert('submit!')
@@ -523,4 +523,14 @@ export default {
     line-height: 98px;
   }
 }
+.sub-room-info-list {
+    margin-bottom: 18px;
+    box-shadow: 0 0;
+    .el-tabs__item {
+      .el-icon-delete {
+        margin-left: 5px;
+        color: red;
+      }
+    }
+  }
 </style>
