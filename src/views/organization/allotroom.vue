@@ -21,6 +21,20 @@
         <div class="item-flex">
           <el-form-item>
             <el-select
+              v-model="formData.hasDistribute"
+              size="small"
+              class="item-select">
+              <el-option
+                :value="2"
+                label="未分配"></el-option>
+              <el-option
+                :value="1"
+                label="已分配"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 下一期做 -->
+          <!-- <el-form-item>
+            <el-select
               v-model="formData.resource"
               size="small"
               class="item-select">
@@ -31,7 +45,7 @@
                 :value="2"
                 label="分散式"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-select
               v-model="formData.regionId"
@@ -109,6 +123,11 @@
         :selection-key="`fangyuanCode`"
         total-field="data.record"
         list-field="data.houseList">
+        <template
+          slot="slot_hasDistribute"
+          slot-scope="scope">
+          {{ hasDistributeStatus | renderStatusValue }}
+        </template>
       </GridUnit>
       <div
         :class="{hideSidebar:!sidebar.opened}"
@@ -121,15 +140,15 @@
         <el-button
           type="primary"
           size="small"
-          @click="submitOrgRoom">确定分配</el-button>
+          @click="submitOrgRoom">{{ assionButtonTitle }}</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
 import GridUnit from '@/components/GridUnit/grid'
-import { queryDistributeToDepListApi, distributeHouseToDepApi, queryDistributeToUserListApi } from '@/api/organization'
-import { distributeHouseToUserApi } from '@/api/staffManage'
+import { queryDistributeToDepListApi, queryDistributeToUserListApi } from '@/api/organization'
+import { distributeHouseToUserApi, distributeHouseToDepApi, cancleHouseToDepApi, cancleHouseToUserApi } from '@/api/staffManage'
 import { queryCityAreaPlotApi } from '@/api/houseManage'
 import { deepClone } from '@/utils'
 
@@ -138,8 +157,16 @@ export default {
   components: {
     GridUnit
   },
+  filters: {
+    // 房源分配状态
+    renderStatusValue (status) {
+      const statusStrData = ['', '已分配', '未分配']
+      return statusStrData[status] || '未知'
+    }
+  },
   data () {
     return {
+      hasDistributeStatus: 2,
       allRoom: '',
       orgData: [],
       formData: {
@@ -150,8 +177,10 @@ export default {
         pageSize: '20',
         regionId: '',
         subdistrictId: '', // 小区名称
-        subdistrictName: '' // 小区名称（模糊查询）
+        subdistrictName: '', // 小区名称（模糊查询）
+        hasDistribute: 2 // 1已分配 2未分配
       },
+      assionButtonTitle: '确认分配',
       selectFangyuanCodes: [],
       areaPotions: [], // 城市区域
       subdistrictNames: [],
@@ -166,7 +195,8 @@ export default {
           render (row) {
             return (row.chamberCount || 0) + '室' + (row.boardCount || 0) + '厅' + (row.toiletCount || 0) + '卫'
           }
-        }
+        },
+        {prop: 'hasDistribute', label: '分配状态', slotName: 'slot_hasDistribute'}
       ],
       colModelsJz: [// 集中式
         {prop: 'subdistrictName', label: '公寓/小区', width: 300},
@@ -246,61 +276,91 @@ export default {
           pageSize: '20',
           regionId: '',
           subdistrictId: '', // 小区名称
-          subdistrictName: '' // 小区名称（模糊查询）
+          subdistrictName: '', // 小区名称（模糊查询）
+          hasDistribute: 2 // 1已分配 2未分配  默认是为分配
         }
       }
+      console.log('查询数据', this.formData)
+      this.hasDistributeStatus = this.formData.hasDistribute
       this.formData.depId = this.orgData.depId
+      this.assionButtonTitle = this.formData.hasDistribute === 2 ? '确认分配' : '取消分配'
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
       })
     },
-
-    submitOrgRoom () { // 确定分配的房源
+    // 房源分配与取消消息提醒
+    messageTips (response, tipsText) {
+      if (response.code * 1 === 0) {
+        this.$message({
+          message: tipsText,
+          type: 'success'
+        })
+        this.searchParam()
+        this.selectFangyuanCodes = [] // 清空房源的选中列表
+      } else {
+        this.$message({
+          message: response.message,
+          type: 'success'
+        })
+      }
+    },
+    // 给部门分配请求的接口
+    distributionToDep (param) {
+      distributeHouseToDepApi(param).then((response) => {
+        this.messageTips(response, '部门房源分配成功')
+      })
+    },
+    // 给员工分配请求的接口
+    distributionToUser (param) {
+      distributeHouseToUserApi(param).then((response) => {
+        this.messageTips(response, '员工房源分配成功')
+      })
+    },
+    // 取消给员工分配房源
+    cancelDistributionToUser (param) {
+      cancleHouseToUserApi(param).then((response) => {
+        this.messageTips(response, '员工房源取消分配，成功')
+      })
+    },
+    // 取消给部门分配房源
+    cancelDistributionToDep (param) {
+      cancleHouseToDepApi(param).then((response) => {
+        this.messageTips(response, '部门房源取消分配，成功')
+      })
+    },
+    submitOrgRoom () { // 确定分配的房源 或者 取消分配房源
       this.getMultipleSelectionAll()// 获取房源fangyuanCodes
       let param = {
         'fangyuanCodes': deepClone(this.selectFangyuanCodes)
       }
+      let tips = this.formData.hasDistribute === 2 ? '确认' : '取消' // 2未分配  1已分配
       if (!this.selectFangyuanCodes.length) {
         this.$message({
-          message: '请选择要分配的房源',
+          message: '请选择要' + tips + '分配的房源',
           type: 'warning'
         })
         return false
       }
-      if (this.distributeHouse) {
-        param.userId = this.orgData.id
-        distributeHouseToUserApi(param).then((response) => {
-          if (response.code * 1 === 0) {
-            this.$message({
-              message: '员工房源分配成功',
-              type: 'success'
-            })
-            this.searchParam()
-            this.selectFangyuanCodes = []
-          } else {
-            this.$message({
-              message: response.message,
-              type: 'success'
-            })
-          }
-        })
-      } else {
-        param.depId = this.orgData.depId
-        distributeHouseToDepApi(param).then((response) => {
-          if (response.code * 1 === 0) {
-            this.$message({
-              message: '部门房源分配成功',
-              type: 'success'
-            })
-            this.searchParam()
-            this.selectFangyuanCodes = []
-          } else {
-            this.$message({
-              message: response.message,
-              type: 'success'
-            })
-          }
-        })
+      if (this.formData.hasDistribute === 2) { //  未分配点击按钮  分配房源
+        if (this.distributeHouse) { // 员工分配
+          param.userId = this.orgData.id
+          this.distributionToUser(param)
+          console.log('确认员工分配', param)
+        } else {
+          param.depId = this.orgData.depId
+          console.log('确认部门分配', param)
+          this.distributionToDep(param)
+        }
+      } else if (this.formData.hasDistribute === 1) { // 已分配 点击按钮 取消房源分配
+        if (this.distributeHouse) { // 员工取消分配
+          param.userId = this.orgData.id
+          console.log('取消员工分配', param)
+          this.cancelDistributionToUser(param)
+        } else {
+          param.depId = this.orgData.depId
+          console.log('取消部门分配', param)
+          this.cancelDistributionToDep(param)
+        }
       }
     },
     getMultipleSelectionAll () { // 获取已选择数据
@@ -340,6 +400,7 @@ export default {
   }
  .item-select {
     margin-right:10px;
+    width: 150px
   }
   .btnpos {
     padding: 10px 0;

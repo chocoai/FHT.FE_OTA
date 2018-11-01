@@ -89,6 +89,17 @@
           slot-scope="scope">
           {{ scope.row.role | renderStatusValue }}
         </template>
+        <template
+          slot="accountStatusHosting"
+          slot-scope="scope">
+          <el-switch
+            v-model="scope.row.status"
+            :active-value="1"
+            :inactive-value="2"
+            :active-text="accountStatusText(scope.row.status)"
+            class="accountSelectStatus"
+            @change="changeAccountStatus(scope.row)"/>
+        </template>
       </GridUnit>
     </div>
     <!-- 新增，编辑账号 -->
@@ -251,15 +262,6 @@ export default {
     GridUnit
   },
   filters: {
-    // 麦邻 闲鱼发布状态
-    renderStatusType (status) {
-      const statusMap = {
-        '1': 'info', // 未发布
-        '2': 'success', // 已发布
-        '3': 'danger' // 申请中
-      }
-      return statusMap[status] || 'info'
-    },
     renderStatusValue (status) {
       const statusStrData = ['', '负责人', '员工', '负责人']
       return statusStrData[status] || '未知'
@@ -354,7 +356,14 @@ export default {
       colModels: [ // 表格数据
         {prop: 'name', label: '姓名', width: 300},
         {prop: 'role', label: '职位', width: 150, slotName: 'slot_role'},
-        {prop: 'depName', label: '部门'},
+        {prop: 'depName', label: '部门', width: 150},
+        {
+          prop: 'roomStatus',
+          label: '状态',
+          width: 150,
+          slotName: 'accountStatusHosting',
+          type: 'status'
+        },
         {
           prop: 'operate',
           label: '操作',
@@ -498,9 +507,15 @@ export default {
       this.$refs['accountForm'].clearValidate()
     },
     assignHouse (data) { // 房源管理
-      if (data.role === 1 || data.role === 3 || data.hasAllRoomAuth === 1) {
+      if (data.role === 1 || data.role === 3) { // 部门负责人和 主账号拥有所有房源
         this.$message({
           message: '该账号拥有该部门下所有房源,无需设置',
+          type: 'warning'
+        })
+        return false
+      } else if (data.status * 1 === 2) {
+        this.$message({
+          message: '该账号已经停用，不能分配房源',
           type: 'warning'
         })
         return false
@@ -546,15 +561,63 @@ export default {
       this.userId = data.id // 用户id
       this.accountForm.depId = data.depId // 部门ID
       this.accountForm.role = data.role
+    },
+    changeAccountStatusMethod (param) { // 员工启用 停用账号
+      staffManageInfo.changeAccountStatusApi(param).then(() => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        })
+      })
+    },
+    // 更改员工状态
+    changeAccountStatus (data) {
+      let param = {
+        'userId': data.id,
+        'status': data.status // 要改成的状态
+      }
+      let statusText = data.status === 1 ? '确认启用账号？' : '确定停用账号？该员工账号下所有房源将会解除绑定。'
+      this.$confirm(statusText, ' 提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 1 启用 2 停用
+        this.changeAccountStatusMethod(param)
+        this.searchParam()
+      }).catch(() => {
+        console.log('取消')
+        this.searchParam()
+      })
+    },
+    accountStatusText (status) {
+      if (status === 1) {
+        return '启用'
+      } else if (status === 2) {
+        return '停用'
+      }
     }
   }
-
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .item-flex {
     display: flex;
-
   }
-  .item-select{margin-right:10px;}
+.item-select {
+  margin-right: 10px;
+  }
+.accountSelectStatus .el-switch__label *{
+  font-size: 12px;
+  color: #909399
+}
+.accountSelectStatus .el-switch__label.is-active span{
+  color: #409DFF
+}
+</style>
+<style>
+.model-table-pagenation .el-switch__label *{
+  font-size: 12px;
+  color: #606266;
+  }
 </style>
