@@ -151,19 +151,19 @@ export const asyncRouterMap = [
       }
     }]
   },
-  // {
-  //   path: '/addHouse',
-  //   name: '集中式录入',
-  //   component: Layout,
-  //   redirect: 'noRedirect',
-  //   icon: 'rent_whole',
-  //   noDropdown: true,
-  //   children: [{
-  //     name: '集中式录入',
-  //     path: 'estateRoomDetail',
-  //     component: _import('hostingEntryHouse/components/estateRoomDetail/index')
-  //   }]
-  // },
+  {
+    path: '/addHouse',
+    name: '集中式录入',
+    component: Layout,
+    redirect: 'noRedirect',
+    icon: 'rent_whole',
+    noDropdown: true,
+    children: [{
+      name: '集中式录入',
+      path: 'estateRoomDetail',
+      component: _import('hostingEntryHouse/components/estateRoomDetail/index')
+    }]
+  },
   {
     path: '/',
     redirect: '/house/houseManage',

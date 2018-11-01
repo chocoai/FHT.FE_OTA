@@ -92,20 +92,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="20">
-            <el-col :span="24">
-              <el-form-item
-                label="公寓简介"
-                prop="houseDesc">
-                <el-input
-                  v-model="estateRoomDetail.houseDesc"
-                  :rows="5"
-                  type="textarea"
-                  placeholder="请描述一下房源的交通、装饰、周边设施场所等等…" />
-                <span class="estate-iontro-length-tips">{{ estateRoomDetail.houseDesc.length }}/150</span>
-              </el-form-item>
-            </el-col>
-          </el-row>
           <el-form-item
             label="公寓照片"
             prop="pictures">
@@ -152,6 +138,21 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <el-form-item
+                label="公寓简介"
+                prop="houseDesc">
+                <el-input
+                  v-model="estateRoomDetail.houseDesc"
+                  :rows="5"
+                  type="textarea"
+                  placeholder="请描述一下房源的交通、装饰、周边设施场所等等…" />
+                <span class="estate-iontro-length-tips">{{ estateRoomDetail.houseDesc.length }}/150</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <!-- 上传图片弹窗 -->
           <el-dialog
             :visible.sync="uploadPicsModelVisible"
             append-to-body
@@ -192,7 +193,307 @@
                 @click="uploadPicsModelVisible = false">关 闭</el-button>
             </span>
           </el-dialog>
-          <roomType ref="roomTypeTabs"></roomType>
+          <!-- 房型 start-->
+          <el-tabs
+            v-model="editableTabsValue"
+            type="border-card"
+            editable
+            @edit="handleTabsEdit">
+            <el-tab-pane
+              v-for="(item, index) in estateRoomDetail.hostingRooms"
+              :key="index"
+              :label="item.roomName"
+              :name="item.name">
+              <!-- <span slot="label">
+                {{ item.roomName }}
+              </span> -->
+              <el-row :gutter="0">
+                <el-col
+                  :span="12">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.houseType'"
+                    :rules="estateRoomDetailRules.roomDetail.houseType"
+                    label="房间类型">
+                    <el-input
+                      v-model="estateRoomDetail.hostingRooms[index].houseType"
+                      placeholder="请输入房源类型"
+                      clearable/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-col :span="15">
+                    <el-form-item
+                      :prop="'hostingRooms.' + index + '.houserArea'"
+                      :rules="estateRoomDetailRules.roomDetail.houserArea"
+                      label="房间面积"
+                      class="room-item-count">
+                      <el-input
+                        v-model="estateRoomDetail.hostingRooms[index].houserArea"
+                        placeholder="请输入房间面积"
+                        min="0"
+                        clearable
+                        type="number"/>
+                    </el-form-item>
+                  </el-col>
+                  <el-col
+                    :span="4"
+                    class="inline-item-label">
+                    m
+                    <sup>2</sup>
+                  </el-col>
+                </el-col>
+              </el-row>
+              <el-row
+                :gutter="10">
+                <el-col
+                  :span="3">
+                  <el-form-item
+                    :rules="estateRoomDetailRules.roomDetail.chamberCount"
+                    :show-message="false"
+                    label="户型"/>
+                </el-col>
+                <el-col :span="3">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.chamberCount'"
+                    :rules="estateRoomDetailRules.roomDetail.chamberCount"
+                    style="margin-left:-8px;"
+                    label=""
+                    label-width="0"
+                    class="room-item-count">
+                    <el-select
+                      v-model="estateRoomDetail.hostingRooms[index].chamberCount"
+                      placeholder="">
+                      <el-option
+                        v-for="(item, index) in 10"
+                        :key="item"
+                        :value="index" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="1"
+                  class="inline-item-label">
+                  室
+                </el-col>
+                <el-col :span="3">
+                  <el-form-item
+                    label=""
+                    label-width="0"
+                    prop="boardCount"
+                    class="room-item-count">
+                    <el-select
+                      v-model="estateRoomDetail.hostingRooms[index].boardCount"
+                      placeholder="">
+                      <el-option
+                        v-for="(item, index) in 10"
+                        :key="item"
+                        :value="index" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="1"
+                  class="inline-item-label">
+                  厅
+                </el-col>
+                <el-col :span="3">
+                  <el-form-item
+                    label=""
+                    label-width="0"
+                    prop="toiletCount"
+                    class="room-item-count">
+                    <el-select
+                      v-model="estateRoomDetail.hostingRooms[index].toiletCount"
+                      placeholder="">
+                      <el-option
+                        v-for="(item, index) in 10"
+                        :key="item"
+                        :value="index" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="1"
+                  class="inline-item-label">
+                  卫
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.roomDirection'"
+                    :rules="estateRoomDetailRules.roomDetail.roomDirection"
+                    label-width="0"
+                    class="room-item-count">
+                    <el-select
+                      v-model="estateRoomDetail.hostingRooms[index].roomDirection"
+                      class="room-detail-select"
+                      placeholder="朝向">
+                      <el-option
+                        v-for="item in roomDirectionList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="15">
+                  <el-form-item
+                    label="房间设施"
+                    style="width:100%">
+                    <el-select
+                      v-model="estateRoomDetail.hostingRooms[index].facilityItemsList"
+                      class="room-detail-select"
+                      style="width:82%"
+                      multiple
+                      placeholder="请选择">
+                      <el-option-group
+                        v-for="group in facilityGroup"
+                        :key="group.label"
+                        :label="group.label">
+                        <el-option
+                          v-for="item in group.facilitys"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value" />
+                      </el-option-group>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row
+                :gutter="10">
+                <el-col
+                  :span="3">
+                  <el-form-item
+                    :rules="estateRoomDetailRules.roomDetail.payOfPayment"
+                    :show-message="false"
+                    label="付款方式"
+                    prop="payOfPayment" />
+                </el-col>
+                <el-col
+                  :span="1"
+                  style="margin-left:-10px;"
+                  class="inline-item-label">
+                  付
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.payOfPayment'"
+                    :rules="estateRoomDetailRules.roomDetail.payOfPayment"
+                    label=""
+                    label-width="0"
+                    class="room-item-count">
+                    <el-select v-model="estateRoomDetail.hostingRooms[index].payOfPayment">
+                      <el-option
+                        v-for="item in payList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="1"
+                  class="inline-item-label">
+                  押
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.depositOfPayment'"
+                    :rules="estateRoomDetailRules.roomDetail.depositOfPayment"
+                    label=""
+                    label-width="0"
+                    class="room-item-count">
+                    <el-select
+                      v-model="estateRoomDetail.hostingRooms[index].depositOfPayment"
+                      @change="handleDepositChange(estateRoomDetail)">
+                      <el-option
+                        v-for="item in depositList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="7">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.pictures'"
+                    :rules="estateRoomDetailRules.roomDetail.pictures"
+                    label="房间照片">
+                    <template v-if="estateRoomDetail.hostingRooms[index].pictures.length > 0">
+                      <el-badge :value="estateRoomDetail.hostingRooms[index].pictures.length">
+                        <el-button
+                          type="primary"
+                          size="mini"
+                          @click="openPicModel(index)">上传照片</el-button>
+                      </el-badge>
+                    </template>
+                    <template v-else>
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        @click="openPicModel(index)">上传照片</el-button>
+                    </template>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="7">
+                  <el-form-item
+                    :prop="'hostingRooms.' + index + '.rent'"
+                    :rules="estateRoomDetailRules.roomDetail.rent"
+                    label="租金">
+                    <el-input
+                      v-model="estateRoomDetail.hostingRooms[index].rent"
+                      placeholder="请输入租金"
+                      type="number"
+                      clearable
+                      @change="handleRentChange(estateRoomDetail.hostingRooms[index])" />
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="1"
+                  style="text-align: left"
+                  class="inline-item-label">
+                  元/月
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="6">
+                  <el-form-item
+                    label="押金">
+                    <el-input
+                      v-model="estateRoomDetail.hostingRooms[index].deposit"
+                      :disabled="estateRoomDetail.hostingRooms[index].depositOfPayment !== 13"
+                      type="number" />
+                  </el-form-item>
+                </el-col>
+                <el-col
+                  :span="1"
+                  class="inline-item-label">
+                  &nbsp; 元
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-form-item
+                  label="房号配置">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="selectRoomNum">
+                    房间号配置
+                  </el-button>
+                </el-form-item>
+              </el-row>
+            </el-tab-pane>
+          </el-tabs>
+          <!-- <roomType
+            ref="roomTypeTabs">
+          </roomType> -->
+          <!-- 房型 end-->
         </el-form>
       </div>
     </div>
@@ -295,7 +596,52 @@ export default {
               }
             }
           }
-        ]
+        ],
+        // 房型验证
+        roomDetail: {
+          houseType: [
+            { required: true, message: '请输入房源类型', trigger: 'blur' }
+          ],
+          houserArea: [
+            { required: true, message: '请输入房源面积', trigger: 'blur' }
+          ],
+          chamberCount: [
+            { required: true, message: '请输入室', trigger: 'blur' }
+          ],
+          boardCount: [
+            { required: true, message: '请输入厅', trigger: 'blur' }
+          ],
+          toiletCount: [
+            { required: true, message: '请输入卫', trigger: 'blur' }
+          ],
+          roomDirection: [
+            { required: true, message: '请选择房屋朝向', trigger: 'change' }
+          ],
+          payOfPayment: [
+            { required: true, message: '请选择付款方式', trigger: 'change' }
+          ],
+          depositOfPayment: [
+            { required: true, message: '请选择押金方式', trigger: 'change' }
+          ],
+          rent: [
+            { required: true, message: '请输入租金', trigger: 'blur' }
+          ],
+          deposit: [
+            { required: true, message: '请输入押金', trigger: 'blur' }
+          ],
+          pictures: [
+            {
+              required: true,
+              validator: (rule, value, callback) => {
+                if (!value.length) {
+                  callback(new Error('请上传房间照片'))
+                } else {
+                  callback()
+                }
+              }
+            }
+          ]
+        }
       },
       floorOptions: [ // 楼层编辑
         {
@@ -318,11 +664,30 @@ export default {
         contactMobile: '', // 联系人电话
         houseDesc: '', // 公寓简介
         pictures: [], // 公寓照片
-        hostingRooms: '', // 房型
         apartmentFloor: '', //  公寓楼层
-        floors: [] // 编辑楼层
-
+        floors: [], // 编辑楼层
+        hostingRooms: [
+          {
+            houseType: '夏威夷',
+            houserArea: '20', // 面积
+            roomName: '房型',
+            roomDirection: '', // 朝向
+            chamberCount: '1',
+            boardCount: '0',
+            toiletCount: '0',
+            name: '1',
+            rent: '',
+            deposit: '',
+            payOfPayment: '', // 付款
+            depositOfPayment: '', // 押金
+            facilityItemsList: [],
+            pictures: []
+          }
+        ]
       },
+      activeRoomName: '1',
+      tabIndex: 1,
+      editableTabsValue: '1', // 当前展示tabs
       clearDepName: true, // 是否清空归属部门
       expendedKeys: { // 默认展开的部门
         depId: Number,
@@ -332,11 +697,107 @@ export default {
         type: String,
         default: '100%'
       },
+      roomDirectionList: [
+        {
+          label: '朝南',
+          value: 1
+        },
+        {
+          label: '朝北',
+          value: 2
+        },
+        {
+          label: '朝东',
+          value: 3
+        },
+        {
+          label: '朝西',
+          value: 4
+        },
+        {
+          label: '东南',
+          value: 5
+        },
+        {
+          label: '西南',
+          value: 6
+        },
+        {
+          label: '东北',
+          value: 7
+        },
+        {
+          label: '西北',
+          value: 8
+        }
+      ],
+      facilityGroup: [ // 房间设施
+        {
+          label: '家电',
+          facilitys: [{
+            value: '2',
+            label: '洗衣机'
+          }, {
+            value: '3',
+            label: '空调'
+          }, {
+            value: '4',
+            label: '冰箱'
+          }, {
+            value: '5',
+            label: '电视'
+          }]
+        },
+        {
+          label: '家具',
+          facilitys: [{
+            value: '1',
+            label: '床'
+          }, {
+            value: '7',
+            label: '沙发'
+          }, {
+            value: '8',
+            label: '茶几'
+          }, {
+            value: '10',
+            label: '餐桌'
+          }]
+        },
+        {
+          label: '其他',
+          facilitys: [{
+            value: '6',
+            label: '宽带'
+          }]
+        }
+      ],
+      roomCheckbox: false,
       uploadPicsModelVisible: false, // 上传图片弹窗
       curPicListIndex: -1,
       currentPicList: [],
       cropperList: [],
       accept: 'image/png, image/jpeg, image/jpg'
+    }
+  },
+  computed: {
+    payList () {
+      let list = []
+      for (let i = 0; i < 13; i++) {
+        list.push({
+          value: i,
+          label: i + ''
+        })
+      }
+      return list
+    },
+    depositList () {
+      let list = this.payList.slice(0)
+      list.push({
+        value: 13,
+        label: '自定义'
+      })
+      return list
     }
   },
   methods: {
@@ -378,7 +839,6 @@ export default {
     },
     // 提交form表单
     saveRoomDetailData () {
-      console.log(this.$refs.roomTypeTabs.estateRoomDetail)
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
           alert('submit!')
@@ -387,6 +847,104 @@ export default {
           return false
         }
       })
+    },
+    // tab-pane
+    handleTabsEdit (targetName, action) {
+      if (action === 'add') {
+        if (this.estateRoomDetail.hostingRooms.length > 25) {
+          return
+        }
+        let curIndex = this.estateRoomDetail.hostingRooms.length
+        let newTabName = ++this.tabIndex + ''
+        this.estateRoomDetail.hostingRooms.push({
+          houseType: '',
+          houserArea: '', // 面积
+          roomName: '房型' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[curIndex],
+          roomDirection: '', // 朝向
+          chamberCount: '1',
+          boardCount: '0',
+          toiletCount: '0',
+          rent: '',
+          deposit: '',
+          name: newTabName,
+          payOfPayment: '', // 付款
+          depositOfPayment: '', // 押金
+          facilityItemsList: [],
+          pictures: []
+        })
+        this.editableTabsValue = newTabName
+      }
+      if (action === 'remove') {
+        let tabs = this.estateRoomDetail.hostingRooms
+        console.log(this.estateRoomDetail.hostingRooms)
+        let activeName = this.editableTabsValue
+        if (activeName === targetName) { // 如果当前显示的 === 点击要删除的
+          tabs.forEach((tab, index) => {
+            if (tab.name === targetName) {
+              let nextTab = tabs[index + 1] || tabs[index - 1]
+              if (nextTab) {
+                activeName = nextTab.name
+              }
+            }
+          })
+        }
+        this.editableTabsValue = activeName
+        this.estateRoomDetail.hostingRooms = tabs.filter(tab => tab.name !== targetName)
+        this.estateRoomDetail.hostingRooms.forEach((item, index) => {
+          item.roomName = '房间' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[index]
+        })
+        this.$nextTick(() => {
+          this.activeRoomName = activeName
+        })
+      }
+    },
+    // 计算押金，保留2位精度
+    handleDepositChange (target) {
+      if (target.depositOfPayment !== 13) {
+        if (target.rent === '') {
+          target.deposit = ''
+          return
+        }
+        target.deposit = target.rent * target.depositOfPayment
+        target.deposit = target.deposit === 0 ? 0 : target.deposit.toFixed(2)
+        if (target.roomName) {
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.roomName.replace('房间', ''))
+          this.$refs.estateRoomDetail.validateField('hostingRooms.' + index + '.deposit')
+        } else {
+          this.$refs.estateRoomDetail.validateField('deposit')
+        }
+      }
+    },
+    selectRoomNum () { // 选择房间号
+      this.roomCheckbox = true
+    },
+    // 计算租金，保留2位精度
+    handleRentChange (target) {
+      if (target.rent > 0) {
+        target.rent = Math.min(100000, target.rent).toString()
+        let list = target.rent.split('.')
+        if (!list[1]) {
+          target.rent = target.rent + '.00'
+        } else {
+          target.rent = Number(target.rent).toFixed(2)
+        }
+      } else {
+        target.rent = 0
+      }
+      if (target.rent !== '' && target.depositOfPayment !== '' && target.depositOfPayment !== 13) {
+        target.deposit = target.rent * target.depositOfPayment
+        target.deposit = target.deposit === 0 ? 0 : target.deposit.toFixed(2)
+      } else {
+        target.deposit = ''
+      }
+      if (target.depositOfPayment !== '') {
+        if (target.roomName) {
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.roomName.replace('房型', ''))
+          this.$refs.estateRoomDetail.validateField('hostingRooms.' + index + '.deposit')
+        } else {
+          this.$refs.estateRoomDetail.validateField('deposit')
+        }
+      }
     },
     /* 选择图片 */
     async uploadImg (e) { // 点击input
@@ -459,7 +1017,7 @@ export default {
     },
     // 裁剪后图片列表
     emitCropperData (list = []) {
-      console.log('list', list)
+      console.log('list1', list)
       list.forEach((v, i) => {
         v.type = 1
         v.imageName = v.title
@@ -467,6 +1025,7 @@ export default {
           v.isBase64 = 1
         }
       })
+      console.log('list2', list)
       this.currentPicList = [...this.currentPicList, ...list]
     },
     uploadModelClose () { // 关闭上传图片列表
@@ -477,7 +1036,7 @@ export default {
         this.estateRoomDetail.hostingRooms[this.curPicListIndex].pictures = this.currentPicList
         this.$refs.estateRoomDetail.validateField('hostingRooms.' + this.curPicListIndex + '.pictures')
       }
-      console.log(this.estateRoomDetail.pictures)
+      console.log('cc', this.estateRoomDetail.pictures)
       this.currentPicList = []
     }
   }
