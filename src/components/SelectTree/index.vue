@@ -98,6 +98,7 @@ export default {
       immediate: true,
       handler: function (val) {
         // this.depName = val
+        console.log('watch', val)
       }
     }
   },
@@ -138,7 +139,6 @@ export default {
         }
         // 获取顶级部门
         this.$emit('getParentDep', this.parentOrg)
-
         // 设置默认值
         if (this.defaultKepId.depName) {
           this.depName = this.defaultKepId.depName
