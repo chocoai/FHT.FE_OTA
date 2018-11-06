@@ -33,7 +33,7 @@ export const constantRouterMap = [{
   hidden: true
 }, {
   path: '/house',
-  name: '主页',
+  name: '房源管理',
   component: Layout,
   redirect: '/houseManage',
   noDropdown: true,
@@ -48,7 +48,7 @@ export const constantRouterMap = [{
   }]
 }, {
   path: '/house',
-  name: '主页',
+  name: '房源管理',
   component: Layout,
   redirect: '/houseManage',
   noDropdown: true,

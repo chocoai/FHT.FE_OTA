@@ -180,3 +180,11 @@ export function allRoomByFangyuanCodeApi (params) {
     isMock: true
   })
 }
+/* 集中式编辑房间 */
+export function editEstateRoomInfoApi (params) {
+  return fetch('/fangyuan/editEstateRoomInfo', {
+    params
+  }, {
+    isMock: true
+  })
+}

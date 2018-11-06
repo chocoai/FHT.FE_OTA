@@ -1,15 +1,7 @@
 <template>
   <div>
     <div class="layout_pageHeader">
-      <!-- <el-tabs
-        v-model="activeName"
-        @tab-click="handleClickTab">
-        <el-tab-pane
-          v-for="(item,index) in tabMapOptions"
-          :label="item"
-          :key="index"
-          :name="item"/>
-      </el-tabs> -->
+
       <el-form class="model-search clearfix">
         <div class="item-flex">
           <el-form-item>
@@ -279,6 +271,11 @@
           :show-close="false"
           title="编辑房间"
           top="0">
+          <edit-estate-manage
+            ref="editEstateManage"
+            :tools-width="roomDetailWidth"
+            @closeDialog="closeRoomDetailDialog">
+          </edit-estate-manage>
           <!-- <hosting-room-detail
             ref="hostingRoomDetail"
             :house-rent-type="activeName === '分散式整租' ? 1 : 2"
@@ -360,15 +357,15 @@ import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/components/Authorize'
 import SelectTree from '@/components/SelectTree/'
-import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
-import { queryEstateListApi, changeRoomStatusApi, estateDeleteRoomApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi, certificationFromApi } from '@/api/houseManage'
+import editEstateManage from './editEstateManage'
+import { queryEstateListApi, changeRoomStatusApi, estateDeleteRoomApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, queryOneEstateRoomApi, certificationFromApi } from '@/api/houseManage'
 export default {
   name: 'HouseSync',
   components: {
     GridUnit,
     areaSelect,
     authorize,
-    hostingRoomDetail,
+    editEstateManage,
     SelectTree
   },
   filters: {
@@ -570,8 +567,9 @@ export default {
       this.$refs.authorzeUser.$refs.dataForm.clearValidate()
       this.authorizeShow = false
     },
+    // 关闭编辑弹窗
     closeRoomDetailDialog () {
-      this.$refs.hostingRoomDetail.$refs.hostingRoomDetail.clearValidate()
+      this.$refs.editEstateManage.$refs.roomTypeTabsForm.clearValidate()
       this.roomDetailModelVisible = false
       this.searchParam()
     },
@@ -781,12 +779,13 @@ export default {
     },
     // 添加修改房间信息
     openRoomDetail (params) {
-      hostingHouseInfoApi({
+      this.roomDetailModelVisible = true
+      queryOneEstateRoomApi({
         fangyuanCode: params.fangyuanCode
       }).then((res) => {
         this.roomDetailModelVisible = true
         this.$nextTick(() => {
-          this.$refs.hostingRoomDetail.setRoomDetailData(res.data, params)
+          this.$refs.editEstateManage.setRoomDetailData(res.data, params)
         })
       }).catch(err => console.log(err))
     },
