@@ -44,20 +44,35 @@
                 @input="searchZoneList(false)" />
             </el-form-item>
             <el-form-item
+              :rules="{ required: zoneList.length > 0, message: '请选择所属板块', trigger: 'change' }"
+              prop="zoneId"
+              label="所属板块">
+              <el-select
+                v-model="estateRoomDetail.zoneId"
+                :placeholder="zoneList.length ? '请选择' : '无'"
+                style="width:43%">
+                <el-option
+                  v-for="item in zoneList"
+                  :key="item.zoneId"
+                  :label="item.zoneName"
+                  :value="item.zoneId" />
+              </el-select>
+            </el-form-item>
+            <el-form-item
               label="具体位置"
               prop="address"
               class="item-input">
               <map-select
                 :area-code="estateRoomDetail.areaCode"
-                :value="estateRoomDetail.address"
+                :value="address"
                 @addressChange="addressChange" />
             </el-form-item>
             <el-form-item
               label="品牌公寓"
-              prop="brandRoom"
+              prop="estateName"
               class="item-input">
               <el-input
-                v-model="estateRoomDetail.brandRoom"
+                v-model="estateRoomDetail.estateName"
                 placeholder="请输入品牌公寓名称"/>
             </el-form-item>
             <el-row :gutter="20">
@@ -114,22 +129,24 @@
               label="公寓楼层"
               prop="apartmentFloor">
               <el-input
-                v-model="estateRoomDetail.apartmentFloor"
+                v-model="apartmentFloor"
                 style="width:200px"
                 type="number"
-                placeholder="请输入内容">
+                placeholder="请输入内容"
+                @blur="apartmentInput">
                 <template slot="prepend">共</template>
                 <template slot="append">层</template>
               </el-input>
             </el-form-item>
             <el-form-item
               label="编辑楼层"
-              prop="apartmentFloor">
+              prop="floorName">
               <el-select
-                v-model="estateRoomDetail.floors"
+                v-model="estateRoomDetail.floorName"
                 multiple
                 filterable
                 allow-create
+                style="width:43%"
                 default-first-option
                 placeholder="请选择楼层">
                 <el-option
@@ -608,7 +625,7 @@ import Preview from '@/components/Preview/Preview'
 import areaSelect from '@/components/AreaSelect'
 import mapSelect from '@/components/MapSelect'
 import SelectTree from '@/components/SelectTree/'
-import { estateZoneListByAreaIdApi } from '@/api/houseManage'
+import { estateZoneListByAreaIdApi, saveEstateInfoApi } from '@/api/houseManage'
 import { validateMobile } from '@/utils/validate'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import roomListSelect from './roomListSelect'
@@ -641,19 +658,72 @@ export default {
         callback()
       }
     }
+    const validateAdress = (rule, value, callback) => {
+      if (!this.address) {
+        callback(new Error(' 请输入关键字 '))
+      } else {
+        callback()
+      }
+    }
+    const validateapartmentFloor = (rule, value, callback) => {
+      if (!this.apartmentFloor) {
+        callback(new Error(' 请输入楼层数'))
+      } else if (this.apartmentFloor === '0') {
+        callback(new Error('楼层数不能为0'))
+      } else {
+        callback()
+      }
+    }
     return {
+      zoneList: [], // 所属板块列表
       rooListSelectLayer: true, // 配置房间号
       saveLoading: false, // 是否加载中
       editFlag: false, // 是否是编辑
       addHouseType: false, // 展示添加房型
+      estateRoomDetail: { // form 数据
+        fangyuanCode: '',
+        depId: '',
+        contactName: '', // 联系人
+        contactGender: 1, // 联系人性别
+        contactMobile: '', // 联系人电话
+        estateName: '', // 品牌公寓
+        areaCode: [],
+        houseDesc: '', // 公寓简介
+        zoneId: '', // 所属板块
+        pictures: [], // 公寓照片
+        floorName: [], // 编辑楼层
+        floorRoomNum: '' // 每层房间数
+      },
+      apartmentFloor: null,
+      address: '',
+      addHostingRooms: {
+        hostingRooms: [
+          {
+            houseType: '',
+            houserArea: '', // 面积
+            roomName: '房间A',
+            roomDirection: '', // 朝向
+            chamberCount: '1',
+            boardCount: '0',
+            toiletCount: '0',
+            name: '1',
+            rent: '',
+            deposit: '',
+            payOfPayment: '', // 付款
+            depositOfPayment: '', // 押金
+            facilityItemsList: [],
+            pictures: []
+          }
+        ]
+      },
       estateRoomDetailRules: { // 表单验证
         depName: [
           { required: true, trigger: ['change'], validator: validateDepName }
         ],
         address: [
-          { required: true, message: '请输入公寓/小区', trigger: 'change' }
+          { required: true, trigger: 'change', validator: validateAdress }
         ],
-        brandRoom: [
+        estateName: [
           { required: true, message: '请输入品牌公寓', trigger: 'blur' }
         ],
         contactName: [
@@ -667,10 +737,13 @@ export default {
           { max: 150, message: '长度不能超过150个字符', trigger: 'change' }
         ],
         apartmentFloor: [
-          { required: true, message: '请输入公寓楼层', trigger: 'change' }
+          { required: true, trigger: 'blur', validator: validateapartmentFloor }
         ],
         floorRoomNum: [
           { required: true, message: '请输入每层房间数', trigger: 'blur' }
+        ],
+        floorName: [
+          { required: true, message: '请选择楼层', trigger: 'blur' }
         ],
         areaCode: [
           {
@@ -743,51 +816,7 @@ export default {
           }
         ]
       },
-      floorOptions: [ // 楼层编辑
-        {
-          value: 1,
-          label: '1层'
-        },
-        {
-          value: 2,
-          label: '2层'
-        }
-      ],
-      estateRoomDetail: { // form 数据
-        depId: '',
-        depName: '',
-        address: '',
-        areaCode: [],
-        brandRoom: '', // 品牌公寓
-        contactName: '', // 联系人
-        contactGender: 1, // 联系人性别
-        contactMobile: '', // 联系人电话
-        houseDesc: '', // 公寓简介
-        pictures: [], // 公寓照片
-        apartmentFloor: '', //  公寓楼层
-        floors: [], // 编辑楼层
-        floorRoomNum: '' // 每层房间数
-      },
-      addHostingRooms: {
-        hostingRooms: [
-          {
-            houseType: '夏威夷',
-            houserArea: '20', // 面积
-            roomName: '房型',
-            roomDirection: '', // 朝向
-            chamberCount: '1',
-            boardCount: '0',
-            toiletCount: '0',
-            name: '1',
-            rent: '',
-            deposit: '',
-            payOfPayment: '', // 付款
-            depositOfPayment: '', // 押金
-            facilityItemsList: [],
-            pictures: []
-          }
-        ]
-      },
+      floorOptions: [], // 楼层编辑
       allRoomByFangyuanCode: [], // 房间号
       activeRoomName: '1',
       tabIndex: 1,
@@ -905,11 +934,26 @@ export default {
     }
   },
   methods: {
+    // 输入总共楼层数遍历出每层
+    apartmentInput () {
+      this.floorOptions = []
+      if (this.apartmentFloor) {
+        for (let i = 1; i <= this.apartmentFloor; i++) {
+          this.floorOptions.push(
+            {
+              value: i,
+              label: i + '层'
+            }
+          )
+        }
+      }
+    },
     // 点击树节点
     clickTreeNode (data) {
       // this.estateRoomDetail.depName = data.depName
+      console.log(data)
       this.$set(this.estateRoomDetail, 'depName', data.depName)
-      console.log('2', this.estateRoomDetail.depName)
+      this.estateRoomDetail.depId = data.depId
     },
     // 获取树结构顶级元素
     getParentDep (data) {
@@ -923,7 +967,7 @@ export default {
     searchZoneList (flag) { // 搜索板块列表
       [this.estateRoomDetail.provinceId, this.estateRoomDetail.cityId, this.estateRoomDetail.regionId] = this.estateRoomDetail.areaCode
       if (!flag) {
-        this.estateRoomDetail.address = ''
+        this.estateRoomDetail.regionAddressId = ''
         this.estateRoomDetail.zoneId = ''
       }
       if (this.estateRoomDetail.areaCode[2] !== undefined) {
@@ -937,8 +981,10 @@ export default {
       }
     },
     addressChange (val) { // 选择具体位置
-      console.log(this.estateRoomDetail)
-      this.estateRoomDetail = Object.assign(this.estateRoomDetail, val)
+      // console.log(val)
+      this.estateRoomDetail.regionAddressId = val.regionAddressId
+      this.address = val.address
+      // this.estateRoomDetail = Object.assign(this.estateRoomDetail, val)
       this.$refs['estateRoomDetail'].validateField('address')
       this.searchZoneList(true)
     },
@@ -1137,9 +1183,30 @@ export default {
     // 下一步
     addEstateRoomNext () {
       this.addHouseType = true
+      let floors = []
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
-          console.log(this.estateRoomDetail)
+          this.estateRoomDetail.floorName.forEach((item, index) => {
+            floors.push({
+              floorName: item,
+              roomNum: this.estateRoomDetail.floorRoomNum
+            })
+          })
+          let param = deepClone(this.estateRoomDetail)
+          param.floors = floors
+          delete param.cityId
+          delete param.depName
+          delete param.regionId
+          delete param.areaCode
+          delete param.provinceId
+          delete param.floorName
+          delete param.roomNum
+          console.log('提交公寓的参数', param)
+          let estateInfo = JSON.stringify(param)``
+          this.addHouseType = true
+          saveEstateInfoApi({estateInfo: estateInfo}).then((res) => { // 保存公寓接口
+            this.estateRoomDetail.fangyuanCode = res.data
+          })
         }
       })
     },

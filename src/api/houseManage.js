@@ -188,3 +188,11 @@ export function editEstateRoomInfoApi (params) {
     isMock: true
   })
 }
+/* 集中式录入保存公寓 */
+export function saveEstateInfoApi (params) {
+  return fetch('/fangyuan/saveEstateInfo', {
+    params
+  }, {
+    isMock: true
+  })
+}
