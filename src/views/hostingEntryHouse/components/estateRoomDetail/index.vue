@@ -559,16 +559,11 @@
         <!-- 房型 end-->
       </div>
       <!-- 房间号配置 start-->
-      <template>
-        <el-transfer
-          v-model="value5"
-          :props="{
-            key: 'value',
-            label: 'desc'
-          }"
-          :data="data3">
-        </el-transfer>
-      </template>
+      <el-dialog
+        :visible.sync="rooListSelectLayer"
+        title="请选择要配置的房间">
+        <room-list-select></room-list-select>
+      </el-dialog>
       <!-- 房间号配置 end-->
     </div>
     <div
@@ -616,6 +611,7 @@ import SelectTree from '@/components/SelectTree/'
 import { estateZoneListByAreaIdApi } from '@/api/houseManage'
 import { validateMobile } from '@/utils/validate'
 import ImageCropper from '@/components/ImageCropper/Cropper'
+import roomListSelect from './roomListSelect'
 import roomType from './roomType'
 
 export default {
@@ -627,7 +623,8 @@ export default {
     ImageCropper,
     Preview,
     roomType,
-    validateMobile
+    validateMobile,
+    roomListSelect
   },
   data () {
     const validatePhone = (rule, value, callback) => {
@@ -645,6 +642,7 @@ export default {
       }
     }
     return {
+      rooListSelectLayer: true, // 配置房间号
       saveLoading: false, // 是否加载中
       editFlag: false, // 是否是编辑
       addHouseType: false, // 展示添加房型
@@ -790,9 +788,7 @@ export default {
           }
         ]
       },
-      allRoomByFangyuanCode: { // 房间号
-
-      },
+      allRoomByFangyuanCode: [], // 房间号
       activeRoomName: '1',
       tabIndex: 1,
       editableTabsValue: '1', // 当前展示tabs

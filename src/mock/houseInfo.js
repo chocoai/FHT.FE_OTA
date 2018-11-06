@@ -472,6 +472,32 @@ const houseManage_info = {
         'pictures': null
       }
     ]
+  },
+  queryEstateList: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      'record': 1,
+      'rooms': [{
+        'estateName': '美丽湖畔公寓',
+        'roomTypeName': '田园风格',
+        'boardCount': 1,
+        'chamberCount': 1,
+        'fangyuanCode': '124324',
+        'idlefishStatus': 1,
+        'idlefishfailMessage': '闲鱼失败原因',
+        'mailinStatus': 1,
+        'mailinfailMessage': '麦邻失败原因',
+        'rentPrice': 1700.0,
+        'roomArea': 30.0,
+        'roomCode': 'roomCode',
+        'roomNo': '302',
+        'roomStatus': 1,
+        'toiletCount': 1,
+        'depName': '总部'
+      }]
+    }
   }
 }
 
@@ -538,5 +564,8 @@ export default {
   },
   queryHostingHouseByOuterHouseUuid: () => {
     return houseManage_info.queryHostingHouseByOuterHouseUuid
+  },
+  queryEstateList: () => {
+    return houseManage_info.queryEstateList
   }
 }

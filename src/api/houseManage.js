@@ -141,3 +141,42 @@ export function queryHostingHouseByOuterHouseUuidApi (params) {
     isMock: true
   })
 }
+
+/* 集中式 */
+
+/* 集中式房间列表 */
+export const queryEstateListApi = {
+  requestPath: '/fangyuan/queryEstateList',
+  isMock: true,
+  queryActivityListByPage (params = {}) {
+    return fetch(this.requestPath, {
+      params
+    }, {
+      isMock: this.isMock
+    })
+  }
+}
+/* 集中式查询单个房间 */
+export function queryOneEstateRoomApi (params) {
+  return fetch('/fangyuan/queryOneEstateRoomApi', {
+    params
+  }, {
+    isMock: true
+  })
+}
+/* 集中式删除房间 */
+export function estateDeleteRoomApi (params) {
+  return fetch('/fangyuan/deleteRoom', {
+    params
+  }, {
+    isMock: true
+  })
+}
+/* 集中式录入 获取房型房间号 */
+export function allRoomByFangyuanCodeApi (params) {
+  return fetch('/fangyuan/allRoomByFangyuanCode', {
+    params
+  }, {
+    isMock: true
+  })
+}

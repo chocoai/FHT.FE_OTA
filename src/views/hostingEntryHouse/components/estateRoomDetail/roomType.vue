@@ -285,12 +285,12 @@
 </template>
 
 <script>
-import roomCheckGroup from './roomCheckGroup'
+// import roomCheckGroup from './roomCheckGroup'
 import uploadImg from './uploadImg'
 export default {
   name: 'RoomType',
   components: {
-    roomCheckGroup,
+    // roomCheckGroup,
     uploadImg
   },
   props: {
