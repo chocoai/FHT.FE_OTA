@@ -547,6 +547,7 @@
               <!-- 房间号配置 start-->
               <el-dialog
                 :visible.sync="copyItemToModelVisible"
+                :close-on-click-modal="false"
                 title="请选择要配置的房间">
                 <room-list-select
                   ref="copyItemTo"
@@ -671,6 +672,8 @@ export default {
       editFlag: false, // 是否是编辑
       addHouseType: false, // 展示添加房型
       defaultCheckObj: [],
+      cancelDefaultCheckObj: [],
+      checkedRoomList: null, // 选中的房间号
       estateRoomDetail: { // form 数据
         fangyuanCode: '',
         depId: '',
@@ -1012,7 +1015,6 @@ export default {
       }
       if (action === 'remove') {
         let tabs = this.addHostingRooms.hostingRooms
-        console.log(this.addHostingRooms.hostingRooms)
         let activeName = this.editableTabsValue
         if (activeName === targetName) { // 如果当前显示的 === 点击要删除的
           tabs.forEach((tab, index) => {
@@ -1022,6 +1024,7 @@ export default {
                 activeName = nextTab.name
               }
             }
+            this.defaultCheckObj.splice(index, 1)
           })
         }
         this.editableTabsValue = activeName
@@ -1129,8 +1132,6 @@ export default {
         }
         uploadList.push(await readFileAsync(files[i]))
       }
-      console.log('e.target.files', e.target.files)
-
       this.cropperList = uploadList.map((item, kindex) => {
         return {
           img: item.img,
@@ -1200,7 +1201,7 @@ export default {
           delete param.floorName
           delete param.roomNum
           console.log('提交公寓的参数', param)
-          let estateInfo = JSON.stringify(param)``
+          let estateInfo = JSON.stringify(param)
           this.addHouseType = true
           saveEstateInfoApi({estateInfo: estateInfo}).then((res) => { // 保存公寓接口
             this.estateRoomDetail.fangyuanCode = res.data
@@ -1215,17 +1216,38 @@ export default {
     },
     selectRoomNum (index) { // 选择房间号
       this.copyItemToModelVisible = true
+      let cancelArray = []
       this.currentRoomIndex = index
-      console.log(index)
+      this.cancelDefaultCheckObj = deepClone(this.defaultCheckObj) // 需要删除的选项
+      this.cancelDefaultCheckObj.splice(index, 1)
+      this.cancelDefaultCheckObj.filter((item, i) => {
+        item.forEach((key, j) => {
+          cancelArray.push(key)
+        })
+      })
+      console.log('cancelArray', cancelArray)
+      this.curRoomList = deepClone(this.copyItemRoomList)
+      if (cancelArray.length) {
+        for (let item in this.curRoomList) {
+          this.curRoomList[item].map((key, index) => {
+            cancelArray.forEach((obj, i) => {
+              console.log('obj', key.roomCode)
+              if (obj === key.roomCode) {
+                console.log(key, '2', index)
+                console.log(' 要删除的 ', this.curRoomList[item][index])
+                this.curRoomList[item].splice(index, 1)
+              }
+            })
+          })
+        }
+      }
+      console.log('curRoomList2', this.curRoomList)
     },
     getRoomNumData () { // 获取房间号falsecopyItemToModelVisible
-      console.log('父组件', this.defaultCheckObj)
-      const checkedRoomList = this.$refs.copyItemTo[this.currentRoomIndex].returnCheckedList().saveRoomList
-      this.defaultCheckObj[this.currentRoomIndex] = checkedRoomList || []
-      this.addHostingRooms.hostingRooms[this.currentRoomIndex].roomCodes = deepClone(checkedRoomList)
-      console.log(checkedRoomList)
-      console.log(this.addHostingRooms.hostingRooms)
-
+      this.checkedRoomList = this.$refs.copyItemTo[this.currentRoomIndex].returnCheckedList().saveRoomList
+      this.defaultCheckObj[this.currentRoomIndex] = this.checkedRoomList || [] // 默认选中d
+      console.log('默认选项', this.defaultCheckObj)
+      this.addHostingRooms.hostingRooms[this.currentRoomIndex].roomCodes = deepClone(this.checkedRoomList)
       this.copyItemToModelVisible = false
     },
     // 上一步
@@ -1320,4 +1342,5 @@ export default {
       margin-bottom:5px
 
   }
+  .estate .el-dialog__wrapper {z-index:3000!important}
 </style>

@@ -73,6 +73,7 @@ export default {
           }
         } else {
           if (val) {
+            console.log('checkedList', this.checkedList)
             const allRoomList = {}
             const checkedObj = {}
             const checkedFloor = {}
@@ -87,6 +88,7 @@ export default {
             this.$set(this, 'allRoomList', allRoomList)
             this.$set(this, 'checkedObj', checkedObj)
             this.$set(this, 'checkedFloor', checkedFloor)
+            console.log('allRoomList', this.allRoomList)
           }
           Object.keys(this.checkedObj).forEach((key, index) => {
             this.handleRoomChange(key)
@@ -101,12 +103,10 @@ export default {
       console.log('选中的', this.checkedObj)
     },
     handleRoomChange (key) {
-      console.log('单选', this.checkedObj[key])
       const checkedCount = this.checkedObj[key].length
       this.checkedFloor[key] = checkedCount === this.allRoomList[key].allRoom.length
     },
     returnCheckedList () { // 返回选中的码
-      console.log('子组件', this.checkedObj)
       let saveRoomList = []
       if (Array.isArray(this.roomList)) {
         saveRoomList = this.roomListForm.checkedRoomList
