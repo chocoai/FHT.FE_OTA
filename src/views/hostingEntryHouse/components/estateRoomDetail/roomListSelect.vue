@@ -17,6 +17,7 @@
           class="room-list-group">
           <el-checkbox
             v-for="v in val"
+            v-if="v.roomCode"
             :key="v.roomCode"
             :label="v.roomCode"
             class="room-list-checkbox"

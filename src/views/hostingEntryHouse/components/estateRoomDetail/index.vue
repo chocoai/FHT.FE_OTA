@@ -1225,23 +1225,21 @@ export default {
           cancelArray.push(key)
         })
       })
-      console.log('cancelArray', cancelArray)
+      // console.log('cancelArray', cancelArray)
       this.curRoomList = deepClone(this.copyItemRoomList)
       if (cancelArray.length) {
         for (let item in this.curRoomList) {
           this.curRoomList[item].map((key, index) => {
             cancelArray.forEach((obj, i) => {
-              console.log('obj', key.roomCode)
               if (obj === key.roomCode) {
-                console.log(key, '2', index)
-                console.log(' 要删除的 ', this.curRoomList[item][index])
-                this.curRoomList[item].splice(index, 1)
+                this.curRoomList[item][index] = {}
               }
             })
           })
         }
       }
-      console.log('curRoomList2', this.curRoomList)
+      // console.log('cancelIndex', cancelIndex)
+      // console.log('curRoomList2', this.curRoomList)
     },
     getRoomNumData () { // 获取房间号falsecopyItemToModelVisible
       this.checkedRoomList = this.$refs.copyItemTo[this.currentRoomIndex].returnCheckedList().saveRoomList
