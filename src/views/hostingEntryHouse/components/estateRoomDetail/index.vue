@@ -560,6 +560,7 @@
                   style="margin:20px;"
                   class="dialog-footer">
                   <el-button
+                    v-if="curRoomList"
                     size="small"
                     type="primary"
                     @click="getRoomNumData">确定</el-button>
@@ -1179,14 +1180,15 @@ export default {
     },
     // 下一步
     addEstateRoomNext () {
-      // 公寓保存之后 获取房间号
-      allRoomByFangyuanCodeApi({fangyuanCode: 'res.data'}).then((response) => {
-        this.copyItemRoomList = response.data
-      })
-      console.log(this.copyItemRoomList)
-      this.addHouseType = true
-      this.roomTotal = 14
-      // this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
+      // console.log('下一步', this.defaultCheckObj)
+      // // 公寓保存之后 获取房间号
+      // allRoomByFangyuanCodeApi({fangyuanCode: 'res.data'}).then((response) => {
+      //   this.copyItemRoomList = response.data
+      // })
+      // console.log(this.copyItemRoomList)
+      // this.addHouseType = true
+      // this.roomTotal = 14
+      // // this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
 
       let floors = []
       this.$refs.estateRoomDetail.validate((valid) => {
@@ -1222,8 +1224,20 @@ export default {
         }
       })
     },
+    // 上一步
+    addEstateRoomPrev () {
+      this.$refs.estateRoomDetail.clearValidate()
+      this.defaultCheckObj = []
+      for (let i = 0; i < this.addHostingRooms.hostingRooms.length; i++) {
+        this.addHostingRooms.hostingRooms[i].roomCodes = []
+      }
+      this.addHostingRooms.hostingRooms.splice(2, this.addHostingRooms.hostingRooms.length)
+      this.addHouseType = false
+    },
+    // 选择房间号弹窗
     selectRoomNum (index) { // 选择房间号
-      if (this.copyItemRoomList.length === 0) {
+      // 没有房间号 或者房间号已经配置完
+      if (this.copyItemRoomList.length === 0 || (!this.defaultCheckObj[index] && this.defaultCheckObjNum(2))) {
         this.$message({
           message: '暂无房间号可以配置',
           type: 'warning'
@@ -1265,24 +1279,19 @@ export default {
       this.addHostingRooms.hostingRooms[this.currentRoomIndex].roomCodes = deepClone(this.checkedRoomList)
       this.copyItemToModelVisible = false
     },
-    // 上一步
-    addEstateRoomPrev () {
-      this.$refs.estateRoomDetail.clearValidate()
-      this.addHouseType = false
-    },
     // 提交时候获取已经配置的房间号
-    defaultCheckObjNum () {
+    defaultCheckObjNum (type) { // type==1 为配置的   type==2  判断是否配置完
       let num = 0
       for (let i = 0; i < this.defaultCheckObj.length; i++) {
         num += this.defaultCheckObj[i].length
       }
-      console.log(num)
       if (num !== this.roomTotal) {
-
-        this.$message({
-          message: '部分房间还未配置,请继续配置剩余房间号',
-          type: 'warning'
-        })
+        if (type === 1) {
+          this.$message({
+            message: '部分房间还未配置,请继续配置剩余房间号',
+            type: 'warning'
+          })
+        }
         return false
       } else {
         return true
@@ -1295,7 +1304,7 @@ export default {
       param.fangyuanCode = this.estateRoomDetail.fangyuanCode
       param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
       console.log('保存房型参数', param)
-      this.defaultCheckObjNum()
+      this.defaultCheckObjNum(1)
       this.$refs.roomTypeTabsForm.validate((valid) => {
         if (valid) {
           saveRoomTypesApi(param).then((res) => {
