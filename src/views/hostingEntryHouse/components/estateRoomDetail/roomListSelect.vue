@@ -2,9 +2,11 @@
   <div>
     <el-row
       v-for="(val, key, index) in roomList"
-      :key="index">
+      :key="index"
+      :class="{checkRow:val.length}">
       <el-col :span="4">
         <el-checkbox
+          v-if="val.length > 0"
           :label="key"
           v-model="checkedFloor[key]"
           @change="handleCheckFloorChange(key)"></el-checkbox>
@@ -89,7 +91,6 @@ export default {
             this.$set(this, 'allRoomList', allRoomList)
             this.$set(this, 'checkedObj', checkedObj)
             this.$set(this, 'checkedFloor', checkedFloor)
-            console.log('allRoomList', this.allRoomList)
           }
           Object.keys(this.checkedObj).forEach((key, index) => {
             this.handleRoomChange(key)
@@ -100,8 +101,8 @@ export default {
   },
   methods: {
     handleCheckFloorChange (key) {
-      this.$set(this.checkedObj, key, this.checkedFloor[key] ? this.allRoomList[key].allRoom : this.allRoomList[key].isDisabled)
-      console.log('选中的', this.checkedObj)
+      this.$set(this.checkedObj, key, this.checkedFloor[key] ? this.allRoomList[key].allRoom : false)
+      // console.log('选中的', this.checkedObj)
     },
     handleRoomChange (key) {
       const checkedCount = this.checkedObj[key].length
@@ -116,11 +117,30 @@ export default {
           saveRoomList = saveRoomList.concat(this.checkedObj[key])
         })
       }
+      console.log('checkedObj', saveRoomList)
       return { 'saveRoomList': saveRoomList, 'checkedObj': this.checkedObj }
     }
   }
 }
 </script>
-<style>
-
+<style lang="scss" scoped>
+.checkRow{
+  border-bottom: thin solid #ddd;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  }
+ .room-list-group{
+    display:flex;
+   flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+  }
+   .room-list-group label{
+     width:10%;
+     display: block;
+     margin-left:10px;
+     margin-bottom:10px;
+   }
+   .room-list-group .el-checkbox .el-checkbox{
+    margin-left:30px;
+    }
 </style>

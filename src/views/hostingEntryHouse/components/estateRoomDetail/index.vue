@@ -479,11 +479,12 @@
                     label="房间设施"
                     style="width:100%">
                     <el-select
-                      v-model="addHostingRooms.hostingRooms[index].facilityItemsList"
+                      v-model="facilityItemsList"
                       class="room-detail-select"
                       style="width:82%"
                       multiple
-                      placeholder="请选择">
+                      placeholder="请选择"
+                      @blur="getFacilityItems(index)">
                       <el-option-group
                         v-for="group in facilityGroup"
                         :key="group.label"
@@ -613,7 +614,7 @@ import Preview from '@/components/Preview/Preview'
 import areaSelect from '@/components/AreaSelect'
 import mapSelect from '@/components/MapSelect'
 import SelectTree from '@/components/SelectTree/'
-import { estateZoneListByAreaIdApi, saveEstateInfoApi, allRoomByFangyuanCodeApi } from '@/api/houseManage'
+import { estateZoneListByAreaIdApi, saveEstateInfoApi, allRoomByFangyuanCodeApi, saveRoomTypesApi } from '@/api/houseManage'
 import { validateMobile } from '@/utils/validate'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import roomListSelect from './roomListSelect'
@@ -631,6 +632,7 @@ export default {
     validateMobile,
     roomListSelect
   },
+  inject: ['reloadPage'],
   data () {
     const validatePhone = (rule, value, callback) => {
       if (!validateMobile(value)) {
@@ -664,8 +666,9 @@ export default {
     }
     return {
       copyItemToModelVisible: false, // 房间配置弹窗
-      copyItemRoomList: [], // 房间号配置数据
-      curRoomList: [],
+      copyItemRoomList: {}, // 房间号配置数据
+      curRoomList: {},
+      roomTotal: 0,
       currentRoomIndex: null,
       zoneList: [], // 所属板块列表
       saveLoading: false, // 是否加载中
@@ -673,10 +676,9 @@ export default {
       addHouseType: false, // 展示添加房型
       defaultCheckObj: [],
       cancelDefaultCheckObj: [],
-      checkedRoomList: null, // 选中的房间号
+      checkedRoomList: [], // 选中的房间号
       estateRoomDetail: { // form 数据
         fangyuanCode: '',
-        depId: '',
         contactName: '', // 联系人
         contactGender: 1, // 联系人性别
         contactMobile: '', // 联系人电话
@@ -697,7 +699,7 @@ export default {
           {
             roomTypes: '',
             roomArea: '', // 面积
-            styleName: '房间A',
+            styleName: '房型A',
             roomDirection: '', // 朝向
             chamberCount: '1',
             boardCount: '0',
@@ -707,12 +709,14 @@ export default {
             deposit: '',
             payOfPayment: '', // 付款
             depositOfPayment: '', // 押金
-            facilityItemsList: [],
+            // facilityItemsList: [],
+            facilityItems: '',
             pictures: [],
             roomCodes: []
           }
         ]
       },
+      facilityItemsList: '', // 房间设施列表
       estateRoomDetailRules: { // 表单验证
         depName: [
           { required: true, trigger: ['change'], validator: validateDepName }
@@ -740,7 +744,7 @@ export default {
           { required: true, message: '请输入每层房间数', trigger: 'blur' }
         ],
         floorName: [
-          { required: true, message: '请选择楼层', trigger: 'blur' }
+          { required: true, message: '请选择楼层', trigger: 'change' }
         ],
         areaCode: [
           {
@@ -951,12 +955,11 @@ export default {
       // this.estateRoomDetail.depName = data.depName
       console.log(data)
       this.$set(this.estateRoomDetail, 'depName', data.depName)
-      this.estateRoomDetail.depId = data.depId
+      this.addHostingRooms.depId = data.depId
     },
     // 获取树结构顶级元素
     getParentDep (data) {
       this.expendedKeys = deepClone(data)
-      console.log('asdas', this.estateRoomDetail.deName)
     },
     //  清除织架构
     clearClick () {
@@ -1007,10 +1010,11 @@ export default {
           name: newTabName,
           payOfPayment: '', // 付款
           depositOfPayment: '', // 押金
-          facilityItemsList: [],
+          facilityItems: '',
           pictures: [],
           roomCodes: []
         })
+        this.facilityItemsList = []
         this.editableTabsValue = newTabName
       }
       if (action === 'remove') {
@@ -1020,17 +1024,17 @@ export default {
           tabs.forEach((tab, index) => {
             if (tab.name === targetName) {
               let nextTab = tabs[index + 1] || tabs[index - 1]
+              this.defaultCheckObj.splice(index, 1)
               if (nextTab) {
                 activeName = nextTab.name
               }
             }
-            this.defaultCheckObj.splice(index, 1)
           })
         }
         this.editableTabsValue = activeName
         this.addHostingRooms.hostingRooms = tabs.filter(tab => tab.name !== targetName)
         this.addHostingRooms.hostingRooms.forEach((item, index) => {
-          item.styleName = '房间' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[index]
+          item.styleName = '房型' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[index]
         })
         this.$nextTick(() => {
           this.activeRoomName = activeName
@@ -1046,12 +1050,9 @@ export default {
         }
         target.deposit = target.rent * target.depositOfPayment
         target.deposit = target.deposit === 0 ? 0 : target.deposit.toFixed(2)
-        console.log(target)
         if (target.styleName) {
-          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.styleName.replace('房间', ''))
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.styleName.replace('房型', ''))
           this.$refs.roomTypeTabsForm.validateField('hostingRooms.' + index + '.deposit')
-        } else {
-          this.$refs.roomTypeTabsForm.validateField('deposit')
         }
       }
     },
@@ -1078,10 +1079,12 @@ export default {
         if (target.styleName) {
           const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.styleName.replace('房型', ''))
           this.$refs.roomTypeTabsForm.validateField('hostingRooms.' + index + '.deposit')
-        } else {
-          this.$refs.roomTypeTabsForm.validateField('deposit')
         }
       }
+    },
+    // 获取房间设施
+    getFacilityItems (index) {
+      this.addHostingRooms.hostingRooms[index].facilityItems = this.facilityItemsList.join(',')
     },
     /* 选择图片 */
     async uploadImg (e) { // 点击input
@@ -1152,7 +1155,7 @@ export default {
     },
     // 裁剪后图片列表
     emitCropperData (list = []) {
-      console.log('list1', list)
+      // console.log('list1', list)
       list.forEach((v, i) => {
         v.type = 1
         v.imageName = v.title
@@ -1160,8 +1163,9 @@ export default {
           v.isBase64 = 1
         }
       })
-      console.log('list2', list)
+      // console.log('list2', list)
       this.currentPicList = [...this.currentPicList, ...list]
+      // console.log(this.currentPicList)
     },
     uploadModelClose () { // 关闭上传图片列表
       if (this.curPicListIndex === -1) { // 公寓的照片
@@ -1171,17 +1175,19 @@ export default {
         this.addHostingRooms.hostingRooms[this.curPicListIndex].pictures = this.currentPicList
         this.$refs.roomTypeTabsForm.validateField('hostingRooms.' + this.curPicListIndex + '.pictures')
       }
-      console.log('cc', this.estateRoomDetail.pictures)
       this.currentPicList = []
     },
     // 下一步
     addEstateRoomNext () {
       // 公寓保存之后 获取房间号
-      allRoomByFangyuanCodeApi({fangyuanCode: ''}).then((response) => {
+      allRoomByFangyuanCodeApi({fangyuanCode: 'res.data'}).then((response) => {
         this.copyItemRoomList = response.data
-        this.curRoomList = deepClone(this.copyItemRoomList)
       })
+      console.log(this.copyItemRoomList)
       this.addHouseType = true
+      this.roomTotal = 14
+      // this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
+
       let floors = []
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
@@ -1200,21 +1206,30 @@ export default {
           delete param.provinceId
           delete param.floorName
           delete param.roomNum
+          delete param.floorRoomNum
           console.log('提交公寓的参数', param)
           let estateInfo = JSON.stringify(param)
           this.addHouseType = true
           saveEstateInfoApi({estateInfo: estateInfo}).then((res) => { // 保存公寓接口
             this.estateRoomDetail.fangyuanCode = res.data
+            this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
           }).then((res) => {
             // 公寓保存之后 获取房间号
-            // allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
-            //   this.copyItemRoomList = response.data
-            // })
+            allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
+              this.copyItemRoomList = response.data
+            })
           })
         }
       })
     },
     selectRoomNum (index) { // 选择房间号
+      if (this.copyItemRoomList.length === 0) {
+        this.$message({
+          message: '暂无房间号可以配置',
+          type: 'warning'
+        })
+        return false
+      }
       this.copyItemToModelVisible = true
       let cancelArray = []
       this.currentRoomIndex = index
@@ -1230,21 +1245,23 @@ export default {
       if (cancelArray.length) {
         for (let item in this.curRoomList) {
           this.curRoomList[item].map((key, index) => {
-            cancelArray.forEach((obj, i) => {
+            cancelArray.forEach((obj) => {
               if (obj === key.roomCode) {
-                this.curRoomList[item][index] = {}
+                // this.curRoomList[item].splice(index, 1)
+                this.curRoomList[item][index] = 0
               }
             })
           })
         }
       }
-      // console.log('cancelIndex', cancelIndex)
-      // console.log('curRoomList2', this.curRoomList)
+      for (let key in this.curRoomList) {
+        this.curRoomList[key] = this.curRoomList[key].filter((index) => this.curRoomList[key][index] !== 0)
+      }
     },
     getRoomNumData () { // 获取房间号falsecopyItemToModelVisible
       this.checkedRoomList = this.$refs.copyItemTo[this.currentRoomIndex].returnCheckedList().saveRoomList
       this.defaultCheckObj[this.currentRoomIndex] = this.checkedRoomList || [] // 默认选中d
-      console.log('默认选项', this.defaultCheckObj)
+      // console.log('默认选项', this.defaultCheckObj)
       this.addHostingRooms.hostingRooms[this.currentRoomIndex].roomCodes = deepClone(this.checkedRoomList)
       this.copyItemToModelVisible = false
     },
@@ -1253,15 +1270,37 @@ export default {
       this.$refs.estateRoomDetail.clearValidate()
       this.addHouseType = false
     },
+    // 提交时候获取已经配置的房间号
+    defaultCheckObjNum () {
+      let num = 0
+      for (let i = 0; i < this.defaultCheckObj.length; i++) {
+        num += this.defaultCheckObj[i].length
+      }
+      console.log(num)
+      if (num !== this.roomTotal) {
+
+        this.$message({
+          message: '部分房间还未配置,请继续配置剩余房间号',
+          type: 'warning'
+        })
+        return false
+      } else {
+        return true
+      }
+    },
     // 提交form表单
     saveRoomDetailData () {
-      console.log('上传的参数', this.addHostingRooms)
+      let param = {}
+      param.depId = this.addHostingRooms.depId
+      param.fangyuanCode = this.estateRoomDetail.fangyuanCode
+      param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
+      console.log('保存房型参数', param)
+      this.defaultCheckObjNum()
       this.$refs.roomTypeTabsForm.validate((valid) => {
         if (valid) {
-          alert('submit!')
-        } else {
-          console.log('error submit!!')
-          return false
+          saveRoomTypesApi(param).then((res) => {
+            this.reloadPage() // 添加成功后刷新页面
+          })
         }
       })
     }

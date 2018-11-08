@@ -98,7 +98,6 @@ export default {
       immediate: true,
       handler: function (val) {
         // this.depName = val
-        console.log('watch', val)
       }
     }
   },
