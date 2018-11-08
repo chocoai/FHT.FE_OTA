@@ -234,7 +234,7 @@
               label="房间设施"
               style="width:100%">
               <el-select
-                v-model="hostingRooms.facilityItemsList"
+                v-model="hostingRooms.facilityItems"
                 class="room-detail-select"
                 style="width:82%"
                 multiple
@@ -342,7 +342,7 @@ import ImageCropper from '@/components/ImageCropper/Cropper'
 import { editEstateRoomInfoApi } from '@/api/houseManage'
 
 export default {
-  name: '',
+  styleName: '',
   components: {
     ImageCropper,
     Preview
@@ -359,17 +359,17 @@ export default {
       hostingRooms: {
         houseType: '',
         houserArea: '', // 面积
-        roomName: '',
+        roomstyleName: '',
         roomDirection: '', // 朝向
         chamberCount: '1',
         boardCount: '0',
         toiletCount: '0',
-        name: '1',
+        styleName: '1',
         rent: '',
         deposit: '',
         payOfPayment: '', // 付款
         depositOfPayment: '', // 押金
-        facilityItemsList: [],
+        facilityItems: [],
         pictures: []
       },
       // },
@@ -429,13 +429,13 @@ export default {
         }
       ],
       allRoomByFangyuanCode: [], // 房间号
-      activeRoomName: '1',
+      activeRoomstyleName: '1',
       tabIndex: 1,
       editableTabsValue: '1', // 当前展示tabs
-      clearDepName: true, // 是否清空归属部门
+      clearDepstyleName: true, // 是否清空归属部门
       expendedKeys: { // 默认展开的部门
         depId: Number,
-        depName: ''
+        depstyleName: ''
       },
       roomDirectionList: [
         {
@@ -558,18 +558,18 @@ export default {
             // 把Array Buffer转化为blob 如果是base64不需要
             ? window.URL.createObjectURL(new Blob([e.target.result]))
             : e.target.result
-          let imageName = ''
+          let imagestyleName = ''
           let type = 1
-          if (!file.name) {
-            imageName = ''
+          if (!file.styleName) {
+            imagestyleName = ''
           } else {
-            imageName = file.name.split('.')[0].length <= 30
-              ? file.name.split('.')[0]
-              : file.name.split('.')[0].substr(0, 30)
+            imagestyleName = file.styleName.split('.')[0].length <= 30
+              ? file.styleName.split('.')[0]
+              : file.styleName.split('.')[0].substr(0, 30)
           }
           resolve({
             img,
-            imageName,
+            imagestyleName,
             type
           })
         }
@@ -596,7 +596,7 @@ export default {
       this.cropperList = uploadList.map((item, kindex) => {
         return {
           img: item.img,
-          imageName: item.imageName,
+          imagestyleName: item.imagestyleName,
           type: item.type
         }
       })
@@ -615,7 +615,7 @@ export default {
       console.log('list1', list)
       list.forEach((v, i) => {
         v.type = 1
-        v.imageName = v.title
+        v.imagestyleName = v.title
         if (v.isBase64 === undefined) {
           v.isBase64 = 1
         }
@@ -665,24 +665,24 @@ export default {
       }
     },
     setRoomDetailData (res) {
-      // val.facilityItemsList = val.facilityItems ? val.facilityItems.split(',') : []
+      // val.facilityItems = val.facilityItems ? val.facilityItems.split(',') : []
       this.hostingRooms = {
-        houseType: '田园风格 ',
-        houserArea: '30', // 面积
-        roomName: '名字',
-        roomDirection: 1, // 朝向
-        chamberCount: '1',
-        boardCount: '0',
-        toiletCount: '0',
-        name: '1',
-        rent: '1',
-        deposit: '100',
-        payOfPayment: '100', // 付款
-        depositOfPayment: '100', // 押金
-        facilityItemsList: ['床', '洗衣机', '空调', '电视'],
+        houseType: res.houseType,
+        houserArea: res.houserArea, // 面积
+        roomstyleName: '名字',
+        roomDirection: res.roomDirection, // 朝向
+        chamberCount: res.chamberCount,
+        boardCount: res.boardCount,
+        toiletCount: res.toiletCount,
+        styleName: res.styleName,
+        rent: res.deposit,
+        deposit: res.deposit,
+        payOfPayment: res.payOfPayment, // 付款
+        depositOfPayment: res.depositOfPayment, // 押金
+        facilityItems: res.facilityItems ? res.facilityItems.split(',') : [],
         pictures: [
           {
-            'imageName': '1.png',
+            'imagestyleName': '1.png',
             'src': 'src',
             'isBase64': 0
           }

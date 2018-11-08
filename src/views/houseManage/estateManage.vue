@@ -418,9 +418,6 @@ export default {
       options: [],
       residential: [], // 小区
       selectedArea: [],
-      // activeName: '集中式整栋',
-      // houseAreaName: '整套面积',
-      // tabMapOptions: ['集中式整栋'],
       selectedItems: [],
       filterManagerList: [],
       authorizeShow: false,
@@ -785,7 +782,7 @@ export default {
       }).then((res) => {
         this.roomDetailModelVisible = true
         this.$nextTick(() => {
-          this.$refs.editEstateManage.setRoomDetailData(res.data, params)
+          this.$refs.editEstateManage.setRoomDetailData(res.data)
         })
       }).catch(err => console.log(err))
     },
