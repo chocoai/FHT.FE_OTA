@@ -380,10 +380,10 @@
                 <el-col
                   :span="3">
                   <el-form-item
+                    :prop="'hostingRooms.' + index + '.payOfPayment'"
                     :rules="roomDetailRules.payOfPayment"
                     :show-message="false"
-                    label="付款方式"
-                    prop="payOfPayment" />
+                    label="付款方式" />
                 </el-col>
                 <el-col :span="7">
                   <el-col
@@ -396,7 +396,6 @@
                     <el-form-item
                       :prop="'hostingRooms.' + index + '.payOfPayment'"
                       :rules="roomDetailRules.payOfPayment"
-                      label=""
                       label-width="0"
                       class="room-item-count">
                       <el-select v-model="addHostingRooms.hostingRooms[index].payOfPayment">
@@ -792,7 +791,7 @@ export default {
           { required: true, message: '请选择房屋朝向', trigger: 'change' }
         ],
         payOfPayment: [
-          { required: true, message: '请选择付款方式', trigger: 'change' }
+          { required: true, message: '请输入付款方式', trigger: 'change' }
         ],
         depositOfPayment: [
           { required: true, message: '请选择押金方式', trigger: 'change' }
@@ -1200,24 +1199,22 @@ export default {
             pictures: this.estateRoomDetail.pictures
           }
           console.log('提交公寓的参数', param)
+          this.addHouseType = true
           let estateInfo = JSON.stringify(param)
-
           saveEstateInfoApi({estateInfo: estateInfo}).then((res) => { // 保存公寓接口
             if (res.code * 1 === 0) {
               this.estateRoomDetail.fangyuanCode = res.data
               this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
-              this.addHouseType = true
+              // 公寓保存之后 获取房间号
+              allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
+                this.copyItemRoomList = response.data
+              })
             } else {
               this.$message({
                 message: res.message,
                 type: 'warning'
               })
             }
-          }).then((res) => {
-            // 公寓保存之后 获取房间号
-            allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
-              this.copyItemRoomList = response.data
-            })
           })
         }
       })
@@ -1308,20 +1305,22 @@ export default {
     },
     // 提交form表单
     saveRoomDetailData (type) {
-      let param = {}
-      param.depId = this.addHostingRooms.depId
-      param.fangyuanCode = this.estateRoomDetail.fangyuanCode
-      console.log(this.addHostingRooms.hostingRooms)
-      param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
-      console.log('保存房型参数', param)
-      this.defaultCheckObjNum(1)
-      this.$refs.roomTypeTabsForm.validate((valid) => {
-        if (valid) {
-          saveRoomTypesApi(param).then((res) => {
-            this.reloadPage() // 添加成功后刷新页面
-          })
-        }
-      })
+      if (type === 1) {
+        let param = {}
+        param.depId = this.addHostingRooms.depId
+        param.fangyuanCode = this.estateRoomDetail.fangyuanCode
+        console.log(this.addHostingRooms.hostingRooms)
+        param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
+        console.log('保存房型参数', param)
+        this.defaultCheckObjNum(1)
+        this.$refs.roomTypeTabsForm.validate((valid) => {
+          if (valid) {
+            saveRoomTypesApi(param).then((res) => {
+              this.reloadPage() // 添加成功后刷新页面
+            })
+          }
+        })
+      }
       if (type === 2) { // 点击取消的时候
         cancleSaveEstateApi({fangyuanCode: this.estateRoomDetail.fangyuanCode}).then((res) => {
           // 取消保存房型
