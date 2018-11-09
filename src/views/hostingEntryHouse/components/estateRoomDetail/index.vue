@@ -1230,7 +1230,6 @@ export default {
           deposit: '',
           payOfPayment: '', // 付款
           depositOfPayment: '', // 押金
-          // facilityItemsList: [],
           facilityItems: '',
           pictures: [],
           roomCodes: []
@@ -1238,7 +1237,6 @@ export default {
       ]
       this.editableTabsValue = '1'
       this.tabIndex = 1
-      console.log()
       this.$refs.estateRoomDetail.clearValidate()
       this.defaultCheckObj = []
       for (let i = 0; i < this.addHostingRooms.hostingRooms.length; i++) {
@@ -1249,7 +1247,6 @@ export default {
     },
     // 选择房间号弹窗
     selectRoomNum (index) { // 选择房间号
-      // 房间号已经配置完
       this.copyItemToModelVisible = true
       let cancelArray = []
       this.currentRoomIndex = index
@@ -1299,8 +1296,6 @@ export default {
           })
         }
         return false
-      } else {
-        return true
       }
     },
     // 提交form表单
@@ -1334,7 +1329,6 @@ export default {
         next()
       })
     } else {
-      console.log(111)
       next()
     }
   }
