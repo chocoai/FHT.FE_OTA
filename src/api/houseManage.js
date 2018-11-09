@@ -196,3 +196,19 @@ export function saveEstateInfoApi (params) {
     isMock: true
   })
 }
+/* 保存房型 */
+export function saveRoomTypesApi (params) {
+  return fetch('/fangyuan/saveRoomTypes', {
+    params
+  }, {
+    isMock: true
+  })
+}
+/* 集中式取消保存 */
+export function cancleSaveEstateApi (params) {
+  return fetch('/fangyuan/cancleSaveEstate', {
+    params
+  }, {
+    isMock: true
+  })
+}

@@ -479,7 +479,7 @@ const houseManage_info = {
     'message': '操作成功',
     'data': {
       'record': 1,
-      'rooms': [{
+      'houseList': [{
         'estateName': '美丽湖畔公寓',
         'roomTypeName': '田园风格',
         'boardCount': 1,
@@ -496,6 +496,64 @@ const houseManage_info = {
         'roomStatus': 1,
         'toiletCount': 1,
         'depName': '总部'
+      }]
+    }
+  },
+  allRoomByFangyuanCode: {
+    'reqId': null,
+    'code': '0',
+    'message': '操作成功',
+    'data': {
+      '1层': [{
+        'roomCode': '1-01',
+        'roomNo': '101'
+      }, {
+        'roomCode': '1-02',
+        'roomNo': '102'
+      },
+      {
+        'roomCode': '1-03',
+        'roomNo': '103'
+      }, {
+        'roomCode': '1-04',
+        'roomNo': '104'
+      },
+      {
+        'roomCode': '1-05',
+        'roomNo': '105'
+      },
+      {
+        'roomCode': '1-06',
+        'roomNo': '106'
+      }, {
+        'roomCode': '1-07',
+        'roomNo': '107'
+      },
+      {
+        'roomCode': '1-08',
+        'roomNo': '108'
+      },
+      {
+        'roomCode': '1-09',
+        'roomNo': '109'
+      }],
+      '2层': [{
+        'roomCode': '2-01',
+        'roomNo': '201'
+      }, {
+        'roomCode': '2-02',
+        'roomNo': '202'
+      },
+      {
+        'roomCode': '2-03',
+        'roomNo': '203'
+      }],
+      '3层': [{
+        'roomCode': '3-01',
+        'roomNo': '301'
+      }, {
+        'roomCode': '3-02',
+        'roomNo': '302'
       }]
     }
   }
@@ -567,5 +625,9 @@ export default {
   },
   queryEstateList: () => {
     return houseManage_info.queryEstateList
+  },
+  allRoomByFangyuanCode: () => {
+    return houseManage_info.allRoomByFangyuanCode
   }
+
 }
