@@ -130,9 +130,9 @@
               prop="apartmentFloor">
               <el-input
                 v-model="estateRoomDetail.apartmentFloor"
-                style="width:200px"
+                style="width:300px"
                 type="number"
-                placeholder="请输入内容"
+                placeholder="请输入楼层"
                 @blur="apartmentInput">
                 <template slot="prepend">共</template>
                 <template slot="append">层</template>
@@ -1364,6 +1364,9 @@ export default {
     position: absolute;
     bottom: 0px;
     right: 10px;
+  }
+  .el-form-item__error{
+    width:1114px;
   }
   }
   .previewItems {

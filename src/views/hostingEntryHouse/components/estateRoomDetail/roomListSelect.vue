@@ -30,7 +30,7 @@
       </el-col>
     </el-row>
     <div v-if="roomListLenght === 0">
-      房间号已经配置完
+      无房间号可以配置
     </div>
 </div></template>
 <script>
