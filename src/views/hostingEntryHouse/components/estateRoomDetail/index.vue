@@ -129,7 +129,7 @@
               label="公寓楼层"
               prop="apartmentFloor">
               <el-input
-                v-model="apartmentFloor"
+                v-model="estateRoomDetail.apartmentFloor"
                 style="width:200px"
                 type="number"
                 placeholder="请输入内容"
@@ -657,9 +657,9 @@ export default {
       }
     }
     const validateapartmentFloor = (rule, value, callback) => {
-      if (!this.apartmentFloor) {
+      if (!this.estateRoomDetail.apartmentFloor) {
         callback(new Error(' 请输入楼层数'))
-      } else if (this.apartmentFloor === '0') {
+      } else if (this.estateRoomDetail.apartmentFloor === '0') {
         callback(new Error('楼层数不能为0'))
       } else {
         callback()
@@ -689,9 +689,10 @@ export default {
         zoneId: '', // 所属板块
         pictures: [], // 公寓照片
         floorName: [], // 编辑楼层
-        floorRoomNum: '' // 每层房间数
+        floorRoomNum: '', // 每层房间数
+        apartmentFloor: null
       },
-      apartmentFloor: null,
+
       address: '',
       addHostingRooms: {
         depId: null,
@@ -940,8 +941,8 @@ export default {
     // 输入总共楼层数遍历出每层
     apartmentInput () {
       this.floorOptions = []
-      if (this.apartmentFloor) {
-        for (let i = 1; i <= this.apartmentFloor; i++) {
+      if (this.estateRoomDetail.apartmentFloor) {
+        for (let i = 1; i <= this.estateRoomDetail.apartmentFloor; i++) {
           this.floorOptions.push(
             {
               value: i,
@@ -1180,15 +1181,15 @@ export default {
     },
     // 下一步
     addEstateRoomNext () {
-      // console.log('下一步', this.defaultCheckObj)
-      // // 公寓保存之后 获取房间号
-      // allRoomByFangyuanCodeApi({fangyuanCode: 'res.data'}).then((response) => {
-      //   this.copyItemRoomList = response.data
-      // })
-      // console.log(this.copyItemRoomList)
-      // this.addHouseType = true
-      // this.roomTotal = 14
-      // // this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
+      console.log('下一步', this.defaultCheckObj)
+      // 公寓保存之后 获取房间号
+      allRoomByFangyuanCodeApi({fangyuanCode: 'res.data'}).then((response) => {
+        this.copyItemRoomList = response.data
+      })
+      console.log(this.copyItemRoomList)
+      this.addHouseType = true
+      this.roomTotal = 14
+      // this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
 
       let floors = []
       this.$refs.estateRoomDetail.validate((valid) => {
@@ -1199,16 +1200,18 @@ export default {
               roomNum: this.estateRoomDetail.floorRoomNum
             })
           })
-          let param = deepClone(this.estateRoomDetail)
-          param.floors = floors
-          delete param.cityId
-          delete param.depName
-          delete param.regionId
-          delete param.areaCode
-          delete param.provinceId
-          delete param.floorName
-          delete param.roomNum
-          delete param.floorRoomNum
+          let param = {
+            fangyuanCode: this.estateRoomDetail.fangyuanCode,
+            contactGender: this.estateRoomDetail.contactGender,
+            contactMobile: this.estateRoomDetail.contactMobile,
+            contactName: this.estateRoomDetail.contactName,
+            estateName: this.estateRoomDetail.estateName,
+            regionAddressId: this.estateRoomDetail.regionAddressId,
+            houseDesc: this.estateRoomDetail.houseDesc,
+            zoneId: this.estateRoomDetail.zoneId,
+            floors: floors,
+            pictures: this.estateRoomDetail.pictures
+          }
           console.log('提交公寓的参数', param)
           let estateInfo = JSON.stringify(param)
           this.addHouseType = true
@@ -1226,6 +1229,29 @@ export default {
     },
     // 上一步
     addEstateRoomPrev () {
+      this.addHostingRooms.hostingRooms = [
+        {
+          roomTypes: '',
+          roomArea: '', // 面积
+          styleName: '房型A',
+          roomDirection: '', // 朝向
+          chamberCount: '1',
+          boardCount: '0',
+          toiletCount: '0',
+          name: '1',
+          rent: '',
+          deposit: '',
+          payOfPayment: '', // 付款
+          depositOfPayment: '', // 押金
+          // facilityItemsList: [],
+          facilityItems: '',
+          pictures: [],
+          roomCodes: []
+        }
+      ]
+      this.editableTabsValue = '1'
+      this.tabIndex = 1
+      console.log()
       this.$refs.estateRoomDetail.clearValidate()
       this.defaultCheckObj = []
       for (let i = 0; i < this.addHostingRooms.hostingRooms.length; i++) {
@@ -1302,6 +1328,7 @@ export default {
       let param = {}
       param.depId = this.addHostingRooms.depId
       param.fangyuanCode = this.estateRoomDetail.fangyuanCode
+      console.log(this.addHostingRooms.hostingRooms)
       param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
       console.log('保存房型参数', param)
       this.defaultCheckObjNum(1)
