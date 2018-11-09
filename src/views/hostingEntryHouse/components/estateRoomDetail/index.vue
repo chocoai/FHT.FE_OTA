@@ -1178,16 +1178,6 @@ export default {
     },
     // 下一步
     addEstateRoomNext () {
-      console.log('下一步', this.defaultCheckObj)
-      // 公寓保存之后 获取房间号
-      allRoomByFangyuanCodeApi({fangyuanCode: 'res.data'}).then((response) => {
-        this.copyItemRoomList = response.data
-      })
-      console.log(this.copyItemRoomList)
-      this.addHouseType = true
-      this.roomTotal = 14
-      // this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
-
       let floors = []
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
