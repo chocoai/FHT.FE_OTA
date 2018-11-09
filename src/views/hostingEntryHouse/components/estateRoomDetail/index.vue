@@ -600,12 +600,9 @@
         <el-button
           :loading="saveLoading"
           size="small"
-          @click="saveRoomDetailData(2)">确定</el-button>
+          @click="saveRoomDetailData(2)">取消</el-button>
       </template>
-      <el-button
-        :loading="saveLoading"
-        size="small"
-        @click="saveRoomDetailData(3)">取消</el-button>
+
     </div>
   </div>
 </template>
@@ -615,7 +612,7 @@ import Preview from '@/components/Preview/Preview'
 import areaSelect from '@/components/AreaSelect'
 import mapSelect from '@/components/MapSelect'
 import SelectTree from '@/components/SelectTree/'
-import { estateZoneListByAreaIdApi, saveEstateInfoApi, allRoomByFangyuanCodeApi, saveRoomTypesApi } from '@/api/houseManage'
+import { estateZoneListByAreaIdApi, saveEstateInfoApi, allRoomByFangyuanCodeApi, saveRoomTypesApi, cancleSaveEstateApi } from '@/api/houseManage'
 import { validateMobile } from '@/utils/validate'
 import ImageCropper from '@/components/ImageCropper/Cropper'
 import roomListSelect from './roomListSelect'
@@ -1262,14 +1259,7 @@ export default {
     },
     // 选择房间号弹窗
     selectRoomNum (index) { // 选择房间号
-      // 没有房间号 或者房间号已经配置完
-      if (this.copyItemRoomList.length === 0 || (!this.defaultCheckObj[index] && this.defaultCheckObjNum(2))) {
-        this.$message({
-          message: '暂无房间号可以配置',
-          type: 'warning'
-        })
-        return false
-      }
+      // 房间号已经配置完
       this.copyItemToModelVisible = true
       let cancelArray = []
       this.currentRoomIndex = index
@@ -1324,7 +1314,7 @@ export default {
       }
     },
     // 提交form表单
-    saveRoomDetailData () {
+    saveRoomDetailData (type) {
       let param = {}
       param.depId = this.addHostingRooms.depId
       param.fangyuanCode = this.estateRoomDetail.fangyuanCode
@@ -1339,6 +1329,23 @@ export default {
           })
         }
       })
+      if (type === 2) { // 点击取消的时候
+        cancleSaveEstateApi({fangyuanCode: this.estateRoomDetail.fangyuanCode}).then((res) => {
+          // 取消保存房型
+          this.$router.push({name: '集中式房源管理'})
+        })
+      }
+    }
+  },
+  beforeRouteLeave (to, from, next) { // 离开页面  取消  公寓保存
+    if (this.estateRoomDetail.fangyuanCode !== '') {
+      cancleSaveEstateApi({fangyuanCode: this.estateRoomDetail.fangyuanCode}).then((res) => {
+        // 取消保存房型
+        next()
+      })
+    } else {
+      console.log(111)
+      next()
     }
   }
 }

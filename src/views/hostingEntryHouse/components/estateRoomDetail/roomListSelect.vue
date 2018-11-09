@@ -29,6 +29,9 @@
         </el-checkbox-group>
       </el-col>
     </el-row>
+    <div v-if="roomListLenght === 0">
+      房间号已经配置完
+    </div>
 </div></template>
 <script>
 export default {
@@ -63,7 +66,8 @@ export default {
       isIndeterminate: false,
       allRoomList: {},
       checkedFloor: { },
-      checkedObj: {}
+      checkedObj: {},
+      roomListLenght: 0
     }
   },
   watch: {
@@ -99,6 +103,11 @@ export default {
       }
     }
   },
+  mounted () {
+    for (let key in this.roomList) {
+      this.roomListLenght += this.roomList[key].length
+    }
+  },
   methods: {
     handleCheckFloorChange (key) {
       this.$set(this.checkedObj, key, this.checkedFloor[key] ? this.allRoomList[key].allRoom : false)
@@ -114,7 +123,9 @@ export default {
         saveRoomList = this.roomListForm.checkedRoomList
       } else {
         Object.keys(this.checkedObj).forEach((key, index) => {
-          saveRoomList = saveRoomList.concat(this.checkedObj[key])
+          if (this.checkedObj[key]) {
+            saveRoomList = saveRoomList.concat(this.checkedObj[key])
+          }
         })
       }
       console.log('checkedObj', saveRoomList)
