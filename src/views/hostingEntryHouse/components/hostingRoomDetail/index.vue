@@ -1761,7 +1761,7 @@ export default {
       padding: 0 8px;
     }
     .el-form-item__error {
-      width: 100px;
+      width: 114px;
     }
     .sub-room-info-list {
       .el-tabs__new-tab {

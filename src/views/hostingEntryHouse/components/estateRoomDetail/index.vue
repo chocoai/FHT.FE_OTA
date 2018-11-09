@@ -1201,10 +1201,18 @@ export default {
           }
           console.log('提交公寓的参数', param)
           let estateInfo = JSON.stringify(param)
-          this.addHouseType = true
+
           saveEstateInfoApi({estateInfo: estateInfo}).then((res) => { // 保存公寓接口
-            this.estateRoomDetail.fangyuanCode = res.data
-            this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
+            if (res.code * 1 === 0) {
+              this.estateRoomDetail.fangyuanCode = res.data
+              this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
+              this.addHouseType = true
+            } else {
+              this.$message({
+                message: res.message,
+                type: 'warning'
+              })
+            }
           }).then((res) => {
             // 公寓保存之后 获取房间号
             allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
