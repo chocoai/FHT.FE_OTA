@@ -205,7 +205,7 @@
         :columns="colModels"
         :show-selection="true"
         :is-mock="isMock"
-        list-field="data.rooms"
+        list-field="data.houseList"
         total-field="data.record"
         @selection-change="handleSelectionChange"
       >
@@ -778,17 +778,13 @@ export default {
     openRoomDetail (params) {
       this.roomDetailModelVisible = true
       queryOneEstateRoomApi({
-        fangyuanCode: params.fangyuanCode
+        roomCode: params.roomCode
       }).then((res) => {
         this.roomDetailModelVisible = true
         this.$nextTick(() => {
           this.$refs.editEstateManage.setRoomDetailData(res.data)
         })
       }).catch(err => console.log(err))
-    },
-    // 闲鱼授权
-    handleSetting () {
-      this.authorizeShow = true
     },
     // 移除校验结果
     clearValidate (ref) {
@@ -802,7 +798,6 @@ export default {
     // 获取组织架构最顶级部门的ID
     getParentDep (data) {
       this.expendedKeys = deepClone(data)
-      console.log('顶级部门ID', data)
     },
     clearClick () { // 清空树结构的ID
       this.searchParams.depId = ''

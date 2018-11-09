@@ -484,8 +484,8 @@ export default {
         target.deposit = target.rent * target.depositOfPayment
         target.deposit = target.deposit === 0 ? 0 : target.deposit.toFixed(2)
         if (target.roomName) {
-          // const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.roomName.replace('房间', ''))
-          // this.$refs.estateRoomDetail.validateField('hostingRooms.' + index + '.deposit')
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.roomName.replace('房间', ''))
+          this.$refs.estateRoomDetail.validateField('hostingRooms.' + index + '.deposit')
         } else {
           // this.$refs.estateRoomDetail.validateField('deposit')
         }

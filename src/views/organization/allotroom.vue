@@ -32,8 +32,7 @@
                 label="已分配"></el-option>
             </el-select>
           </el-form-item>
-          <!-- 下一期做 -->
-          <!-- <el-form-item>
+          <el-form-item>
             <el-select
               v-model="formData.resource"
               size="small"
@@ -45,7 +44,7 @@
                 :value="2"
                 label="分散式"></el-option>
             </el-select>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item>
             <el-select
               v-model="formData.regionId"

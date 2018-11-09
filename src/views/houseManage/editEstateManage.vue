@@ -8,7 +8,7 @@
         label-width="95px"
         size="small"
         class="room-detail-container hosting-room-detail">
-        <el-row :gutter="0">
+        <!-- <el-row :gutter="0">
           <el-col
             :span="10"
             class="inline-item-label">
@@ -17,19 +17,20 @@
               label="房间类型">
               <el-input
                 v-model="hostingRooms.houseType"
+                :disabled="true"
                 placeholder="请输入房源类型"
                 clearable/>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <el-row>
           <el-col :span="10">
             <el-form-item
-              prop="houserArea"
+              prop="roomArea"
               label="房间面积"
               class="room-item-count">
               <el-input
-                v-model="hostingRooms.houserArea"
+                v-model="hostingRooms.roomArea"
                 placeholder="请输入房间面积"
                 min="0"
                 clearable
@@ -358,7 +359,7 @@ export default {
       saveLoading: false,
       hostingRooms: {
         houseType: '',
-        houserArea: '', // 面积
+        roomArea: '', // 面积
         roomstyleName: '',
         roomDirection: '', // 朝向
         chamberCount: '1',
@@ -375,10 +376,7 @@ export default {
       // },
       // 房型验证
       roomDetailRules: {
-        houseType: [
-          { required: true, message: '请输入房源类型', trigger: 'blur' }
-        ],
-        houserArea: [
+        roomArea: [
           { required: true, message: '请输入房源面积', trigger: 'blur' }
         ],
         chamberCount: [
@@ -665,10 +663,15 @@ export default {
       }
     },
     setRoomDetailData (res) {
-      // val.facilityItems = val.facilityItems ? val.facilityItems.split(',') : []
+      // if (res.pictures.length) {
+      //   res.pictures.forEach((item) => {
+      //     item.title = item.imageName
+      //     item.key = Math.random().toFixed(5)
+      //     item.isBase64 = 0
+      //   })
+      // }
       this.hostingRooms = {
-        houseType: res.houseType,
-        houserArea: res.houserArea, // 面积
+        roomArea: res.roomArea, // 面积
         roomstyleName: '名字',
         roomDirection: res.roomDirection, // 朝向
         chamberCount: res.chamberCount,
@@ -680,13 +683,7 @@ export default {
         payOfPayment: res.payOfPayment, // 付款
         depositOfPayment: res.depositOfPayment, // 押金
         facilityItems: res.facilityItems ? res.facilityItems.split(',') : [],
-        pictures: [
-          {
-            'imagestyleName': '1.png',
-            'src': 'src',
-            'isBase64': 0
-          }
-        ]
+        pictures: res.pictures || []
       }
     },
     saveRoomDetailData (type) { // 1 保存  2,取消
@@ -694,9 +691,15 @@ export default {
         this.$emit('closeDialog')
         return false
       }
-      editEstateRoomInfoApi(this.hostingRooms).then((res) => { // 确认编辑
-        this.$emit('closeDialog') // 编辑成功之后 关闭弹窗
-      })
+      if (type === 1) {
+        this.$refs.roomTypeTabsForm.validate((valid) => {
+          this.hostingRooms.facilityItems = this.hostingRooms.facilityItems.join(',')
+          console.log('编辑房间的参数', this.hostingRooms)
+          editEstateRoomInfoApi(this.hostingRooms).then((res) => { // 确认编辑
+            this.$emit('closeDialog') // 编辑成功之后 关闭弹窗
+          })
+        })
+      }
     }
   }
 }
