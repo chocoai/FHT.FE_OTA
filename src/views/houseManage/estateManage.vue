@@ -1,15 +1,7 @@
 <template>
   <div>
     <div class="layout_pageHeader">
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClickTab">
-        <el-tab-pane
-          v-for="(item,index) in tabMapOptions"
-          :label="item"
-          :key="index"
-          :name="item"/>
-      </el-tabs>
+
       <el-form class="model-search clearfix">
         <div class="item-flex">
           <el-form-item>
@@ -30,7 +22,7 @@
               v-model="searchParams.regionAddressId"
               size="small"
               filterable
-              placeholder="请选择小区"
+              placeholder="请选择公寓"
               clearable
               class="item-select"
             >
@@ -279,12 +271,17 @@
           :show-close="false"
           title="编辑房间"
           top="0">
-          <hosting-room-detail
+          <edit-estate-manage
+            ref="editEstateManage"
+            :tools-width="roomDetailWidth"
+            @closeDialog="closeRoomDetailDialog">
+          </edit-estate-manage>
+          <!-- <hosting-room-detail
             ref="hostingRoomDetail"
             :house-rent-type="activeName === '分散式整租' ? 1 : 2"
             :edit-flag="true"
             :tools-width="roomDetailWidth"
-            @closeDialog="closeRoomDetailDialog" />
+            @closeDialog="closeRoomDetailDialog" /> -->
         </el-dialog>
       </div>
       <el-dialog
@@ -360,15 +357,15 @@ import GridUnit from '@/components/GridUnit/grid'
 import areaSelect from '@/components/AreaSelect'
 import authorize from '@/components/Authorize'
 import SelectTree from '@/components/SelectTree/'
-import hostingRoomDetail from '@/views/hostingEntryHouse/components/hostingRoomDetail'
-import { houseAsyncApi, changeRoomStatusApi, estateDeleteEstateApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, hostingHouseInfoApi, certificationFromApi } from '@/api/houseManage'
+import editEstateManage from './editEstateManage'
+import { queryEstateListApi, changeRoomStatusApi, estateDeleteRoomApi, publishHouseApi, unPublishHouseApi, queryCityAreaPlotApi, queryOneEstateRoomApi, certificationFromApi } from '@/api/houseManage'
 export default {
   name: 'HouseSync',
   components: {
     GridUnit,
     areaSelect,
     authorize,
-    hostingRoomDetail,
+    editEstateManage,
     SelectTree
   },
   filters: {
@@ -421,9 +418,6 @@ export default {
       options: [],
       residential: [], // 小区
       selectedArea: [],
-      activeName: '分散式整租',
-      houseAreaName: '整套面积',
-      tabMapOptions: ['分散式整租', '分散式合租'],
       selectedItems: [],
       filterManagerList: [],
       authorizeShow: false,
@@ -443,8 +437,9 @@ export default {
       },
       colModels: [
         {slot: 'selection', width: 30},
-        {prop: 'subdistrictName', label: '公寓/小区', width: 200},
-        {prop: 'roomNo', label: '房间号', width: 200},
+        {prop: 'estateName', label: '公寓', width: 200},
+        {prop: 'roomNo', label: '房间号', width: 100},
+        {prop: 'roomTypeName', label: '房型', width: 150},
         {prop: 'chamberCount',
           label: '户型',
           width: 100,
@@ -453,7 +448,7 @@ export default {
           }
         },
         {prop: 'roomArea',
-          label: '整套面积',
+          label: '房间面积',
           width: 100,
           render (row) {
             return (row.roomArea || 0) + 'm²'
@@ -506,19 +501,18 @@ export default {
       searchParams: {
         pageNo: 1,
         pageSize: 20,
-        houseRentType: 1, // 1,整租 2,合租
         cityId: '',
         regionId: '',
-        roomStatus: '',
         regionAddressId: '',
+        roomStatus: '', // 2-未出租，9-已出租
         roomNo: '',
-        mailinStatus: '',
+        mailinStatus: '', // 1-未发布，2-已发布，5：发布失败 ，9：处理中
         idlefishStatus: '',
         depId: ''
       },
-      url: houseAsyncApi.requestPath,
-      method: houseAsyncApi.queryMethod,
-      isMock: houseAsyncApi.isMock,
+      url: queryEstateListApi.requestPath,
+      method: queryEstateListApi.queryMethod,
+      isMock: queryEstateListApi.isMock,
       roomDetailModelVisible: false
     }
   },
@@ -543,13 +537,13 @@ export default {
         this.searchParams = {
           pageNo: 1,
           pageSize: 20,
-          houseRentType: 1, // 1-整租，2-合租
           cityId: '',
           regionId: '',
+          regionAddressId: '', // 3 集中式
           roomStatus: '', // 2-未出租，9-已出租
-          regionAddressId: '',
           roomNo: '',
           mailinStatus: '', // 1-未发布，2-已发布，5：发布失败 ，9：处理中
+          idlefishStatus: '',
           depId: ''
         }
         this.selectedOpthons = []
@@ -558,9 +552,6 @@ export default {
       }
 
       console.log('查询数据', this.searchParams)
-
-      this.searchParams.houseRentType = this.activeName === '分散式整租' ? 1 : 2
-      this.colModels[4].label = this.activeName === '分散式整租' ? '整套面积' : '单间面积'
       // 解决watch执行顺序
       this.$nextTick(() => {
         this.$refs.refGridUnit.searchHandler()
@@ -573,8 +564,9 @@ export default {
       this.$refs.authorzeUser.$refs.dataForm.clearValidate()
       this.authorizeShow = false
     },
+    // 关闭编辑弹窗
     closeRoomDetailDialog () {
-      this.$refs.hostingRoomDetail.$refs.hostingRoomDetail.clearValidate()
+      this.$refs.editEstateManage.$refs.roomTypeTabsForm.clearValidate()
       this.roomDetailModelVisible = false
       this.searchParam()
     },
@@ -661,8 +653,8 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(action => {
-        estateDeleteEstateApi({
-          'fangyuanCode': row.fangyuanCode
+        estateDeleteRoomApi({
+          'roomCodes': row.fangyuanCode
         }).then((res) => {
           if (res.code === '0') {
             this.$message({
@@ -675,10 +667,10 @@ export default {
       })
     },
     // tabs切换
-    handleClickTab (tab) {
-      this.searchParam('clear')
-      this.getCityName(this.searchParams.houseRentType)
-    },
+    // handleClickTab (tab) {
+    //   this.searchParam('clear')
+    //   this.getCityName(this.searchParams.houseRentType)
+    // },
     // 选择列表
     handleSelectionChange (list) {
       this.selectedItems = list
@@ -784,18 +776,15 @@ export default {
     },
     // 添加修改房间信息
     openRoomDetail (params) {
-      hostingHouseInfoApi({
-        fangyuanCode: params.fangyuanCode
+      this.roomDetailModelVisible = true
+      queryOneEstateRoomApi({
+        roomCode: params.roomCode
       }).then((res) => {
         this.roomDetailModelVisible = true
         this.$nextTick(() => {
-          this.$refs.hostingRoomDetail.setRoomDetailData(res.data, params)
+          this.$refs.editEstateManage.setRoomDetailData(res.data)
         })
       }).catch(err => console.log(err))
-    },
-    // 闲鱼授权
-    handleSetting () {
-      this.authorizeShow = true
     },
     // 移除校验结果
     clearValidate (ref) {
@@ -809,7 +798,6 @@ export default {
     // 获取组织架构最顶级部门的ID
     getParentDep (data) {
       this.expendedKeys = deepClone(data)
-      console.log('顶级部门ID', data)
     },
     clearClick () { // 清空树结构的ID
       this.searchParams.depId = ''

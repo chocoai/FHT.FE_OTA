@@ -33,21 +33,36 @@ export const constantRouterMap = [{
   hidden: true
 }, {
   path: '/house',
-  name: '主页',
+  name: '房源管理',
   component: Layout,
   redirect: '/houseManage',
   noDropdown: true,
   icon: 'house_manage',
   children: [{
-    name: '房源管理',
+    name: '分散式房源管理',
     path: 'houseManage',
     component: _import('houseManage/houseSync'),
     meta: {
       isHomePage: true
     }
   }]
-}]
-
+}, {
+  path: '/house',
+  name: '房源管理',
+  component: Layout,
+  redirect: '/houseManage',
+  noDropdown: true,
+  icon: 'house_manage',
+  children: [{
+    name: '集中式房源管理',
+    path: 'estateHouseManage',
+    component: _import('houseManage/estateManage'),
+    meta: {
+      isHomePage: true
+    }
+  }]
+}
+]
 export default new Router({
   // https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90
   mode: 'history',
@@ -106,6 +121,19 @@ export const asyncRouterMap = [
     }]
   },
   {
+    path: '/addHouse',
+    name: '集中式录入',
+    component: Layout,
+    redirect: 'noRedirect',
+    icon: 'rent_whole',
+    noDropdown: true,
+    children: [{
+      name: '集中式录入',
+      path: 'estateRoomDetail',
+      component: _import('hostingEntryHouse/components/estateRoomDetail/index')
+    }]
+  },
+  {
     path: '/organization',
     name: '组织',
     component: Layout,
@@ -151,19 +179,6 @@ export const asyncRouterMap = [
       }
     }]
   },
-  // {
-  //   path: '/addHouse',
-  //   name: '集中式录入',
-  //   component: Layout,
-  //   redirect: 'noRedirect',
-  //   icon: 'rent_whole',
-  //   noDropdown: true,
-  //   children: [{
-  //     name: '集中式录入',
-  //     path: 'estateRoomDetail',
-  //     component: _import('hostingEntryHouse/components/estateRoomDetail/index')
-  //   }]
-  // },
   {
     path: '/',
     redirect: '/house/houseManage',
