@@ -499,6 +499,7 @@ export default {
       },
       dialogVisible: false,
       searchParams: {
+        resource: 3,
         pageNo: 1,
         pageSize: 20,
         cityId: '',
@@ -528,13 +529,14 @@ export default {
   mounted () {
     this.authorizeStatus = this.$store.getters.idlefished // 判断是否授权的参数
     this.userAuthentication = this.$store.getters.authed // 判断实名认证的参数
-    this.getCityName(this.searchParams.houseRentType)
+    this.getCityName(this.searchParams.resource)
   },
   methods: {
     // 查询数据
     searchParam (type) {
       if (type === 'clear') {
         this.searchParams = {
+          resource: 3,
           pageNo: 1,
           pageSize: 20,
           cityId: '',
@@ -571,9 +573,9 @@ export default {
       this.searchParam()
     },
     // 城市区域
-    getCityName (houseRentType) {
+    getCityName (resource) {
       let params = {
-        'resource': houseRentType
+        'resource': resource
       }
       let cityData = []
       queryCityAreaPlotApi(params).then(res => {
@@ -619,7 +621,7 @@ export default {
       {
         'roomCode': scope.roomCode,
         'roomStatus': scope.roomStatus,
-        'resource': this.searchParams.houseRentType
+        'resource': this.searchParams.resource
       }
       changeRoomStatusApi(params).then(response => {
         if (response.message === '操作成功') {
