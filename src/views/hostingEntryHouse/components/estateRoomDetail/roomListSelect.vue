@@ -104,9 +104,11 @@ export default {
     }
   },
   mounted () {
-    for (let key in this.roomList) {
-      this.roomListLenght += this.roomList[key].length
-    }
+    this.$nextTick(() => {
+      for (let key in this.roomList) {
+        this.roomListLenght += this.roomList[key].length
+      }
+    })
   },
   methods: {
     handleCheckFloorChange (key) {

@@ -1199,7 +1199,7 @@ export default {
             pictures: this.estateRoomDetail.pictures
           }
           console.log('提交公寓的参数', param)
-          this.addHouseType = true
+
           let estateInfo = JSON.stringify(param)
           saveEstateInfoApi({estateInfo: estateInfo}).then((res) => { // 保存公寓接口
             if (res.code * 1 === 0) {
@@ -1208,6 +1208,7 @@ export default {
               // 公寓保存之后 获取房间号
               allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
                 this.copyItemRoomList = response.data
+                this.addHouseType = true
               })
             } else {
               this.$message({
