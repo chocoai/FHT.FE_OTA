@@ -102,8 +102,8 @@
                   prop="contactMobile"
                   label-width="0">
                   <el-input
-                    min="0"
                     v-model="estateRoomDetail.contactMobile"
+                    min="0"
                     type="number"
                     placeholder="联系电话" />
                 </el-form-item>
