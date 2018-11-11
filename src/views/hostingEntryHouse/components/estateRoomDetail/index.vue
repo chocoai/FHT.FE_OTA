@@ -102,6 +102,7 @@
                   prop="contactMobile"
                   label-width="0">
                   <el-input
+                    min="0"
                     v-model="estateRoomDetail.contactMobile"
                     type="number"
                     placeholder="联系电话" />
@@ -132,6 +133,7 @@
                 v-model="estateRoomDetail.apartmentFloor"
                 style="width:300px"
                 type="number"
+                min="1"
                 placeholder="请输入楼层"
                 @blur="apartmentInput">
                 <template slot="prepend">共</template>
@@ -144,7 +146,6 @@
               <el-select
                 v-model="estateRoomDetail.floorName"
                 multiple
-                filterable
                 allow-create
                 style="width:43%"
                 default-first-option
@@ -164,6 +165,7 @@
                 v-model="estateRoomDetail.floorRoomNum"
                 style="width:200px"
                 type="number"
+                min="1"
                 placeholder="请输入内容">
                 <template slot="append">间</template>
               </el-input>
@@ -1295,12 +1297,8 @@ export default {
         num += this.defaultCheckObj[i].length
       }
       if (num !== this.roomTotal) {
-        if (type === 1) {
-          this.$message({
-            message: '部分房间还未配置,请继续配置剩余房间号',
-            type: 'warning'
-          })
-        }
+        return true
+      } else {
         return false
       }
     },
@@ -1313,12 +1311,19 @@ export default {
         console.log(this.addHostingRooms.hostingRooms)
         param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
         console.log('保存房型参数', param)
-        this.defaultCheckObjNum(1)
         this.$refs.roomTypeTabsForm.validate((valid) => {
           if (valid) {
-            saveRoomTypesApi(param).then((res) => {
-              this.reloadPage() // 添加成功后刷新页面
-            })
+            // this.defaultCheckObjNum(1)
+            if (this.defaultCheckObjNum(1)) {
+              this.$message({
+                message: '部分房间还未配置,请继续配置剩余房间号',
+                type: 'warning'
+              })
+            } else {
+              saveRoomTypesApi(param).then((res) => {
+                this.reloadPage() // 添加成功后刷新页面
+              })
+            }
           }
         })
       }
