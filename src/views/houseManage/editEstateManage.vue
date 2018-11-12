@@ -47,16 +47,16 @@
         <el-row
           :gutter="10">
           <el-col
-            :span="3">
+            :span="4">
             <el-form-item
               :rules="roomDetailRules.chamberCount"
               :show-message="false"
               label="户型"/>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="3">
             <el-form-item
               prop="chamberCount"
-              style="margin-left:-8px;"
+              style="margin-left:-15px;"
               label=""
               label-width="0"
               class="room-item-count">
@@ -145,14 +145,14 @@
               label="付款方式"
               prop="payOfPayment" />
           </el-col>
-          <el-col :span="7">
+          <el-col :span="5">
             <el-col
               :span="2"
-              style="margin-left:-8px;"
+              style="margin-left:8px;"
               class="inline-item-label">
               付
             </el-col>
-            <el-col :span="10">
+            <el-col :span="12">
               <el-form-item
                 prop="payOfPayment"
                 label=""
@@ -172,7 +172,7 @@
               class="inline-item-label">
               押
             </el-col>
-            <el-col :span="10">
+            <el-col :span="12">
               <el-form-item
                 prop="depositOfPayment"
                 label=""
@@ -235,7 +235,7 @@
               label="房间设施"
               style="width:100%">
               <el-select
-                v-model="hostingRooms.facilityItems"
+                v-model="facilityItemsList"
                 class="room-detail-select"
                 style="width:82%"
                 multiple
@@ -343,7 +343,6 @@ import ImageCropper from '@/components/ImageCropper/Cropper'
 import { editEstateRoomInfoApi } from '@/api/houseManage'
 
 export default {
-  styleName: '',
   components: {
     ImageCropper,
     Preview
@@ -358,21 +357,23 @@ export default {
     return {
       saveLoading: false,
       hostingRooms: {
-        houseType: '',
-        roomArea: '', // 面积
-        roomstyleName: '',
-        roomDirection: '', // 朝向
-        chamberCount: '1',
+        roomCode: '',
         boardCount: '0',
+        chamberCount: '1',
         toiletCount: '0',
-        styleName: '1',
-        rent: '',
-        deposit: '',
+        floorId: '',
+        roomArea: '', // 面积
+        roomDirection: '', // 朝向
+        roomTypeId: '',
         payOfPayment: '', // 付款
         depositOfPayment: '', // 押金
-        facilityItems: [],
-        pictures: []
+        rent: '',
+        deposit: '',
+        facilityItems: '',
+        pictures: [],
+        roomNo: ''
       },
+      facilityItemsList: '',
       // },
       // 房型验证
       roomDetailRules: {
@@ -427,7 +428,7 @@ export default {
         }
       ],
       allRoomByFangyuanCode: [], // 房间号
-      activeRoomstyleName: '1',
+      // activeRoomstyleName: '1',
       tabIndex: 1,
       editableTabsValue: '1', // 当前展示tabs
       clearDepstyleName: true, // 是否清空归属部门
@@ -623,7 +624,7 @@ export default {
     },
     uploadModelClose () { // 关闭上传图片列表
       this.hostingRooms.pictures = this.currentPicList
-      this.$refs.roomTypeTabsForm.validateField('hostingRooms.pictures')
+      this.$refs.roomTypeTabsForm.validateField('pictures')
       this.currentPicList = []
     },
     // 计算押金，保留2位精度
@@ -663,6 +664,7 @@ export default {
       }
     },
     setRoomDetailData (res) {
+      console.log(res)
       // if (res.pictures.length) {
       //   res.pictures.forEach((item) => {
       //     item.title = item.imageName
@@ -671,19 +673,29 @@ export default {
       //   })
       // }
       this.hostingRooms = {
-        roomArea: res.roomArea, // 面积
-        roomstyleName: '名字',
-        roomDirection: res.roomDirection, // 朝向
-        chamberCount: res.chamberCount,
+        roomCode: res.roomCode,
         boardCount: res.boardCount,
+        chamberCount: res.chamberCount,
         toiletCount: res.toiletCount,
-        styleName: res.styleName,
-        rent: res.deposit,
-        deposit: res.deposit,
+        floorId: res.floorId,
+        roomArea: res.roomArea, // 面积
+        roomDirection: res.roomDirection, // 朝向
+        roomTypeId: res.roomTypeId,
         payOfPayment: res.payOfPayment, // 付款
         depositOfPayment: res.depositOfPayment, // 押金
-        facilityItems: res.facilityItems ? res.facilityItems.split(',') : [],
-        pictures: res.pictures || []
+        rent: res.rent,
+        deposit: res.deposit,
+        facilityItems: '',
+        pictures: res.pictures || [],
+        roomNo: res.roomNo
+      }
+      this.facilityItemsList = res.facilityItems ? res.facilityItems.split(',') : []
+      if (this.hostingRooms.pictures.length) {
+        this.hostingRooms.pictures.forEach((item) => {
+          item.title = item.imageName
+          item.key = Math.random().toFixed(5)
+          item.isBase64 = 0
+        })
       }
     },
     saveRoomDetailData (type) { // 1 保存  2,取消
@@ -693,11 +705,16 @@ export default {
       }
       if (type === 1) {
         this.$refs.roomTypeTabsForm.validate((valid) => {
-          this.hostingRooms.facilityItems = this.hostingRooms.facilityItems.join(',')
-          console.log('编辑房间的参数', this.hostingRooms)
-          editEstateRoomInfoApi(this.hostingRooms).then((res) => { // 确认编辑
-            this.$emit('closeDialog') // 编辑成功之后 关闭弹窗
-          })
+          if (valid) {
+            this.hostingRooms.facilityItems = this.facilityItemsList.join(',')
+            console.log('编辑房间的参数', this.hostingRooms)
+            let roomInfo = {
+              roomInfo: JSON.stringify(this.hostingRooms)
+            }
+            editEstateRoomInfoApi(roomInfo).then((res) => { // 确认编辑
+              this.$emit('closeDialog') // 编辑成功之后 关闭弹窗
+            })
+          }
         })
       }
     }
