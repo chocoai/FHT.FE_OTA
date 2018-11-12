@@ -686,6 +686,7 @@ export default {
       defaultCheckObj: [],
       cancelDefaultCheckObj: [],
       checkedRoomList: [], // 选中的房间号
+      toRouter: false,
       estateRoomDetail: { // form 数据
         fangyuanCode: '',
         contactName: '', // 联系人
@@ -1358,11 +1359,14 @@ export default {
           } else {
             if (type === 1) {
               saveRoomTypesApi(param).then((res) => {
-                console.log('跳转')
+                console.log('跳转1')
                 this.reloadPage() // 添加成功后刷新页面
+                this.toRouter = true
               })
             } else if (type === 3) { // 确定 跳转房源管理
               saveRoomTypesApi(param).then((res) => {
+                console.log('跳转2')
+                this.toRouter = true
                 this.$router.push({name: '集中式房源管理'})
               })
             }
@@ -1378,7 +1382,7 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) { // 离开页面  取消  公寓保存
-    if (this.estateRoomDetail.fangyuanCode !== '') {
+    if (this.estateRoomDetail.fangyuanCode !== '' && !this.toRouter) {
       cancleSaveEstateApi({fangyuanCode: this.estateRoomDetail.fangyuanCode}).then((res) => {
         // 取消保存房型
         next()
