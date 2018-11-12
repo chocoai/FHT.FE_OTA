@@ -158,7 +158,7 @@ export const queryEstateListApi = {
 }
 /* 集中式查询单个房间 */
 export function queryOneEstateRoomApi (params) {
-  return fetch('/fangyuan/queryOneEstateRoomApi', {
+  return fetch('/fangyuan/queryOneEstateRoom', {
     params
   }, {
     isMock: true

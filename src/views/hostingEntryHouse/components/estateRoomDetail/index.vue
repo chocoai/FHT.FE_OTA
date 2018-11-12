@@ -103,8 +103,6 @@
                   label-width="0">
                   <el-input
                     v-model="estateRoomDetail.contactMobile"
-                    min="0"
-                    type="number"
                     placeholder="联系电话" />
                 </el-form-item>
               </el-col>
@@ -132,8 +130,6 @@
               <el-input
                 v-model="estateRoomDetail.apartmentFloor"
                 style="width:300px"
-                type="number"
-                min="1"
                 placeholder="请输入楼层"
                 @blur="apartmentInput">
                 <template slot="prepend">共</template>
@@ -274,7 +270,8 @@
                       placeholder="请输入房间面积"
                       min="0"
                       clearable
-                      type="number"/>
+                      type="number"
+                      @change="setPrecision(index)" />
                   </el-form-item>
                 </el-col>
                 <el-col
@@ -1041,6 +1038,21 @@ export default {
         })
       }
     },
+    // 房间面积保留2位精度
+    setPrecision (index, data) {
+      let val = typeof index === 'number' ? this.addHostingRooms.hostingRooms[index].roomArea : ''
+      if (val > 0) {
+        let list = val.split('.')
+        if (!list[1]) {
+          val = val + '.00'
+        } else {
+          val = Number(val).toFixed(2)
+        }
+      } else {
+        val = 0
+      }
+      this.addHostingRooms.hostingRooms[index].roomArea = val
+    },
     // 计算押金，保留2位精度
     handleDepositChange (target) {
       if (target.depositOfPayment !== 13) {
@@ -1201,16 +1213,15 @@ export default {
             pictures: this.estateRoomDetail.pictures
           }
           console.log('提交公寓的参数', param)
-
           let estateInfo = JSON.stringify(param)
           saveEstateInfoApi({estateInfo: estateInfo}).then((res) => { // 保存公寓接口
             if (res.code * 1 === 0) {
               this.estateRoomDetail.fangyuanCode = res.data
               this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
+              this.addHouseType = true
               // 公寓保存之后 获取房间号
               allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
                 this.copyItemRoomList = response.data
-                this.addHouseType = true
               })
             } else {
               this.$message({
@@ -1313,7 +1324,6 @@ export default {
         console.log('保存房型参数', param)
         this.$refs.roomTypeTabsForm.validate((valid) => {
           if (valid) {
-            // this.defaultCheckObjNum(1)
             if (this.defaultCheckObjNum(1)) {
               this.$message({
                 message: '部分房间还未配置,请继续配置剩余房间号',
@@ -1321,6 +1331,7 @@ export default {
               })
             } else {
               saveRoomTypesApi(param).then((res) => {
+                console.log('跳转')
                 this.reloadPage() // 添加成功后刷新页面
               })
             }
