@@ -145,50 +145,47 @@
               label="付款方式"
               prop="payOfPayment" />
           </el-col>
-          <el-col :span="5">
-            <el-col
-              :span="2"
-              style="margin-left:8px;"
-              class="inline-item-label">
-              付
-            </el-col>
-            <el-col :span="12">
-              <el-form-item
-                prop="payOfPayment"
-                label=""
-                label-width="0"
-                class="room-item-count">
-                <el-select v-model="hostingRooms.payOfPayment">
-                  <el-option
-                    v-for="item in payList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col
-              :span="2"
-              class="inline-item-label">
-              押
-            </el-col>
-            <el-col :span="12">
-              <el-form-item
-                prop="depositOfPayment"
-                label=""
-                label-width="0"
-                class="room-item-count">
-                <el-select
-                  v-model="hostingRooms.depositOfPayment"
-                  @change="handleDepositChange(hostingRooms)">
-                  <el-option
-                    v-for="item in depositList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
+          <el-col
+            :span="1"
+            class="inline-item-label right">
+            付
+          </el-col>
+          <el-col :span="4">
+            <el-form-item
+              prop="payOfPayment"
+              label=""
+              label-width="0"
+              class="room-item-count">
+              <el-select v-model="hostingRooms.payOfPayment">
+                <el-option
+                  v-for="item in payList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="1"
+            class="inline-item-label right">
+            押
+          </el-col>
+          <el-col :span="4">
+            <el-form-item
+              prop="depositOfPayment"
+              label=""
+              label-width="0"
+              class="room-item-count">
+              <el-select
+                v-model="hostingRooms.depositOfPayment"
+                @change="handleDepositChange(hostingRooms)">
+                <el-option
+                  v-for="item in depositList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value" />
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -768,4 +765,7 @@ export default {
   justify-content: center;
   z-index: 200;
 }
+.right{
+  text-align:right
+  }
 </style>
