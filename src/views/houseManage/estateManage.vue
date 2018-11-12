@@ -641,7 +641,6 @@ export default {
     },
     // 删除房间
     deleteRoom (row) {
-      console.log(row)
       const h = this.$createElement
       this.$msgbox({
         title: '确认消息',
@@ -655,7 +654,7 @@ export default {
         cancelButtonText: '取消'
       }).then(action => {
         estateDeleteRoomApi({
-          'roomCodes': row.fangyuanCode
+          'roomCodes': [row.roomCode]
         }).then((res) => {
           if (res.code === '0') {
             this.$message({
