@@ -605,6 +605,11 @@
           @click="saveRoomDetailData(1)">保存并继续添加</el-button>
         <el-button
           :loading="saveLoading"
+          type="primary"
+          size="small"
+          @click="saveRoomDetailData(3)">确定</el-button>
+        <el-button
+          :loading="saveLoading"
           size="small"
           @click="saveRoomDetailData(2)">取消</el-button>
       </template>
@@ -1337,29 +1342,33 @@ export default {
     },
     // 提交form表单
     saveRoomDetailData (type) {
-      if (type === 1) {
-        let param = {}
-        param.depId = this.addHostingRooms.depId
-        param.fangyuanCode = this.estateRoomDetail.fangyuanCode
-        console.log(this.addHostingRooms.hostingRooms)
-        param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
-        console.log('保存房型参数', param)
-        this.$refs.roomTypeTabsForm.validate((valid) => {
-          if (valid) {
-            if (this.defaultCheckObjNum(1)) {
-              this.$message({
-                message: '部分房间还未配置,请继续配置剩余房间号',
-                type: 'warning'
-              })
-            } else {
+      let param = {}
+      param.depId = this.addHostingRooms.depId
+      param.fangyuanCode = this.estateRoomDetail.fangyuanCode
+      console.log(this.addHostingRooms.hostingRooms)
+      param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
+      console.log('保存房型参数', param)
+      this.$refs.roomTypeTabsForm.validate((valid) => {
+        if (valid) {
+          if (this.defaultCheckObjNum(1)) {
+            this.$message({
+              message: '部分房间还未配置,请继续配置剩余房间号',
+              type: 'warning'
+            })
+          } else {
+            if (type === 1) {
               saveRoomTypesApi(param).then((res) => {
                 console.log('跳转')
                 this.reloadPage() // 添加成功后刷新页面
               })
+            } else if (type === 3) { // 确定 跳转房源管理
+              saveRoomTypesApi(param).then((res) => {
+                this.$router.push({name: '集中式房源管理'})
+              })
             }
           }
-        })
-      }
+        }
+      })
       if (type === 2) { // 点击取消的时候
         cancleSaveEstateApi({fangyuanCode: this.estateRoomDetail.fangyuanCode}).then((res) => {
           // 取消保存房型
