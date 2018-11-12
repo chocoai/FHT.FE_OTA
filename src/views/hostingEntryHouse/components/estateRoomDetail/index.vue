@@ -235,14 +235,20 @@
           <el-tabs
             v-if="addHouseType"
             v-model="editableTabsValue"
-            type="card"
+            type="border-card"
+            class="sub-room-info-list"
             editable
             @edit="handleTabsEdit">
             <el-tab-pane
               v-for="(item, index) in addHostingRooms.hostingRooms"
               :key="index"
-              :label="item.styleName"
               :name="item.name">
+              <span slot="label">{{ item.styleName }}
+                <i
+                  v-show="index === addHostingRooms.hostingRooms.length - 1 && index > 0"
+                  class="el-icon-delete"
+                  @click="deleteCurRoom(item, index)" />
+              </span>
               <el-row :gutter="0">
                 <el-col
                   :span="10"
@@ -1035,8 +1041,14 @@ export default {
         })
         this.$nextTick(() => {
           this.activeRoomName = activeName
+          this.editableTabsValue = activeName
         })
       }
+    },
+    // 检查是否能删除当前房间
+    deleteCurRoom (curRoom, index) {
+      console.log(curRoom.name)
+      this.handleTabsEdit(curRoom.name, 'remove')
     },
     // 房间面积保留2位精度
     setPrecision (index, data) {
@@ -1254,6 +1266,7 @@ export default {
           roomCodes: []
         }
       ]
+      this.facilityItemsList = []
       this.editableTabsValue = '1'
       this.tabIndex = 1
       this.$refs.estateRoomDetail.clearValidate()
@@ -1414,24 +1427,18 @@ export default {
 
 </style>
 <style>
-.estate .el-tabs__new-tab{
-  width:80px;
-  height:auto;
-  border:none;
-  font-size:14px;
-  margin:0;padding:0;
-}
-.estate .el-tabs__new-tab .el-icon-plus:before{
-      display:block;
-      content:'+添加房型';
-      width:77px;
-      font-size:14px;
-      background:#4674FF;
-      color:#fff;
-      padding:10px 5px;
-      border-radius:3px;
-      margin-bottom:5px
-
+ .sub-room-info-list {
+    margin-bottom: 18px;
+    box-shadow: 0 0;
+    .el-tabs__item {
+      .el-icon-delete {
+        margin-left: 5px;
+        color: red;
+      }
+    }
+  }
+  .el-tabs__item .el-icon-close{
+    display:none
   }
   .estate .el-dialog__wrapper {z-index:3000!important}
 </style>
