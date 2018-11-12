@@ -243,7 +243,7 @@
               v-for="(item, index) in addHostingRooms.hostingRooms"
               :key="index"
               :name="item.name">
-              <span slot="label">{{ item.styleName }}
+              <span slot="label">{{ item.elTabName }}
                 <i
                   v-show="index === addHostingRooms.hostingRooms.length - 1 && index > 0"
                   class="el-icon-delete"
@@ -254,13 +254,15 @@
                   :span="10"
                   class="inline-item-label">
                   <el-form-item
-                    :prop="'hostingRooms.' + index + '.roomTypes'"
-                    :rules="roomDetailRules.roomTypes"
+                    :prop="'hostingRooms.' + index + '.styleName'"
+                    :rules="roomDetailRules.styleName"
                     label="房间类型">
                     <el-input
-                      v-model="addHostingRooms.hostingRooms[index].roomTypes"
+                      v-model="addHostingRooms.hostingRooms[index].styleName"
                       placeholder="请输入房源类型"
-                      clearable/>
+                      clearable
+                      @change="handleRoomNameLength(addHostingRooms.hostingRooms[index])"
+                      @keyup.native="handleRoomNameLength(addHostingRooms.hostingRooms[index])" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -700,9 +702,9 @@ export default {
         fangyuanCode: '',
         hostingRooms: [
           {
-            roomTypes: '',
+            styleName: '',
             roomArea: '', // 面积
-            styleName: '房型A',
+            elTabName: '房型A',
             roomDirection: '', // 朝向
             chamberCount: '1',
             boardCount: '0',
@@ -777,7 +779,7 @@ export default {
       },
       // 房型验证
       roomDetailRules: {
-        roomTypes: [
+        styleName: [
           { required: true, message: '请输入房源类型', trigger: 'blur' }
         ],
         roomArea: [
@@ -1001,9 +1003,9 @@ export default {
         let curIndex = this.addHostingRooms.hostingRooms.length
         let newTabName = ++this.tabIndex + ''
         this.addHostingRooms.hostingRooms.push({
-          roomTypes: '',
+          styleName: '',
           roomArea: '', // 面积
-          styleName: '房型' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[curIndex],
+          elTabName: '房型' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[curIndex],
           roomDirection: '', // 朝向
           chamberCount: '1',
           boardCount: '0',
@@ -1037,12 +1039,18 @@ export default {
         this.editableTabsValue = activeName
         this.addHostingRooms.hostingRooms = tabs.filter(tab => tab.name !== targetName)
         this.addHostingRooms.hostingRooms.forEach((item, index) => {
-          item.styleName = '房型' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[index]
+          item.elTabName = '房型' + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')[index]
         })
         this.$nextTick(() => {
           this.activeRoomName = activeName
           this.editableTabsValue = activeName
         })
+      }
+    },
+    // 房间类型长度不能超过10位
+    handleRoomNameLength (room) {
+      if (room.styleName && room.styleName.length > 10) {
+        room.styleName = room.styleName.substr(0, 10)
       }
     },
     // 检查是否能删除当前房间
@@ -1074,8 +1082,8 @@ export default {
         }
         target.deposit = target.rent * target.depositOfPayment
         target.deposit = target.deposit === 0 ? 0 : target.deposit.toFixed(2)
-        if (target.styleName) {
-          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.styleName.replace('房型', ''))
+        if (target.elTabName) {
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.elTabName.replace('房型', ''))
           this.$refs.roomTypeTabsForm.validateField('hostingRooms.' + index + '.deposit')
         }
       }
@@ -1100,8 +1108,8 @@ export default {
         target.deposit = ''
       }
       if (target.depositOfPayment !== '') {
-        if (target.styleName) {
-          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.styleName.replace('房型', ''))
+        if (target.elTabName) {
+          const index = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(target.elTabName.replace('房型', ''))
           this.$refs.roomTypeTabsForm.validateField('hostingRooms.' + index + '.deposit')
         }
       }
@@ -1203,6 +1211,7 @@ export default {
     },
     // 下一步
     addEstateRoomNext () {
+      // this.addHouseType = true
       let floors = []
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
@@ -1251,7 +1260,7 @@ export default {
         {
           roomTypes: '',
           roomArea: '', // 面积
-          styleName: '房型A',
+          elTabName: '房型A',
           roomDirection: '', // 朝向
           chamberCount: '1',
           boardCount: '0',
@@ -1437,6 +1446,7 @@ export default {
       }
     }
   }
+  .estate .el-tabs__new-tab{margin-right:10px;}
   .el-tabs__item .el-icon-close{
     display:none
   }

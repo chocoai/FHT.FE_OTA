@@ -197,7 +197,6 @@
                 v-model="hostingRooms.rent"
                 style="width:100%"
                 placeholder="请输入租金"
-                type="number"
                 clearable
                 @change="handleRentChange(hostingRooms)" />
             </el-form-item>
