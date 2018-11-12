@@ -19,7 +19,7 @@
           </el-form-item>
           <el-form-item>
             <el-select
-              v-model="searchParams.regionAddressId"
+              v-model="searchParams.fangyuanCode"
               size="small"
               filterable
               placeholder="请选择公寓"
@@ -28,7 +28,7 @@
             >
               <el-option
                 v-for="(areaName,item) in selectedArea"
-                :value="areaName.regionAddressId"
+                :value="areaName.fangyuanCode"
                 :key="item"
                 :label="areaName.name"/>
             </el-select>
@@ -499,12 +499,11 @@ export default {
       },
       dialogVisible: false,
       searchParams: {
-        resource: 3,
         pageNo: 1,
         pageSize: 20,
         cityId: '',
         regionId: '',
-        regionAddressId: '',
+        fangyuanCode: '',
         roomStatus: '', // 2-未出租，9-已出租
         roomNo: '',
         mailinStatus: '', // 1-未发布，2-已发布，5：发布失败 ，9：处理中
@@ -529,19 +528,18 @@ export default {
   mounted () {
     this.authorizeStatus = this.$store.getters.idlefished // 判断是否授权的参数
     this.userAuthentication = this.$store.getters.authed // 判断实名认证的参数
-    this.getCityName(this.searchParams.resource)
+    this.getCityName()
   },
   methods: {
     // 查询数据
     searchParam (type) {
       if (type === 'clear') {
         this.searchParams = {
-          resource: 3,
           pageNo: 1,
           pageSize: 20,
           cityId: '',
           regionId: '',
-          regionAddressId: '', // 3 集中式
+          fangyuanCode: '',
           roomStatus: '', // 2-未出租，9-已出租
           roomNo: '',
           mailinStatus: '', // 1-未发布，2-已发布，5：发布失败 ，9：处理中
@@ -573,9 +571,9 @@ export default {
       this.searchParam()
     },
     // 城市区域
-    getCityName (resource) {
+    getCityName () {
       let params = {
-        'resource': resource
+        'resource': 3
       }
       let cityData = []
       queryCityAreaPlotApi(params).then(res => {
@@ -599,7 +597,7 @@ export default {
     },
     handleChange (value) {
       this.selectedArea = []
-      this.searchParams.regionAddressId = ''
+      this.searchParams.fangyuanCode = ''
       this.searchParams.cityId = value[0]
       this.searchParams.regionId = value[1]
       this.residential.filter((cityName, index) => {
@@ -607,6 +605,7 @@ export default {
           this.selectedArea.push(cityName)
         }
       })
+      console.log(this.selectedArea)
     },
     roomStatusText (status) {
       if (status === 2) {
@@ -621,7 +620,7 @@ export default {
       {
         'roomCode': scope.roomCode,
         'roomStatus': scope.roomStatus,
-        'resource': this.searchParams.resource
+        'resource': 3
       }
       changeRoomStatusApi(params).then(response => {
         if (response.message === '操作成功') {
