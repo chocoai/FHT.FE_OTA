@@ -486,7 +486,7 @@
                     label="房间设施"
                     style="width:100%">
                     <el-select
-                      v-model="facilityItemsList"
+                      v-model="addHostingRooms.hostingRooms[index].facilityItemsList"
                       class="room-detail-select"
                       style="width:82%"
                       multiple
@@ -721,14 +721,13 @@ export default {
             deposit: '',
             payOfPayment: '', // 付款
             depositOfPayment: '', // 押金
-            // facilityItemsList: [],
+            facilityItemsList: [],
             facilityItems: '',
             pictures: [],
             roomCodes: []
           }
         ]
       },
-      facilityItemsList: '', // 房间设施列表
       estateRoomDetailRules: { // 表单验证
         depName: [
           { required: true, trigger: ['change'], validator: validateDepName }
@@ -1039,9 +1038,9 @@ export default {
           depositOfPayment: '', // 押金
           facilityItems: '',
           pictures: [],
-          roomCodes: []
+          roomCodes: [],
+          facilityItemsList: []
         })
-        this.facilityItemsList = []
         this.editableTabsValue = newTabName
       }
       if (action === 'remove') {
@@ -1138,7 +1137,7 @@ export default {
     },
     // 获取房间设施
     getFacilityItems (index) {
-      this.addHostingRooms.hostingRooms[index].facilityItems = this.facilityItemsList.join(',')
+      this.addHostingRooms.hostingRooms[index].facilityItems = this.addHostingRooms.hostingRooms[index].facilityItemsList.join(',')
     },
     /* 选择图片 */
     async uploadImg (e) { // 点击input
@@ -1294,10 +1293,10 @@ export default {
           depositOfPayment: '', // 押金
           facilityItems: '',
           pictures: [],
-          roomCodes: []
+          roomCodes: [],
+          facilityItemsList: []
         }
       ]
-      this.facilityItemsList = []
       this.editableTabsValue = '1'
       this.tabIndex = 1
       this.$refs.estateRoomDetail.clearValidate()
@@ -1464,7 +1463,7 @@ export default {
   }
 
 </style>
-<style lang="scss" scoped>
+<style lang="scss">
  .sub-room-info-list {
     margin-bottom: 18px;
     box-shadow: 0 0;
@@ -1476,7 +1475,7 @@ export default {
     }
   }
   .estate .el-tabs__new-tab{margin-right:10px;}
-  .el-tabs__item .el-icon-close{
+  .estate .el-tabs__item .el-icon-close{
     display:none
   }
   .estate .el-dialog__wrapper {z-index:3000!important}
