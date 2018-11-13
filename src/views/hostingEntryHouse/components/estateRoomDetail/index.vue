@@ -484,7 +484,7 @@
                     label="房间设施"
                     style="width:100%">
                     <el-select
-                      v-model="addHostingRooms.hostingRooms[index].facilityItemsList"
+                      v-model="facilityItemsList[index].facilityItems"
                       class="room-detail-select"
                       style="width:82%"
                       multiple
@@ -719,13 +719,17 @@ export default {
             deposit: '',
             payOfPayment: '', // 付款
             depositOfPayment: '', // 押金
-            facilityItemsList: [],
+            // facilityItemsList: [],
             facilityItems: '',
             pictures: [],
             roomCodes: []
           }
         ]
       },
+      facilityItemsList: [{
+        facilityItems: ''
+      }
+      ],
       estateRoomDetailRules: { // 表单验证
         depName: [
           { required: true, trigger: ['change'], validator: validateDepName }
@@ -1036,8 +1040,11 @@ export default {
           depositOfPayment: '', // 押金
           facilityItems: '',
           pictures: [],
-          roomCodes: [],
-          facilityItemsList: []
+          roomCodes: []
+          // facilityItemsList: []
+        })
+        this.facilityItemsList.push({
+          facilityItems: ''
         })
         this.editableTabsValue = newTabName
       }
@@ -1135,7 +1142,7 @@ export default {
     },
     // 获取房间设施
     getFacilityItems (index) {
-      this.addHostingRooms.hostingRooms[index].facilityItems = this.addHostingRooms.hostingRooms[index].facilityItemsList.join(',')
+      this.addHostingRooms.hostingRooms[index].facilityItems = this.facilityItemsList[index].facilityItems.join(',')
     },
     /* 选择图片 */
     async uploadImg (e) { // 点击input
@@ -1291,9 +1298,13 @@ export default {
           depositOfPayment: '', // 押金
           facilityItems: '',
           pictures: [],
-          roomCodes: [],
-          facilityItemsList: []
+          roomCodes: []
+          // facilityItemsList: []
         }
+      ]
+      this.facilityItemsList = [{
+        facilityItems: ''
+      }
       ]
       this.editableTabsValue = '1'
       this.tabIndex = 1
@@ -1317,14 +1328,12 @@ export default {
           cancelArray.push(key)
         })
       })
-      // console.log('cancelArray', cancelArray)
       this.curRoomList = deepClone(this.copyItemRoomList)
       if (cancelArray.length) {
         for (let item in this.curRoomList) {
           this.curRoomList[item].map((key, index) => {
             cancelArray.forEach((obj) => {
               if (obj === key.roomCode) {
-                // this.curRoomList[item].splice(index, 1)
                 this.curRoomList[item][index] = 0
               }
             })
@@ -1359,9 +1368,9 @@ export default {
       let param = {}
       param.depId = this.addHostingRooms.depId
       param.fangyuanCode = this.estateRoomDetail.fangyuanCode
-      console.log(this.addHostingRooms.hostingRooms)
+      console.log('保存房型参数', this.addHostingRooms.hostingRooms)
       param.roomTypes = JSON.stringify(this.addHostingRooms.hostingRooms)
-      console.log('保存房型参数', param)
+      // console.log('保存房型参数', param)
       this.$refs.roomTypeTabsForm.validate((valid) => {
         if (valid) {
           if (this.defaultCheckObjNum(1)) {
