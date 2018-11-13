@@ -1260,10 +1260,10 @@ export default {
             if (res.code * 1 === 0) {
               this.estateRoomDetail.fangyuanCode = res.data
               this.roomTotal = this.estateRoomDetail.floorName.length * this.estateRoomDetail.floorRoomNum // 总房间数
-              this.addHouseType = true
               // 公寓保存之后 获取房间号
               allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
                 this.copyItemRoomList = response.data
+                this.addHouseType = true
               })
             } else {
               this.$message({
