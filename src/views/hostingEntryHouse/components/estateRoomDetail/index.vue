@@ -960,6 +960,7 @@ export default {
           )
         }
       }
+      this.estateRoomDetail.floorName = []
     },
     // 点击树节点
     clickTreeNode (data) {
@@ -1448,11 +1449,11 @@ export default {
   }
 
 </style>
-<style>
+<style lang="scss" scoped>
  .sub-room-info-list {
     margin-bottom: 18px;
     box-shadow: 0 0;
-    .el-tabs__item {
+     .el-tabs__item {
       .el-icon-delete {
         margin-left: 5px;
         color: red;
