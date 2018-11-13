@@ -161,8 +161,6 @@
               <el-input
                 v-model="estateRoomDetail.floorRoomNum"
                 style="width:200px"
-                type="number"
-                min="1"
                 placeholder="请输入内容">
                 <template slot="append">间</template>
               </el-input>
