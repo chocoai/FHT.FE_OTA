@@ -131,7 +131,8 @@
                 v-model="estateRoomDetail.apartmentFloor"
                 style="width:300px"
                 placeholder="请输入楼层"
-                @blur="apartmentInput">
+                @blur="apartmentInput"
+                @focus="apartmentFocus">
                 <template slot="prepend">共</template>
                 <template slot="append">层</template>
               </el-input>
@@ -923,7 +924,8 @@ export default {
       currentPicList: [],
       cropperList: [],
       accept: 'image/png, image/jpeg, image/jpg',
-      estateModel: {} // 房间号
+      estateModel: {}, // 房间号
+      changeEditFloor: false
     }
   },
   computed: {
@@ -944,9 +946,20 @@ export default {
         label: '自定义'
       })
       return list
+    },
+    apartmentFloor () {
+      return this.estateRoomDetail.apartmentFloor
+    }
+  },
+  watch: {
+    apartmentFloor (val, oldVal) {
+      this.changeEditFloor = true
     }
   },
   methods: {
+    apartmentFocus () {
+      this.changeEditFloor = false
+    },
     // 输入总共楼层数遍历出每层
     apartmentInput () {
       this.floorOptions = []
@@ -960,7 +973,9 @@ export default {
           )
         }
       }
-      this.estateRoomDetail.floorName = []
+      if (this.changeEditFloor) { // 楼层改变了 就清空
+        this.estateRoomDetail.floorName = []
+      }
     },
     // 点击树节点
     clickTreeNode (data) {
