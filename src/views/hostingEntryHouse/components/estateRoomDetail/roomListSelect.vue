@@ -29,9 +29,9 @@
         </el-checkbox-group>
       </el-col>
     </el-row>
-    <div v-if="roomListLenght === 0">
+    <!-- <div v-if="roomListLenght === 0">
       无房间号可以配置
-    </div>
+    </div> -->
 </div></template>
 <script>
 export default {
@@ -66,8 +66,8 @@ export default {
       isIndeterminate: false,
       allRoomList: {},
       checkedFloor: { },
-      checkedObj: {},
-      roomListLenght: 0
+      checkedObj: {}
+      // roomListLenght: 0
     }
   },
   watch: {
@@ -96,6 +96,7 @@ export default {
             this.$set(this, 'checkedObj', checkedObj)
             this.$set(this, 'checkedFloor', checkedFloor)
           }
+          // console.log('this.allRoomList123123', this.allRoomList)
           Object.keys(this.checkedObj).forEach((key, index) => {
             this.handleRoomChange(key)
           })
@@ -104,11 +105,11 @@ export default {
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      for (let key in this.roomList) {
-        this.roomListLenght += this.roomList[key].length
-      }
-    })
+    // this.$nextTick(() => {
+    //   for (let key in this.roomList) {
+    //     this.roomListLenght += this.roomList[key].length
+    //   }
+    // })
   },
   methods: {
     handleCheckFloorChange (key) {
@@ -118,6 +119,8 @@ export default {
     handleRoomChange (key) {
       const checkedCount = this.checkedObj[key].length
       this.checkedFloor[key] = checkedCount === this.allRoomList[key].allRoom.length
+      // console.log('this.allRoomList[key]', this.allRoomList[key])
+      // console.log('checkedCount', checkedCount)
     },
     returnCheckedList () { // 返回选中的码
       let saveRoomList = []

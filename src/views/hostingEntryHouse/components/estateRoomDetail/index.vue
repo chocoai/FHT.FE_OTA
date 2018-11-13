@@ -6,9 +6,9 @@
         新建集中式录入
       </div>
     </div>
-    <div class="layout-container">
+    <div class="layout-container" >
       <div
-        v-loading="saveLoading"
+        v-loading="saveEasteLoading"
         class="entry-house-container">
         <el-form
           ref="estateRoomDetail"
@@ -584,6 +584,7 @@
       class="entry-house-bottom">
       <el-button
         v-if="!addHouseType"
+        :loading="saveEasteLoading"
         type="primary"
         size="small"
         @click="addEstateRoomNext()">下一步</el-button>
@@ -680,6 +681,7 @@ export default {
       currentRoomIndex: null,
       zoneList: [], // 所属板块列表
       saveLoading: false, // 是否加载中
+      saveEasteLoading: false,
       editFlag: false, // 是否是编辑
       addHouseType: false, // 展示添加房型
       defaultCheckObj: [],
@@ -1240,10 +1242,11 @@ export default {
     },
     // 下一步
     addEstateRoomNext () {
-      // this.addHouseType = true
       let floors = []
+
       this.$refs.estateRoomDetail.validate((valid) => {
         if (valid) {
+          this.saveEasteLoading = true
           this.estateRoomDetail.floorName.forEach((item, index) => {
             floors.push({
               floorName: item,
@@ -1272,13 +1275,17 @@ export default {
               allRoomByFangyuanCodeApi({fangyuanCode: res.data}).then((response) => {
                 this.copyItemRoomList = response.data
                 this.addHouseType = true
+                this.saveEasteLoading = false
               })
             } else {
+              this.fullscreenLoading = false
               this.$message({
                 message: res.message,
                 type: 'warning'
               })
             }
+          }).catch(() => {
+            this.saveEasteLoading = false
           })
         }
       })
@@ -1377,6 +1384,7 @@ export default {
       // console.log('保存房型参数', param)
       this.$refs.roomTypeTabsForm.validate((valid) => {
         if (valid) {
+          this.saveLoading = true
           if (this.defaultCheckObjNum(1)) {
             this.$message({
               message: '部分房间还未配置,请继续配置剩余房间号',
@@ -1386,14 +1394,20 @@ export default {
             if (type === 1) {
               saveRoomTypesApi(param).then((res) => {
                 console.log('跳转1')
+                this.saveLoading = false
                 this.reloadPage() // 添加成功后刷新页面
                 this.toRouter = true
+              }).catch(() => {
+                this.saveLoading = false
               })
             } else if (type === 3) { // 确定 跳转房源管理
               saveRoomTypesApi(param).then((res) => {
                 console.log('跳转2')
+                this.saveLoading = false
                 this.toRouter = true
                 this.$router.push({name: '集中式房源管理'})
+              }).catch(() => {
+                this.saveLoading = false
               })
             }
           }
