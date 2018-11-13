@@ -998,6 +998,7 @@ export default {
       if (!flag) {
         this.estateRoomDetail.regionAddressId = ''
         this.estateRoomDetail.zoneId = ''
+        this.address = ''
       }
       if (this.estateRoomDetail.areaCode[2] !== undefined) {
         estateZoneListByAreaIdApi({
@@ -1010,10 +1011,12 @@ export default {
       }
     },
     addressChange (val) { // 选择具体位置
-      // console.log(val)
+      console.log(val)
+      if (val.areaCode) {
+        this.estateRoomDetail.areaCode = val.areaCode
+      }
       this.estateRoomDetail.regionAddressId = val.regionAddressId
       this.address = val.address
-      // this.estateRoomDetail = Object.assign(this.estateRoomDetail, val)
       this.$refs['estateRoomDetail'].validateField('address')
       this.searchZoneList(true)
     },
@@ -1343,6 +1346,7 @@ export default {
       for (let key in this.curRoomList) {
         this.curRoomList[key] = this.curRoomList[key].filter((index) => this.curRoomList[key][index] !== 0)
       }
+      // console.log('this.curRoomList', this.curRoomList)
     },
     getRoomNumData () { // 获取房间号falsecopyItemToModelVisible
       this.checkedRoomList = this.$refs.copyItemTo[this.currentRoomIndex].returnCheckedList().saveRoomList
