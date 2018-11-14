@@ -1146,6 +1146,7 @@ export default {
     },
     // 获取房间设施
     getFacilityItems (index) {
+      console.log('房间设施', this.facilityItemsList[index].facilityItems)
       this.addHostingRooms.hostingRooms[index].facilityItems = this.facilityItemsList[index].facilityItems.join(',')
     },
     /* 选择图片 */
@@ -1433,7 +1434,7 @@ export default {
 }
 </script>
 <style  lang="scss" scoped>
- .inline-item-label {
+.estate .inline-item-label {
       text-align: center;
       line-height: 32px;
       padding: 0 !important;
