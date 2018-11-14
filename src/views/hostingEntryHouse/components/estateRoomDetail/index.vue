@@ -1433,6 +1433,13 @@ export default {
 }
 </script>
 <style  lang="scss" scoped>
+ .inline-item-label {
+      text-align: center;
+      line-height: 32px;
+      padding: 0 !important;
+      font-size: 14px;
+      color: #606266;
+    }
   .entry-house-title {
     font-size: 18px;
     line-height: 25px;
