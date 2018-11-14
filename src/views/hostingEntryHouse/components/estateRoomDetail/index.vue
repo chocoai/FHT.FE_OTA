@@ -488,7 +488,7 @@
                       style="width:82%"
                       multiple
                       placeholder="请选择"
-                      @blur="getFacilityItems(index)">
+                      @change="getFacilityItems(index)">
                       <el-option-group
                         v-for="group in facilityGroup"
                         :key="group.label"
