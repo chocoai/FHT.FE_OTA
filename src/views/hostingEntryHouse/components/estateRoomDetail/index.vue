@@ -594,6 +594,7 @@
       class="entry-house-bottom">
       <template>
         <el-button
+          :loading="saveLoading"
           type="primary"
           size="small"
           @click="addEstateRoomPrev()">上一步</el-button>
@@ -1390,6 +1391,7 @@ export default {
               message: '部分房间还未配置,请继续配置剩余房间号',
               type: 'warning'
             })
+            this.saveLoading = false
           } else {
             if (type === 1) {
               saveRoomTypesApi(param).then((res) => {
